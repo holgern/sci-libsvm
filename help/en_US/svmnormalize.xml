@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ *
+ * This help file was generated from svmnormalize.sci using help_from_sci().
+ *
+ -->
+
+<refentry version="5.0-subset Scilab" xml:id="svmnormalize" xml:lang="en"
+          xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:svg="http://www.w3.org/2000/svg"
+          xmlns:ns3="http://www.w3.org/1999/xhtml"
+          xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:db="http://docbook.org/ns/docbook">
+
+
+  <refnamediv>
+    <refname>svmnormalize</refname><refpurpose>scale the input data for correct learning</refpurpose>
+  </refnamediv>
+
+
+
+<refsynopsisdiv>
+   <title>Calling Sequence</title>
+   <synopsis>
+   [scaled_instance,scaled_parameters] = svmnormalize(instance);
+   [scaled_instance,scaled_parameters] = svmnormalize(instance,[meanV,stdV]);
+   
+   [scaled_instance] = svmnormalize(instance,scaled_parameters);
+   
+   [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters] = svmnormalize(instance,[meanV,stdV],label,[label_mean, label_std]);
+   </synopsis>
+</refsynopsisdiv>
+
+<refsection>
+   <title>Description</title>
+   <para>
+Scale your data. For example, scale each attribute to a mean of 0 and a standard deviation of 1.
+</para>
+</refsection>
+
+<refsection>
+   <title>Examples</title>
+   <programlisting role="example"><![CDATA[
+[label,instance]=libsvmread("demos/heart_scale");
+[scaled_instance,scaled_parameters] = svmnormalize(instance,[0,1]);
+cc = svmtrain(label,scaled_instance);
+[predicted_label]=svmtrain(label,svmnormalize(instance,scaled_parameters));
+   ]]></programlisting>
+</refsection>
+</refentry>

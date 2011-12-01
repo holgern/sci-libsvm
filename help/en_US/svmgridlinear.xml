@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ *
+ * This help file was generated from svmgridlinear.sci using help_from_sci().
+ *
+ -->
+
+<refentry version="5.0-subset Scilab" xml:id="svmgridlinear" xml:lang="en"
+          xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:svg="http://www.w3.org/2000/svg"
+          xmlns:ns3="http://www.w3.org/1999/xhtml"
+          xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:db="http://docbook.org/ns/docbook">
+
+
+  <refnamediv>
+    <refname>svmgridlinear</refname><refpurpose>parameter selection tool for linear classification</refpurpose>
+  </refnamediv>
+
+
+
+<refsynopsisdiv>
+   <title>Calling Sequence</title>
+   <synopsis>
+   [best_rate,best_c,best_g] = svmgridlinear(label,instance)
+   [best_rate,best_c,best_g] = svmgridlinear(label,instance,log2c)
+   [best_rate,best_c,best_g] = svmgridlinear(label,instance,log2c,s_seq)
+   [best_rate,best_c,best_g] = svmgridlinear(label,instance,log2c,s_seq,v)
+   [best_rate,best_c,best_g] = svmgridlinear(label,instance,log2c,s_seq,v,option_string)
+   </synopsis>
+</refsynopsisdiv>
+
+<refsection>
+   <title>Parameters</title>
+   <variablelist>
+   <varlistentry><term>log2c :</term>
+      <listitem><para> [begin,end,step]</para></listitem></varlistentry>
+   <varlistentry><term>s_seq :</term>
+      <listitem><para> linear kernels (0 - 7), e.g. [0 1 4]</para></listitem></varlistentry>
+   <varlistentry><term>v :</term>
+      <listitem><para> fold</para></listitem></varlistentry>
+   <varlistentry><term>option_string:</term>
+      <listitem><para> additional parameters for svmtrain</para></listitem></varlistentry>
+   </variablelist>
+</refsection>
+
+<refsection>
+   <title>Description</title>
+   <para>
+svmgrid is a parameter selection tool for linear classification. It uses cross validation (CV)
+technique to estimate the accuracy of each parameter combination in
+the specified range and helps you to decide the best parameters for
+your problem.
+</para>
+</refsection>
+
+<refsection>
+   <title>Examples</title>
+   <programlisting role="example"><![CDATA[
+[label,instance]=libsvmread("demos/heart_scale");
+best_rate = svmgridlinear(label,instance);
+   ]]></programlisting>
+</refsection>
+</refentry>

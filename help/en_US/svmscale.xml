@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ *
+ * This help file was generated from svmscale.sci using help_from_sci().
+ *
+ -->
+
+<refentry version="5.0-subset Scilab" xml:id="svmscale" xml:lang="en"
+          xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:svg="http://www.w3.org/2000/svg"
+          xmlns:ns3="http://www.w3.org/1999/xhtml"
+          xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:db="http://docbook.org/ns/docbook">
+
+
+  <refnamediv>
+    <refname>svmscale</refname><refpurpose>scale the input data for correct learning</refpurpose>
+  </refnamediv>
+
+
+
+<refsynopsisdiv>
+   <title>Calling Sequence</title>
+   <synopsis>
+   [scaled_instance,scaled_parameters] = svmscale(instance);
+   [scaled_instance,scaled_parameters] = svmscale(instance,[lower,upper]);
+   
+   [scaled_instance] = svmscale(instance,scaled_parameters);
+   
+   [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters] = svmscale(instance,[lower,upper],label,[label_lower, label_upper]);
+   </synopsis>
+</refsynopsisdiv>
+
+<refsection>
+   <title>Description</title>
+   <para>
+Scale your data. For example, scale each attribute to [0,1] or [-1,+1].
+</para>
+</refsection>
+
+<refsection>
+   <title>Examples</title>
+   <programlisting role="example"><![CDATA[
+[label,instance]=libsvmread("demos/heart_scale");
+[scaled_instance,scaled_parameters] = svmscale(instance,[-1,1]);
+cc = svmtrain(label,scaled_instance);
+[predicted_label]=svmtrain(label,svmscale(instance,scaled_parameters));
+   ]]></programlisting>
+</refsection>
+</refentry>

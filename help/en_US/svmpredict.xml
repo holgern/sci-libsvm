@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ *
+ * This help file was generated from svmpredict.sci using help_from_sci().
+ *
+ -->
+
+<refentry version="5.0-subset Scilab" xml:id="svmpredict" xml:lang="en"
+          xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:svg="http://www.w3.org/2000/svg"
+          xmlns:ns3="http://www.w3.org/1999/xhtml"
+          xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:db="http://docbook.org/ns/docbook">
+
+
+  <refnamediv>
+    <refname>svmpredict</refname><refpurpose>Does prediction for a calculated svm model</refpurpose>
+  </refnamediv>
+
+
+
+<refsynopsisdiv>
+   <title>Calling Sequence</title>
+   <synopsis>
+   [predicted_label, accuracy, decision_values] = svmpredict(testing_label_vector, testing_instance_matrix, model)
+   [predicted_label, accuracy, decision_values] = svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')
+   </synopsis>
+</refsynopsisdiv>
+
+<refsection>
+   <title>Parameters</title>
+   <variablelist>
+   <varlistentry><term>model:</term>
+      <listitem><para> SVM model structure from svmtrain.</para></listitem></varlistentry>
+   <varlistentry><term>libsvm_options:</term>
+      <listitem><para>-b probability_estimates: whether to predict probability estimates, 0 or 1 (default 0); one-class SVM not supported yet</para></listitem></varlistentry>
+   <varlistentry><term>predicted_label:</term>
+      <listitem><para> SVM prediction output vector</para></listitem></varlistentry>
+   <varlistentry><term>accuracy:</term>
+      <listitem><para> a vector with accuracy, mean squared error, squared correlation coefficient.</para></listitem></varlistentry>
+   <varlistentry><term>prob_estimates:</term>
+      <listitem><para> If selected, probability estimate vector</para></listitem></varlistentry>
+   <varlistentry><term>predicted_label:</term>
+      <listitem><para> vector of predicted labels</para></listitem></varlistentry>
+   <varlistentry><term>accuracy:</term>
+      <listitem><para> a vector including accuracy (for classification), mean squared error, and squared correlation coefficient (for regression).</para></listitem></varlistentry>
+   <varlistentry><term>decision_values:</term>
+      <listitem><para>  a matrix containing decision values or probability estimates (if '-b 1' is specified).</para></listitem></varlistentry>
+   </variablelist>
+</refsection>
+
+<refsection>
+   <title>Description</title>
+   <para>
+   </para>
+   <para>
+The third output is a matrix containing decision values or probability estimates (if '-b 1' is specified). If k is the number of classes
+in training data, for decision values, each row includes results of predicting k(k-1)/2 binary-class SVMs.
+   </para>
+   <para>
+For classification, k = 1 is a special case. Decision value +1 is returned for each testing instance,
+instead of an empty vector. For probabilities, each row contains k values
+indicating the probability that the testing instance is in each class.
+Note that the order of classes here is the same as 'Label' field
+in the model structure.
+   </para>
+   <para>
+</para>
+</refsection>
+
+<refsection>
+   <title>See also</title>
+   <simplelist type="inline">
+   <member><link linkend="svmtrain">svmtrain</link></member>
+   </simplelist>
+</refsection>
+</refentry>

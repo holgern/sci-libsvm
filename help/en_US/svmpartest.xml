@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ *
+ * This help file was generated from svmpartest.sci using help_from_sci().
+ *
+ -->
+
+<refentry version="5.0-subset Scilab" xml:id="svmpartest" xml:lang="en"
+          xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:svg="http://www.w3.org/2000/svg"
+          xmlns:ns3="http://www.w3.org/1999/xhtml"
+          xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:db="http://docbook.org/ns/docbook">
+
+
+  <refnamediv>
+    <refname>svmpartest</refname><refpurpose>This function calculate the performance, based on Bayes theorem, of a</refpurpose>
+  </refnamediv>
+
+
+
+<refsynopsisdiv>
+   <title>Calling Sequence</title>
+   <synopsis>
+   svmpartest(X)
+   </synopsis>
+</refsynopsisdiv>
+
+<refsection>
+   <title>Parameters</title>
+   <variablelist>
+   <varlistentry><term>Outputs:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Prevalence of disease:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Test Sensibility with 95% confidence interval:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Test Specificity with 95% confidence interval:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- False positive and negative proportions:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Youden's Index:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Test Accuracy:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Mis-classification Rate:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Positive predictivity with 95% confidence interval:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Positive Likelihood Ratio:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Negative predictivity with 95% confidence interval:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Negative Likelihood Ratio:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Error odds ratio:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Diagnostic odds ratio:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Discriminant Power:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Test bias:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>- Number needed to Diagnose (NDD):</term>
+      <listitem><para> </para></listitem></varlistentry>
+   </variablelist>
+</refsection>
+
+<refsection>
+   <title>Examples</title>
+   <programlisting role="example"><![CDATA[
+
+X=[80 3; 5 20];
+
+svmpartest(X)
+
+Answer is:
+
+Prevalence: 78.7%
+
+Sensitivity (probability that test is positive on unhealthy subject): 94.1%
+95% confidence interval: 89.1% - 99.1%
+False negative proportion: 5.9%
+
+Specificity (probability that test is negative on healthy subject): 87.0%
+95% confidence interval: 73.2% - 100.0%
+False positive proportion: 13.0%
+
+Youden's Index (a perfect test would have a Youden index of +1): 0.8107
+
+Accuracy or Potency: 92.6%
+Mis-classification Rate: 7.4%
+
+Predictivity of positive test (probability that a subject is unhealthy when test is positive): 96.4%
+95% confidence interval: 92.4% - 100.0%
+Positive Likelihood Ratio: 7.2
+Moderate increase in possibility of disease presence
+
+Predictivity of negative test (probability that a subject is healthy when test is negative): 80.0%
+95% confidence interval: 64.3% - 95.7%
+Negative Likelihood Ratio: 0.1
+Large (often conclusive) increase in possibility of disease absence
+
+Error odds ratio: 2.4000
+Diagnostic odds ratio: 106.6667
+Discriminant Power: 2.6
+A test with a discriminant value of 1 is not effective in discriminating between affected and unaffected individuals.
+A test with a discriminant value of 3 is effective in discriminating between affected and unaffected individuals.
+Test bias: 0.9765
+Test underestimates the phenomenon
+Number needed to Diagnose (NDD): 1.2
+
+Created by Giuseppe Cardillo
+giuseppe.cardillo-edta@poste.it
+
+To cite this file, this would be an appropriate format:
+Cardillo G. (2006). Clinical test performance: the performance of a
+clinical test based on the Bayes theorem.
+http://www.mathworks.com/matlabcentral/fileexchange/12705
+   ]]></programlisting>
+</refsection>
+</refentry>

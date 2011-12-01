@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ *
+ * This help file was generated from predict.sci using help_from_sci().
+ *
+ -->
+
+<refentry version="5.0-subset Scilab" xml:id="predict" xml:lang="en"
+          xmlns="http://docbook.org/ns/docbook"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          xmlns:svg="http://www.w3.org/2000/svg"
+          xmlns:ns3="http://www.w3.org/1999/xhtml"
+          xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:db="http://docbook.org/ns/docbook">
+
+
+  <refnamediv>
+    <refname>predict</refname><refpurpose>Does prediction for a calculated svm model</refpurpose>
+  </refnamediv>
+
+
+
+<refsynopsisdiv>
+   <title>Calling Sequence</title>
+   <synopsis>
+   [predicted_label, accuracy, decision_values/prob_estimates] = predict(testing_label_vector, testing_instance_matrix, model)
+   [predicted_label, accuracy, decision_values/prob_estimates] = predict(testing_label_vector, testing_instance_matrix, model,'liblinear_options')
+   [predicted_label, accuracy, decision_values/prob_estimates] = predict(testing_label_vector, testing_instance_matrix, model, 'liblinear_options','col')
+   </synopsis>
+</refsynopsisdiv>
+
+<refsection>
+   <title>Parameters</title>
+   <variablelist>
+   <varlistentry><term>liblinear_options:</term>
+      <listitem><para> -b probability_estimates: whether to predict probability estimates, 0 or 1 (default 0)</para></listitem></varlistentry>
+   <varlistentry><term>col:</term>
+      <listitem><para> if 'col' is setted testing_instance_matrix is parsed in column format, otherwise is in row format</para></listitem></varlistentry>
+   <varlistentry><term>predicted_label:</term>
+      <listitem><para>a vector of predicted labels</para></listitem></varlistentry>
+   <varlistentry><term>accuracy:</term>
+      <listitem><para> a scalar meaning accuracy</para></listitem></varlistentry>
+   <varlistentry><term>decision_values/prob_estimates:</term>
+      <listitem><para> a matrix containing decision values or probability estimates (if '-b 1' is specified).</para></listitem></varlistentry>
+   </variablelist>
+</refsection>
+
+<refsection>
+   <title>Description</title>
+   <para>
+   </para>
+   <para>
+The third output is a matrix containing decision values or probability
+estimates (if '-b 1' is specified). If k is the number of classes
+and k' is the number of classifiers (k'=1 if k=2, otherwise k'=k), for decision values,
+each row includes results of k' binary linear classifiers. For probabilities,
+each row contains k values indicating the probability that the testing instance is in
+each class. Note that the order of classes here is the same as 'Label'
+field in the model structure.
+   </para>
+   <para>
+</para>
+</refsection>
+
+<refsection>
+   <title>See also</title>
+   <simplelist type="inline">
+   <member><link linkend="train">train</link></member>
+   </simplelist>
+</refsection>
+</refentry>

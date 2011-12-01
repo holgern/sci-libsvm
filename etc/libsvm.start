@@ -1,0 +1,61 @@
+mprintf("libsvm  Toolbox - (1.2)\n");
+
+if isdef("libsvmlib") then
+	warning("libsvm Toolbox library is already loaded");
+	return;
+end
+
+if isdef("nanlib") then
+        tmp=%f;
+	try
+          tmp=type(train)==130;
+	catch
+ 
+        end;
+		  if tmp then
+		         warning('libsvm Toolbox is not compatible to this old Nan Toolbox version! Please update your Nan Toolbox.\n');
+			return;
+		 end;
+	clear tmp;
+end
+
+etc_tlbx  = get_absolute_file_path("libsvm.start");
+etc_tlbx  = getshortpathname(etc_tlbx);
+root_tlbx = strncpy( etc_tlbx, length(etc_tlbx)-length("\etc") );
+
+//Load  functions library
+// =============================================================================
+mprintf("\tLoad macros\n");
+pathmacros = pathconvert( root_tlbx ) + "macros" + filesep();
+libsvmlib = lib(pathmacros);
+clear pathmacros;
+
+// load gateways
+// =============================================================================
+mprintf("\tLoad gateways\n");
+ilib_verbose(0);
+exec(pathconvert(root_tlbx+"/sci_gateway/loader_gateway.sce",%f));
+
+// Load and add help chapter
+// =============================================================================
+if or(getscilabmode() == ["NW";"STD"]) then
+	mprintf("\tLoad help\n");
+	path_addchapter = pathconvert(root_tlbx+"/jar");
+	if ( isdir(path_addchapter) <> [] ) then
+		add_help_chapter("libsvm", path_addchapter, %F);
+		clear add_help_chapter;
+	end
+	clear path_addchapter;
+end
+
+// Load demos
+// =============================================================================
+if or(getscilabmode() == ["NW";"STD"]) then
+	mprintf("\tLoad demos\n");
+	pathdemos = pathconvert(root_tlbx+"/demos/libsvm.dem.gateway.sce",%F,%T);
+	add_demo("libsvm",pathdemos);
+	clear pathdemos add_demo;
+end
+
+clear root_tlbx;
+clear etc_tlbx;

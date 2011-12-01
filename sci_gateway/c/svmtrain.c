@@ -1,0 +1,674 @@
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include "svm.h"
+
+#include <api_scilab.h>
+#include <stack-c.h>
+#include <sciprint.h>
+#include <MALLOC.h>
+#include <Scierror.h>
+
+#include "svm_model_scilab.h"
+
+#define CMD_LEN 2048
+#define Malloc(type,n) (type *)malloc((n)*sizeof(type))
+
+//#define DEBUG
+
+#define NUM_OF_RETURN_FIELD 10
+#define Malloc(type,n) (type *)malloc((n)*sizeof(type))
+
+
+
+void svm_print_null(const char *s) {}
+
+void exit_with_help_train()
+{
+        sciprint(
+        "Usage: model = svmtrain(training_label_vector, training_instance_matrix, 'libsvm_options');\n"
+	"libsvm_options:\n"
+	"-s svm_type : set type of SVM (default 0)\n"
+	"	0 -- C-SVC\n"
+	"	1 -- nu-SVC\n"
+	"	2 -- one-class SVM\n"
+	"	3 -- epsilon-SVR\n"
+	"	4 -- nu-SVR\n"
+	"-t kernel_type : set type of kernel function (default 2)\n"
+	"	0 -- linear: u'*v\n"
+	"	1 -- polynomial: (gamma*u'*v + coef0)^degree\n"
+	"	2 -- radial basis function: exp(-gamma*|u-v|^2)\n"
+	"	3 -- sigmoid: tanh(gamma*u'*v + coef0)\n"
+	"	4 -- precomputed kernel (kernel values in training_instance_matrix)\n"
+	"-d degree : set degree in kernel function (default 3)\n"
+	"-g gamma : set gamma in kernel function (default 1/num_features)\n"
+	"-r coef0 : set coef0 in kernel function (default 0)\n"
+	"-c cost : set the parameter C of C-SVC, epsilon-SVR, and nu-SVR (default 1)\n"
+	"-n nu : set the parameter nu of nu-SVC, one-class SVM, and nu-SVR (default 0.5)\n"
+	"-p epsilon : set the epsilon in loss function of epsilon-SVR (default 0.1)\n"
+	"-m cachesize : set cache memory size in MB (default 100)\n"
+	"-e epsilon : set tolerance of termination criterion (default 0.001)\n"
+	"-h shrinking : whether to use the shrinking heuristics, 0 or 1 (default 1)\n"
+	"-b probability_estimates : whether to train a SVC or SVR model for probability estimates, 0 or 1 (default 0)\n"
+	"-wi weight : set the parameter C of class i to weight*C, for C-SVC (default 1)\n"
+	"-v n : n-fold cross validation mode\n"
+	"-q : quiet mode (no outputs)\n"
+	);
+}
+
+// svm arguments
+struct svm_parameter param;		// set by parse_command_line
+struct svm_problem prob;                // set by read_problem
+struct svm_model *model;
+struct svm_node *x_space;
+int is_cross_validation;
+int nr_fold;
+int max_index;
+
+double svm_do_cross_validation()
+{
+        int i;
+        int total_correct = 0;
+	double total_error = 0;
+	double sumv = 0, sumy = 0, sumvv = 0, sumyy = 0, sumvy = 0;
+	double *target = Malloc(double,prob.l);
+	double retval = 0.0;
+
+	svm_cross_validation(&prob,&param,nr_fold,target);
+	if(param.svm_type == EPSILON_SVR ||
+	   param.svm_type == NU_SVR)
+	{
+		for(i=0;i<prob.l;i++)
+		{
+			double y = prob.y[i];
+			double v = target[i];
+			total_error += (v-y)*(v-y);
+			sumv += v;
+			sumy += y;
+			sumvv += v*v;
+			sumyy += y*y;
+			sumvy += v*y;
+		}
+	#ifdef DEBUG
+		sciprint("Cross Validation Mean squared error = %g\n",total_error/prob.l);
+		sciprint("Cross Validation Squared correlation coefficient = %g\n",
+			((prob.l*sumvy-sumv*sumy)*(prob.l*sumvy-sumv*sumy))/
+			((prob.l*sumvv-sumv*sumv)*(prob.l*sumyy-sumy*sumy))
+			);
+	#endif
+		retval = total_error/prob.l;
+	}
+	else
+	{
+		for(i=0;i<prob.l;i++)
+			if(target[i] == prob.y[i])
+				++total_correct;
+	#ifdef DEBUG
+		sciprint("Cross Validation Accuracy = %g%%\n",100.0*total_correct/prob.l);
+        #endif
+		retval = 100.0*total_correct/prob.l;
+	}
+	free(target);
+	return retval;
+}
+
+// nrhs should be 3
+int svm_parse_command_line(int nrhs, const char *cmd, char *model_file_name)
+{
+        int i, argc = 1;
+        //char cmd[CMD_LEN];
+	//char *cmd = NULL;
+        char *argv[CMD_LEN/2];
+        void (*print_func)(const char *) = NULL;        // default printing to stdout
+         SciErr _SciErr;
+	   int m1 = 0, n1 = 0;
+        int* piLenVarOne = NULL;
+       //char **cmd  = NULL;
+	int type;
+  
+        // default values
+        param.svm_type = C_SVC;
+	param.kernel_type = RBF;
+	param.degree = 3;
+	param.gamma = 0;	// 1/num_features
+	param.coef0 = 0;
+	param.nu = 0.5;
+	param.cache_size = 100;
+	param.C = 1;
+	param.eps = 1e-3;
+	param.p = 0.1;
+	param.shrinking = 1;
+	param.probability = 0;
+        param.nr_weight = 0;
+        param.weight_label = NULL;
+        param.weight = NULL;
+        is_cross_validation = 0;
+
+        if(nrhs <= 1)
+                return 1;
+
+	if(nrhs > 2)
+	{
+	  /*
+	        _SciErr = getVarType(pvApiCtx, option_string, &type);
+		if(_SciErr.iErr)
+		{
+			printError(&_SciErr, 0);
+			return 0;
+		}
+		if (type==sci_strings)
+		{
+		  
+		
+		  
+		// put options in argv[]
+		//mxGetString(prhs[2], cmd, mxGetN(prhs[2]) + 1);
+		// getAllocatedSingleString(pvApiCtx, option_string, &cmd);
+		_SciErr = getMatrixOfString(pvApiCtx, option_string,&m1, &n1, NULL, NULL);
+		
+		if(_SciErr.iErr)
+		{
+		  printError(&_SciErr, 0);
+		  return 1;
+		} 
+		if ((m1*n1)>0) {
+		 piLenVarOne = (int*)malloc(sizeof(int) * m1 * n1);
+                _SciErr = getMatrixOfString(pvApiCtx, option_string, &m1, &n1, piLenVarOne, NULL);
+		if(_SciErr.iErr)
+		{
+			printError(&_SciErr, 0);
+			return 1;
+		}
+
+		cmd = (char**)malloc(sizeof(char*) * m1 * n1);
+		for(i = 0 ; i < n1 * m1 ; i++)
+		{
+			cmd[i] = (char*)malloc(sizeof(char) * (piLenVarOne[i] + 1));//+ 1 for null termination
+		}
+
+		_SciErr = getMatrixOfString(pvApiCtx, option_string, &m1, &n1, piLenVarOne, cmd);
+		if(_SciErr.iErr)
+		{
+			printError(&_SciErr, 0);
+			return 1;
+		}
+                
+		free(piLenVarOne);
+		*/
+		if((argv[argc] = strtok(cmd, " ")) != NULL)
+			while((argv[++argc] = strtok(NULL, " ")) != NULL)
+				;
+	
+		  
+		//}
+		//}
+	}
+
+	// parse options
+	for(i=1;i<argc;i++)
+	{
+                if(argv[i][0] != '-') break;
+                ++i;
+                if(i>=argc && argv[i-1][1] != 'q')      // since option -q has no parameter
+                        return 1;
+                switch(argv[i-1][1])
+                {
+			case 's':
+				param.svm_type = atoi(argv[i]);
+				break;
+			case 't':
+				param.kernel_type = atoi(argv[i]);
+				break;
+			case 'd':
+				param.degree = atoi(argv[i]);
+				break;
+			case 'g':
+				param.gamma = atof(argv[i]);
+				break;
+			case 'r':
+				param.coef0 = atof(argv[i]);
+				break;
+			case 'n':
+				param.nu = atof(argv[i]);
+				break;
+			case 'm':
+				param.cache_size = atof(argv[i]);
+				break;
+			case 'c':
+				param.C = atof(argv[i]);
+				break;
+			case 'e':
+				param.eps = atof(argv[i]);
+				break;
+			case 'p':
+				param.p = atof(argv[i]);
+				break;
+			case 'h':
+				param.shrinking = atoi(argv[i]);
+				break;
+			case 'b':
+                                param.probability = atoi(argv[i]);
+                                break;
+                        case 'q':
+                                print_func = &svm_print_null;
+                                i--;
+                                break;
+                        case 'v':
+                                is_cross_validation = 1;
+                                nr_fold = atoi(argv[i]);
+                                if(nr_fold < 2)
+                                {
+					sciprint("n-fold cross validation: n must >= 2\n");
+					return 1;
+				}
+				break;
+			case 'w':
+				++param.nr_weight;
+				param.weight_label = (int *)realloc(param.weight_label,sizeof(int)*param.nr_weight);
+				param.weight = (double *)realloc(param.weight,sizeof(double)*param.nr_weight);
+				param.weight_label[param.nr_weight-1] = atoi(&argv[i-1][2]);
+				param.weight[param.nr_weight-1] = atof(argv[i]);
+				break;
+			default:
+				sciprint("Unknown option -%c\n", argv[i-1][1]);
+                                return 1;
+                }
+        }
+
+        svm_set_print_string_function(print_func);
+
+        return 0;
+}
+
+// read in a problem (in svmlight format)
+int svm_read_problem_dense(int *label_vec, int *instance_mat)
+{
+        int i, j, k,  r_samples, c_samples, r_labels, c_labels, index;
+        int elements, sc, label_vector_row_num;
+	double *samples = NULL, *labels = NULL;
+	SciErr _SciErr;
+
+	prob.x = NULL;
+	prob.y = NULL;
+	x_space = NULL;
+	
+        _SciErr = getMatrixOfDouble(pvApiCtx, instance_mat, &r_samples, &c_samples, &samples);
+	if(_SciErr.iErr)
+		{
+			printError(&_SciErr, 0);
+			return -1;
+		}
+        _SciErr = getMatrixOfDouble(pvApiCtx, label_vec, &r_labels, &c_labels, &labels);
+	if(_SciErr.iErr)
+		{
+			printError(&_SciErr, 0);
+			return -1;
+		}
+
+	//labels = mxGetPr(label_vec);
+	//samples = mxGetPr(instance_mat);
+	//sc = (int)mxGetN(instance_mat);
+	sc = c_samples;
+
+	elements = 0;
+	// the number of instance
+	prob.l = r_samples;//(int)mxGetM(instance_mat);
+	label_vector_row_num = r_labels;//(int)mxGetM(label_vec);
+
+	if(label_vector_row_num!=prob.l)
+	{
+		sciprint("Length of label vector does not match # of instances.\n");
+		return -1;
+	}
+
+	if(param.kernel_type == PRECOMPUTED)
+		elements = prob.l * (sc + 1);
+	else
+	{
+		for(i = 0; i < prob.l; i++)
+		{
+			for(k = 0; k < sc; k++)
+				if(samples[k * prob.l + i] != 0)
+					elements++;
+			// count the '-1' element
+			elements++;
+		}
+	}
+
+	prob.y = Malloc(double,prob.l);
+	prob.x = Malloc(struct svm_node *,prob.l);
+	x_space = Malloc(struct svm_node, elements);
+
+	max_index = sc;
+	j = 0;
+	for(i = 0; i < prob.l; i++)
+	{
+		prob.x[i] = &x_space[j];
+		prob.y[i] = labels[i];
+
+		for(k = 0; k < sc; k++)
+		{
+			if(param.kernel_type == PRECOMPUTED || samples[k * prob.l + i] != 0)
+			{
+				x_space[j].index = k + 1;
+				x_space[j].value = samples[k * prob.l + i];
+				j++;
+			}
+		}
+		x_space[j++].index = -1;
+	}
+
+	if(param.gamma == 0 && max_index > 0)
+		param.gamma = 1.0/max_index;
+
+	if(param.kernel_type == PRECOMPUTED)
+		for(i=0;i<prob.l;i++)
+		{
+			if((int)prob.x[i][0].value <= 0 || (int)prob.x[i][0].value > max_index)
+			{
+				sciprint("Wrong input format: sample_serial_number out of range\n");
+				return -1;
+			}
+		}
+
+        return 0;
+}
+
+int svm_read_problem_sparse(int *label_vec,  int *instance_mat)
+{
+        int i, j,jj, k, low, high,r_labels, c_labels,r_samples, c_samples;
+        int *ir, *jc;
+        int elements, num_samples, label_vector_row_num;
+        double *samples, *labels;
+        int *instance_mat_col; // transposed instance sparse matrix
+        SciErr _SciErr;
+
+	prob.x = NULL;
+	prob.y = NULL;
+	x_space = NULL;
+
+	// transpose instance matrix
+//         {
+//                 mxArray *prhs[1], *plhs[1];
+//                 prhs[0] = mxDuplicateArray(instance_mat);
+//                 if(mexCallSCILAB(1, plhs, 1, prhs, "transpose"))
+//                 {
+//                         sciprint("Error: cannot transpose training instance matrix\n");
+//                         return -1;
+// 		}
+// 		instance_mat_col = plhs[0];
+// 		mxDestroyArray(prhs[0]);
+// 	}
+
+	 _SciErr = getMatrixOfDouble(pvApiCtx, label_vec, &r_labels, &c_labels, &labels);
+	 if(_SciErr.iErr)
+		{
+			printError(&_SciErr, 0);
+			return -1;
+		}
+	 _SciErr = getSparseMatrix(pvApiCtx,instance_mat,&r_samples, &c_samples, &num_samples, &ir, &jc, &samples);
+	 if(_SciErr.iErr)
+		{
+			printError(&_SciErr, 0);
+			return -1;
+		}
+	// each column is one instance
+	//labels = mxGetPr(label_vec);
+	//samples = mxGetPr(instance_mat_col);
+	//ir = mxGetIr(instance_mat_col);
+	//jc = mxGetJc(instance_mat_col);
+
+	//num_samples = (int)mxGetNzmax(instance_mat_col);
+
+	// the number of instance
+	//prob.l = (int)mxGetN(instance_mat_col);
+	prob.l = r_samples;
+	label_vector_row_num = r_labels;//(int)mxGetM(label_vec);
+
+	if(label_vector_row_num!=prob.l)
+	{
+		sciprint("Length of label vector does not match # of instances.\n");
+		return -1;
+	}
+
+	elements = num_samples + prob.l;
+	//max_index = (int)mxGetM(instance_mat_col);
+	max_index = c_samples;
+#ifdef DEBUG
+        printf("prob.l %d, label_vector_row_num %d, elements %d, max_index %d\n",prob.l,label_vector_row_num,elements,max_index);
+#endif
+	prob.y = Malloc(double,prob.l);
+	prob.x = Malloc(struct svm_node *,prob.l);
+	x_space = Malloc(struct svm_node, elements);
+
+	j = 0;jj=0;
+	for(i=0;i<prob.l;i++)
+	{
+		prob.x[i] = &x_space[j];
+		prob.y[i] = labels[i];
+		//low = (int)jc[i];
+		low = 0;
+		high = (int)ir[i];
+		for(k=low;k<high;k++)
+		{
+			x_space[j].index = (int)jc[jj];
+			x_space[j].value = samples[jj];
+			j++;jj++;
+	 	}
+		x_space[j++].index = -1;
+	}
+
+	if(param.gamma == 0 && max_index > 0)
+		param.gamma = 1.0/max_index;
+
+        return 0;
+}
+
+static void svm_fake_answer()
+{
+	  LhsVar(1) = 0;
+}
+
+// Interface function of scilab
+// now assume prhs[0]: label prhs[1]: features
+
+int sci_svmtrain(char * fname)
+
+{
+         SciErr _SciErr;
+        const char *error_msg;
+	int * p_label_vector = NULL;
+        int * p_instance_matrix = NULL;
+	int * p_option_string = NULL;
+	int r_samples, c_samples;
+	double *samples = NULL;
+        int type,type3;
+	char * option_string = NULL;
+	// fix random seed to have same results for each run
+	// (for cross validation and probability estimation)
+        srand(1);
+
+        // Transform the input Matrix to libsvm format
+        if(Rhs > 1 && Rhs < 4)
+        {
+                int err;
+		
+		_SciErr = getVarAddressFromPosition(pvApiCtx, 1, &p_label_vector);
+		if(_SciErr.iErr)
+		{
+			printError(&_SciErr, 0);
+			return 0;
+		}
+                _SciErr = getVarType(pvApiCtx, p_label_vector, &type);
+		if(_SciErr.iErr)
+		{
+			printError(&_SciErr, 0);
+			return 0;
+		}
+		if (type!=sci_matrix && type!=sci_sparse)
+		{
+		  sciprint("Error: label vector must be double\n");	
+		   svm_fake_answer();
+		  return 0;
+		}
+		_SciErr = getVarAddressFromPosition(pvApiCtx, 2, &p_instance_matrix);
+		if(_SciErr.iErr)
+		{
+			printError(&_SciErr, 0);
+			return 0;
+		}
+                _SciErr = getVarType(pvApiCtx, p_instance_matrix, &type);
+		if(_SciErr.iErr)
+		{
+			printError(&_SciErr, 0);
+			return 0;
+		}
+		 if (type!=sci_matrix && type!=sci_sparse)
+		{
+		  sciprint("Error: instance matrix must be double\n");			
+		   svm_fake_answer();
+		  return 0;
+		}
+		
+		if (Rhs==3) {
+		    _SciErr = getVarAddressFromPosition(pvApiCtx, 3, &p_option_string);
+		    if(_SciErr.iErr)
+		    {
+			    printError(&_SciErr, 0);
+			    return 0;
+		    }
+		    _SciErr = getVarType(pvApiCtx, p_option_string, &type3);
+		    if(_SciErr.iErr)
+		    {
+			    printError(&_SciErr, 0);
+			    return 0;
+		    }
+		 if (type3==sci_strings)
+		  {
+		    getAllocatedSingleString(pvApiCtx, p_option_string, &option_string);
+		  } 
+		  
+		    
+		}    
+		    
+		    if(svm_parse_command_line(Rhs, option_string, NULL))
+		    {
+			    exit_with_help_train();
+			    svm_destroy_param(&param);
+			    svm_fake_answer();
+			    return 0;
+		    }
+		  if (option_string != NULL)
+		    freeAllocatedSingleString(option_string);
+		
+		
+		if(type==sci_sparse)
+		{
+		  
+			if(param.kernel_type == PRECOMPUTED)
+			{
+			   sciprint("Error: Precomputed kernel requires dense matrix\n");	
+			    svm_fake_answer();
+		            return 0;
+			  /*
+				// precomputed kernel requires dense matrix, so we make one
+                                mxArray *rhs[1], *lhs[1];
+
+                                rhs[0] = mxDuplicateArray(prhs[1]);
+                                if(mexCallSCILAB(1, lhs, 1, rhs, "full"))
+                                {
+                                        sciprint("Error: cannot generate a full training instance matrix\n");
+                                        svm_destroy_param(&param);
+                                        svm_fake_answer();
+                                        return;
+                                }
+                                err = svm_read_problem_dense(prhs[0], lhs[0]);
+                                mxDestroyArray(lhs[0]);
+                                mxDestroyArray(rhs[0]);*/
+                        }
+                        else
+                                err = svm_read_problem_sparse(p_label_vector, p_instance_matrix);
+		
+                }
+                else
+                        err = svm_read_problem_dense(p_label_vector, p_instance_matrix);
+		#ifdef DEBUG
+                    printf("DEBUG: read problem done\n");
+                 #endif 
+
+                // svmtrain's original code
+                error_msg = svm_check_parameter(&prob, &param);
+		#ifdef DEBUG
+                    printf("DEBUG: check parameter done\n");
+                 #endif 
+		if(err || error_msg)
+		{
+			if (error_msg != NULL)
+				sciprint("Error: %s\n", error_msg);
+			svm_destroy_param(&param);
+                        free(prob.y);
+                        free(prob.x);
+                        free(x_space);
+                        svm_fake_answer();
+                        return 0;
+                }
+
+                if(is_cross_validation)
+                {
+                        double *ptr;
+			_SciErr = allocMatrixOfDouble(pvApiCtx, Rhs + 1, 1, 1, &ptr);
+			if(_SciErr.iErr)
+		        {
+			    printError(&_SciErr, 0);
+			    return 0;
+		         }
+                        //plhs[0] = mxCreateDoubleMatrix(1, 1, mxREAL);
+                        //ptr = mxGetPr(plhs[0]);
+                        ptr[0] = svm_do_cross_validation();
+			LhsVar(1) = Rhs + 1;
+			  /* This function put on scilab stack, the lhs variable
+			which are at the position lhs(i) on calling stack */
+			/* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR 
+			was defined and equal to %t */
+			/* without this, you do not need to add PutLhsVar here */
+			PutLhsVar();
+                }
+                else
+                {
+		   //_SciErr = getMatrixOfDouble(pvApiCtx, p_instance_matrix, &r_samples, &c_samples, &samples);
+
+                        int nr_feat = max_index;//mxGetN(prhs[1]);
+                        #ifdef DEBUG
+                           printf("c_samples %d\n",nr_feat);
+                        #endif
+                        const char *error_msg;
+                        model = svm_train(&prob, &param);
+			#ifdef DEBUG
+                              printf("DEBUG: svm train done\n");
+                        #endif 
+                        model_to_scilab_structure(nr_feat, model);
+			
+			
+                        //if(error_msg)
+                        //        sciprint("Error: can't convert libsvm model to matrix structure: %s\n", error_msg);
+                        svm_free_and_destroy_model(&model);
+                }
+                svm_destroy_param(&param);
+                free(prob.y);
+		free(prob.x);
+		free(x_space);
+        }
+        else
+        {
+                exit_with_help_train();
+                svm_fake_answer();
+                return 0;
+        }
+}
+
+
+
