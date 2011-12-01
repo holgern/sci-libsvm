@@ -109,4 +109,13 @@ If the '-v' option is specified, cross validation is conducted and the returned 
    <member><link linkend="predict">predict</link></member>
    </simplelist>
 </refsection>
+
+<refsection>
+   <title>Authors</title>
+   <simplelist type="vert">
+   <member>Chih-Chung Chang</member>
+   <member>Chih-Jen Lin</member>
+   <member>Holger Nahrstaedt</member>
+   </simplelist>
+</refsection>
 </refentry>

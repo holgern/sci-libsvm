@@ -19,6 +19,9 @@ function [best_rate,best_c,best_g,rate_matrix] = svmgrid(label,instance,log2c,lo
 // Examples
 //    [label,instance]=libsvmread("demos/heart_scale");
 //    best_rate = svmgrid(label,instance);
+// Authors
+// Holger Nahrstaedt
+// 
 
 
         [nargout,nargin]=argn(0);

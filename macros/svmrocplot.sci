@@ -17,7 +17,8 @@ function auc = svmrocplot(y,x,params,uselinear)
 //      [label,instance]=libsvmread("demos/heart_scale");
 //   	model = svmtrain(label,instance);
 // 	svmrocplot(label,instance,model);
-// 	
+// Authors
+//  Holger Nahrstaedt
 
         [nargout,nargin]=argn(0);
 	//rand('state',0); // reset random seed

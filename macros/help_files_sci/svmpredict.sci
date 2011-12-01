@@ -25,5 +25,9 @@ function [predicted_label, accuracy, decision_values/prob_estimates] = svmpredic
 //
 // See also
 // svmtrain
+// Authors
+// Chih-Chung Chang
+// Chih-Jen Lin
+// Holger Nahrstaedt
 // 
 

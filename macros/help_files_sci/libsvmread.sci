@@ -11,4 +11,7 @@ function [label_vector, instance_matrix] = libsvmread('data.txt');
 // [heart_scale_label, heart_scale_inst] = libsvmread('heart_scale');
 // See also
 // libsvmwrite
-// 
+// Authors
+// Chih-Chung Chang
+// Chih-Jen Lin
+// Holger Nahrstaedt

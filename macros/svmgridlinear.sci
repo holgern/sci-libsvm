@@ -19,6 +19,9 @@ function [best_rate,best_c,best_s,rate_matrix] = svmgridlinear(label,instance,lo
 // Examples
 //    [label,instance]=libsvmread("demos/heart_scale");
 //    best_rate = svmgridlinear(label,instance);
+// Authors
+// Holger Nahrstaedt
+// 
 
         [nargout,nargin]=argn(0);
 	//rand('state',0); // reset random seed

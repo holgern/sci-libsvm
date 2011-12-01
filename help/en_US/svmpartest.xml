@@ -121,4 +121,12 @@ clinical test based on the Bayes theorem.
 http://www.mathworks.com/matlabcentral/fileexchange/12705
    ]]></programlisting>
 </refsection>
+
+<refsection>
+   <title>Authors</title>
+   <simplelist type="vert">
+   <member>Giuseppe Cardillo</member>
+   <member>Holger Nahrstaedt</member>
+   </simplelist>
+</refsection>
 </refentry>

@@ -56,7 +56,13 @@ are group I.
 cc = svmtrain(label,instance);
 [predicted_label]=svmpredict(label,instance,cc);
 cm = svmconfmat(label,  predicted_label);
-
    ]]></programlisting>
+</refsection>
+
+<refsection>
+   <title>Authors</title>
+   <simplelist type="vert">
+   <member>Holger Nahrstaedt</member>
+   </simplelist>
 </refsection>
 </refentry>

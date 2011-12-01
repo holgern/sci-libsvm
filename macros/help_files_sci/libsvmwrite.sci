@@ -7,3 +7,7 @@ function libsvmwrite('filename', label_vector, instance_matrix);
 // See also
 // libsvmread
 // 
+// Authors
+// Chih-Chung Chang
+// Chih-Jen Lin
+// Holger Nahrstaedt

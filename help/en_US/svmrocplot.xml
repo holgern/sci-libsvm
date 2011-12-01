@@ -51,7 +51,13 @@ svmrocplot(heart_scale_label, heart_scale_inst,'-v 5');
 [label,instance]=libsvmread("demos/heart_scale");
 model = svmtrain(label,instance);
 svmrocplot(label,instance,model);
-
    ]]></programlisting>
+</refsection>
+
+<refsection>
+   <title>Authors</title>
+   <simplelist type="vert">
+   <member>Holger Nahrstaedt</member>
+   </simplelist>
 </refsection>
 </refentry>

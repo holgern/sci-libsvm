@@ -60,6 +60,8 @@ function model = svmtrain(training_label_vector, training_instance_matrix, libsv
 //
 //See also
 //svmpredict
-//
-
+// Authors
+// Chih-Chung Chang
+// Chih-Jen Lin
+// Holger Nahrstaedt
 

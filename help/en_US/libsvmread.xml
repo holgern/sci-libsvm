@@ -53,4 +53,13 @@ of svmtrain or svmpredict.
    <member><link linkend="libsvmwrite">libsvmwrite</link></member>
    </simplelist>
 </refsection>
+
+<refsection>
+   <title>Authors</title>
+   <simplelist type="vert">
+   <member>Chih-Chung Chang</member>
+   <member>Chih-Jen Lin</member>
+   <member>Holger Nahrstaedt</member>
+   </simplelist>
+</refsection>
 </refentry>

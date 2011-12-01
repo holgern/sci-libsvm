@@ -22,4 +22,8 @@ function [predicted_label, accuracy, decision_values/prob_estimates] = predict(t
 //
 //See also
 //train
-//
+// Authors
+// Chih-Chung Chang
+// Chih-Jen Lin
+// Holger Nahrstaedt
+// 

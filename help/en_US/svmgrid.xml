@@ -63,4 +63,11 @@ your problem.
 best_rate = svmgrid(label,instance);
    ]]></programlisting>
 </refsection>
+
+<refsection>
+   <title>Authors</title>
+   <simplelist type="vert">
+   <member>Holger Nahrstaedt</member>
+   </simplelist>
+</refsection>
 </refentry>

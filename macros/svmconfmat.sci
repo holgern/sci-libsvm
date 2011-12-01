@@ -15,7 +15,8 @@ function [cm]= svmconfmat(g,ghat)
 //    cc = svmtrain(label,instance);
 //    [predicted_label]=svmpredict(label,instance,cc);
 //    cm = svmconfmat(label,  predicted_label);
-//    
+// Authors
+// Holger Nahrstaedt
 
 
         [nargout,nargin]=argn(0);

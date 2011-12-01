@@ -73,6 +73,9 @@ function svmpartest(x)
 // Cardillo G. (2006). Clinical test performance: the performance of a
 // clinical test based on the Bayes theorem. 
 // http://www.mathworks.com/matlabcentral/fileexchange/12705
+// Authors
+// Giuseppe Cardillo
+// Holger Nahrstaedt
 
 //Input Error handling
 [r,c] = size(x);
