@@ -45,7 +45,7 @@
 
 // #define DEBUG
 
-void libsvmwrite(const char *filename, int * label_vec, int * instance_mat)
+int libsvmwrite(const char *filename, int * label_vec, int * instance_mat)
 {
   FILE *fp = fopen(filename,"w+"); // w+ pour linux ?
   int i, k, low, high, r_samples, c_samples, r_labels, c_labels, index;
@@ -56,8 +56,8 @@ void libsvmwrite(const char *filename, int * label_vec, int * instance_mat)
 
   if (fp==NULL)
     {
-      sciprint("can't open output file %s\n",filename);			
-      return;
+      Scierror (999,"can't open output file %s\n",filename);			
+      return -1;
     }
 
   // the number of instance
@@ -75,9 +75,9 @@ void libsvmwrite(const char *filename, int * label_vec, int * instance_mat)
 #endif
       if (r_labels!=r_samples)
         {
-          sciprint("Length of label vector does not match # of instances.\n");
+         Scierror (999,"Length of label vector does not match # of instances.\n");
           fclose(fp);
-          return;
+          return -1;
         }
 
       for(i=0;i<r_labels;i++)
@@ -110,9 +110,9 @@ void libsvmwrite(const char *filename, int * label_vec, int * instance_mat)
       _SciErr = getMatrixOfDouble(pvApiCtx, label_vec, &r_labels, &c_labels, &labels);
       if (r_samples!=r_labels)
         {
-          sciprint("Length of label vector does not match # of instances.\n");
+          Scierror (999,"Length of label vector does not match # of instances.\n");
           fclose(fp);
-          return;
+          return -1;
         }
 
       index = 0;
@@ -140,7 +140,7 @@ void libsvmwrite(const char *filename, int * label_vec, int * instance_mat)
       fclose(fp);
     }
   
-  return;
+  return 0;
 }
 
 int sci_libsvmwrite(char * fname)
@@ -160,7 +160,7 @@ int sci_libsvmwrite(char * fname)
 
       if (type!=sci_matrix && type!=sci_sparse)
         {
-          sciprint("Error: label vector must be double\n");			
+         Scierror (999,"Error: label vector must be double\n");			
           return 0;
         }
       
@@ -169,7 +169,7 @@ int sci_libsvmwrite(char * fname)
 
       if (type!=sci_matrix && type!=sci_sparse)
         {
-          sciprint("Error: instance matrix must be double\n");			
+          Scierror (999,"Error: instance matrix must be double\n");			
           return 0;
         }
 
@@ -187,7 +187,7 @@ int sci_libsvmwrite(char * fname)
     }
   else
     {
-      sciprint("Usage: libsvmwrite('filename', label_vector, instance_matrix);\n");
+      Scierror (999,"Usage: libsvmwrite('filename', label_vector, instance_matrix);\n");
     }
 
   return 0;

@@ -55,7 +55,7 @@ void print_string_scilab(const char *s) {sciprint(s);}
 
 void exit_with_help()
 {
-	sciprint(
+	Scierror (999,
 	"Usage: model = train(training_label_vector, training_instance_matrix, 'liblinear_options', 'col');\n"
 	"Usage: model = train(weight_vector, training_label_vector, training_instance_matrix, 'liblinear_options', 'col');\n"
 	"liblinear_options:\n"
@@ -183,7 +183,7 @@ int parse_command_line(int nrhs, const char *cmd, const char *cmd_col, char *mod
 				nr_fold_ = atoi(argv[i]);
 				if(nr_fold_ < 2)
 				{
-					sciprint("n-fold cross validation: n must >= 2\n");
+					Scierror (999,"n-fold cross validation: n must >= 2\n");
 					return 1;
 				}
 				break;
@@ -199,7 +199,7 @@ int parse_command_line(int nrhs, const char *cmd, const char *cmd_col, char *mod
 				i--;
 				break;
 			default:
-				sciprint("unknown option\n");
+				Scierror (999,"unknown option\n");
 				return 1;
 		}
 	}
@@ -218,10 +218,7 @@ int parse_command_line(int nrhs, const char *cmd, const char *cmd_col, char *mod
 	return 0;
 }
 
-static void fake_answer()
-{
-	  LhsVar(1) = 0;
-}
+
 
 int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat)
 {
@@ -241,7 +238,7 @@ int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat)
 
  	if(col_format_flag_)
 	{
-		sciprint("training_instance_matrix in column format is not supported yet!\n");
+		Scierror (999,"training_instance_matrix in column format is not supported yet!\n");
 		return -1;
 	}
 //		instance_mat_col = (int *)instance_mat;
@@ -429,8 +426,7 @@ int sci_train(char * fname)
 			      }
 			      if (type!=sci_matrix)
 			      {
-				sciprint("Error: weight vector must be double\n");	
-				fake_answer();
+				Scierror (999,"Error: weight vector must be double\n");	
 				return 0;
 			      }
 			      
@@ -451,8 +447,7 @@ int sci_train(char * fname)
 		}
 		if (type!=sci_matrix)
 		{
-		  sciprint("Error: label vector must be double\n");	
-		   fake_answer();
+		  Scierror (999,"Error: label vector must be double\n");	
 		  return 0;
 		}
 		if (weight_vector_flag==0) {
@@ -472,8 +467,7 @@ int sci_train(char * fname)
 		
 		 if (type!=sci_matrix && type!=sci_sparse)
 		{
-		  sciprint("Error: instance matrix must be double or sparse\n");			
-		  fake_answer();
+		 Scierror (999,"Error: instance matrix must be double or sparse\n");			
 		  return 0;
 		}
 
@@ -523,9 +517,9 @@ int sci_train(char * fname)
 		
 		if(parse_command_line(Rhs,option_string,col_string, NULL))
 		{
-			exit_with_help();
+
 			destroy_param(&param_);
-			fake_answer();
+			exit_with_help();
 			return 0;
 		}
 		if (option_string!=NULL)
@@ -537,9 +531,8 @@ int sci_train(char * fname)
 			err = read_problem_sparse(p_weight_vector,p_label_vector, p_instance_matrix);
 		else
 		{
-			sciprint("Training_instance_matrix must be sparse\n");
-			destroy_param(&param_);
-			fake_answer();
+			destroy_param(&param_);	
+			Scierror (999,"Training_instance_matrix must be sparse\n");
 			return 0;
 		}
 
@@ -549,12 +542,13 @@ int sci_train(char * fname)
 		if(err || error_msg)
 		{
 			if (error_msg != NULL)
-				sciprint("Error: %s\n", error_msg);
+				Scierror (999,"Error: %s\n", error_msg);
+			else
+			        Scierror (999,"Error\n");
 			destroy_param(&param_);
 			free(prob_.y);
 			free(prob_.x);
 			free(x_space_);
-			fake_answer();
 			return 0;
 		}
 
@@ -580,12 +574,24 @@ int sci_train(char * fname)
 		}
 		else
 		{
-			const char *error_msg;
+			//const char *error_msg;
 
 			model_ = train(&prob_, &param_);
-			error_msg = linear_model_to_scilab_structure( model_);
-			if(error_msg)
-				sciprint("Error: can't convert libsvm model to matrix structure: %s\n", error_msg);
+			_SciErr = linear_model_to_scilab_structure( model_);
+			if(_SciErr.iErr){
+				//Scierror (999,"Error: can't convert libsvm model to matrix structure: %s\n", error_msg);
+			        printError(&_SciErr, 0);
+				exit_with_help();
+				
+			}else{
+			    /* This function put on scilab stack, the lhs variable
+		    which are at the position lhs(i) on calling stack */
+		    /* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR 
+		    was defined and equal to %t */
+		    /* without this, you do not need to add PutLhsVar here */
+		    	LhsVar(1) = Rhs+1; 
+			PutLhsVar();
+			}
 			free_and_destroy_model(&model_);
 		}
 		destroy_param(&param_);
@@ -593,11 +599,11 @@ int sci_train(char * fname)
 		free(prob_.x);
 		free(prob_.W);
 		free(x_space_);
+		return 0;
 	}
 	else
 	{
 		exit_with_help();
-		fake_answer();
 		return 0;
 	}
 }

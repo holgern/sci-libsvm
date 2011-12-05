@@ -64,6 +64,16 @@ field in the model structure.
 </refsection>
 
 <refsection>
+   <title>Examples</title>
+   <programlisting role="example"><![CDATA[
+label_vector=[zeros(20,1);ones(20,1)];
+instance_matrix = sparse([rand(20,2); -1*rand(20,2)]);
+model=train(label_vector,instance_matrix,"-q")
+[pred_label, accuracy, dec_values]=predict(label_vector,instance_matrix,model)
+   ]]></programlisting>
+</refsection>
+
+<refsection>
    <title>See also</title>
    <simplelist type="inline">
    <member><link linkend="train">train</link></member>

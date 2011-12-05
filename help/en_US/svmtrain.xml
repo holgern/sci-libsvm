@@ -37,15 +37,15 @@
    <varlistentry><term>s svm_type :</term>
       <listitem><para> set type of SVM (default 0)</para></listitem></varlistentry>
    <varlistentry><term>0 :</term>
-      <listitem><para> C-SVC</para></listitem></varlistentry>
+      <listitem><para> C-SVC (class seperation)</para></listitem></varlistentry>
    <varlistentry><term>1 :</term>
-      <listitem><para> nu-SVC</para></listitem></varlistentry>
+      <listitem><para> nu-SVC (nu - classification)</para></listitem></varlistentry>
    <varlistentry><term>2 :</term>
-      <listitem><para> one-class SVM</para></listitem></varlistentry>
+      <listitem><para> one-class SVM (one-class-classification)</para></listitem></varlistentry>
    <varlistentry><term>3 :</term>
-      <listitem><para> epsilon-SVR</para></listitem></varlistentry>
+      <listitem><para> epsilon-SVR (epsilon - regression)</para></listitem></varlistentry>
    <varlistentry><term>4 :</term>
-      <listitem><para> nu-SVR</para></listitem></varlistentry>
+      <listitem><para> nu-SVR (nu - regression)</para></listitem></varlistentry>
    <varlistentry><term>-t kernel_type :</term>
       <listitem><para> set type of kernel function (default 2)</para></listitem></varlistentry>
    <varlistentry><term>0 -- linear:</term>
@@ -112,13 +112,42 @@
 <refsection>
    <title>Description</title>
    <para>
-The k in the -g option means the number of attributes in the input data.
+svm types:
    </para>
    <para>
-option -v randomly splits the data into n parts and calculates crossvalidation accuracy/mean squared error on them.
+Class separation (-s 0): optimal separating hyperplane between the two classes by maximizing the margin between the classes’ closest points
+the points lying on the boundaries are called support vectors, and the middle of the margin is our optimal separating hyperplane
    </para>
    <para>
-Scale your data. For example, scale each attribute to [0,1] or [-1,+1].
+nu-Classification (-s 1): this model allows for more control over the number of support vectors by specifying an additional parameter (-n nu) which approximates the fraction of support vectors.
+   </para>
+   <para>
+one-class-classification ( -s 2): this model tries to ﬁnd the support of a distribution and thus allows for outlier/novelty detection
+   </para>
+   <para>
+epsilon-regression ( -s 3): here, the data points lie in between the two borders of the margin which is maximized under suitable conditions to avoid outlier inclusion.
+   </para>
+   <para>
+nu-regression ( -s 4): With one additional parameter (-n nu)  which approximates the fraction of support vectors
+   </para>
+   <para>
+   </para>
+   <para>
+Crossvalidation:
+   </para>
+   <para>
+to assess the quality of the training result, a k-fold cross-classiﬁcation on the training data can be performed by setting the parameter
+(-v ) to n (default: 0). This option -v randomly splits the data into n parts and calculates crossvalidation accuracy/mean squared error on them.
+The returned model is just a scalar: cross-validation accuracy for classification and mean-squared error for regression.
+   </para>
+   <para>
+Scaling:
+   </para>
+   <para>
+Scale your data. For example, scale each column of the instance matrix to [0,1] or [-1,+1].
+   </para>
+   <para>
+Output:
    </para>
    <para>
 The 'svmtrain' function returns a model which can be used for future
@@ -127,12 +156,19 @@ totalSV, rho, Label, ProbA, ProbB, nSV, sv_coef, SVs]:
    </para>
    <para>
 If you do not use the option '-b 1', ProbA and ProbB are empty
-matrices. If the '-v' option is specified, cross validation is
-conducted and the returned model is just a scalar: cross-validation
-accuracy for classification and mean-squared error for regression.
-   </para>
-   <para>
+matrices
 </para>
+</refsection>
+
+<refsection>
+   <title>Examples</title>
+   <programlisting role="example"><![CDATA[
+label_vector=[zeros(20,1);ones(20,1)];
+instance_matrix = [rand(20,2); -1*rand(20,2)];
+model=svmtrain(label_vector,instance_matrix);
+
+[pred,acc,dec]=svmpredict(label_vector,instance_matrix,model);
+   ]]></programlisting>
 </refsection>
 
 <refsection>

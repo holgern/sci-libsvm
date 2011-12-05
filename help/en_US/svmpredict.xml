@@ -60,14 +60,28 @@ The third output is a matrix containing decision values or probability estimates
 in training data, for decision values, each row includes results of predicting k(k-1)/2 binary-class SVMs.
    </para>
    <para>
-For classification, k = 1 is a special case. Decision value +1 is returned for each testing instance,
-instead of an empty vector. For probabilities, each row contains k values
-indicating the probability that the testing instance is in each class.
-Note that the order of classes here is the same as 'Label' field
-in the model structure.
+For classification, k = 1 is a special case. Decision value +1 is returned for each testing instance,instead of an empty vector.
+   </para>
+   <para>
+For probabilities, each row contains k values indicating the probability that the testing instance is in each class.
+   </para>
+   <para>
+Note that the order of classes here is the same as 'Label' field in the model structure.
    </para>
    <para>
 </para>
+</refsection>
+
+<refsection>
+   <title>Examples</title>
+   <programlisting role="example"><![CDATA[
+label_vector=[zeros(20,1);ones(20,1)];
+instance_matrix = [rand(20,2); -1*rand(20,2)];
+model=svmtrain(label_vector,instance_matrix);
+
+[pred,acc,dec]=svmpredict(label_vector,instance_matrix,model);
+
+   ]]></programlisting>
 </refsection>
 
 <refsection>

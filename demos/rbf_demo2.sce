@@ -28,7 +28,7 @@ plot(d(pos, 1),d(pos, 2),'b.');
 bestcv = 0;
 for log2c = -1.1:3.1,
   for log2g = -4.1:1.1,
-    cmd = ['-t 2 -v 2 -c '+ string(2^log2c)+ ' -g '+ string(2^log2g)];
+    cmd = ['-t 2 -v 2 -c '+ string(2^log2c)+ ' -g '+ string(2^log2g)+' -q'];
     cv = svmtrain(l, d, cmd);
     if (cv >= bestcv),
       bestcv = cv; bestc = 2^log2c; bestg = 2^log2g;
@@ -39,7 +39,7 @@ end
 
 // After finding the best parameter value for C, we train the entire data
 // again using this parameter value
-cmd = ['-t 2 -c '+ string(bestc)+ ' -g '+ string(bestg)];
+cmd = ['-t 2 -c '+ string(bestc)+ ' -g '+ string(bestg)+' -q'];
 tic;model = svmtrain(l, d, cmd);toc
 
 // now plot support vectors

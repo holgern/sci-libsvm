@@ -2,12 +2,12 @@
 //Test libsvm's performance
 result = [];
 for N = [100 500 1000 ]
-    for dim = [2 6 10 20 50 100]
+    for dim = [3 6 10 20 50 100]
 
     l = [ones(N,1); -ones(N,1)]; // label
     d = [l/2 + rand(2*N,1,'norm')/1  l-rand(2*N,1,'norm')/1 rand(2*N, dim-2,'norm')]; // data
 
-    tic();model = train(l,sparse(d),'-s 1');x = toc();
+    tic();model = train(l,sparse(d),'-s 1 -q');x = toc();
     tic();[predicted_label, accuracy, decision_values] = predict(l, sparse(d), model);y = toc();
     
     result = [result; [N dim x y]];
@@ -49,4 +49,3 @@ title("libsvm performance");
 //  plot(x,y)
 // 
 // 
-

@@ -1,4 +1,4 @@
-mprintf("libsvm  Toolbox - (1.2)\n");
+mprintf("libsvm  Toolbox - (1.2.1)\n");
 
 if isdef("libsvmlib") then
 	warning("libsvm Toolbox library is already loaded");

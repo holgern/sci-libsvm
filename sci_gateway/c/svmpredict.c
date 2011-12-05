@@ -74,12 +74,6 @@
 // 	x[j].index = -1;
 // }
 
-static void fake_answer()
-{
-	LhsVar(1) = 0;
-	LhsVar(2) = 0;
-	LhsVar(3) = 0;
-}
 
 void do_predict_svm(int *label_vec,  int *instance_mat, struct svm_model *model, const int predict_probability)
 {
@@ -124,14 +118,12 @@ void do_predict_svm(int *label_vec,  int *instance_mat, struct svm_model *model,
 
         if(label_vector_row_num!=testing_instance_number)
         {
-		sciprint("Length of label vector does not match # of instances.\n");
-		fake_answer();
+		Scierror (999,"Length of label vector does not match # of instances.\n");
 		return;
 	}
 	if(label_vector_col_num!=1)
 	{
-		sciprint("label (1st argument) should be a vector (# of column is 1).\n");
-		fake_answer();
+		Scierror (999,"label (1st argument) should be a vector (# of column is 1).\n");
 		return;
 	}
 
@@ -144,8 +136,7 @@ void do_predict_svm(int *label_vec,  int *instance_mat, struct svm_model *model,
 	{
 		if(model->param.kernel_type == PRECOMPUTED)
 		{
-		        sciprint("Error: Precomputed kernel requires dense matrix\n");	
-			    fake_answer();
+		        Scierror (999,"Error: Precomputed kernel requires dense matrix\n");	
 		            return;
 			    /*
                         // precomputed kernel requires dense matrix, so we make one
@@ -378,7 +369,7 @@ if (Lhs > 2) {
 
 void exit_with_help_predict()
 {
-        sciprint(
+       Scierror (999,
                 "Usage: [predicted_label, accuracy, decision_values/prob_estimates] = svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')\n"
 		"Parameters:\n"
 		"  model: SVM model structure from svmtrain.\n"
@@ -410,7 +401,6 @@ int sci_svmpredict(char * fname)
         if(Rhs > 4 || Rhs < 3)
         {
                 exit_with_help_predict();
-                fake_answer();
                 return 0;
         }
         
@@ -428,8 +418,7 @@ int sci_svmpredict(char * fname)
 		      } 
 		if (type!=sci_matrix && type!=sci_sparse)
 		{
-		  sciprint("Error: label vector must be double\n");	
-		   fake_answer();
+		  Scierror (999,"Error: label vector must be double\n");	
 		  return 0;
 		}
 		_SciErr = getVarAddressFromPosition(pvApiCtx, 2, &p_instance_matrix);
@@ -441,8 +430,7 @@ int sci_svmpredict(char * fname)
                 _SciErr = getVarType(pvApiCtx, p_instance_matrix, &type);
 		 if (type!=sci_matrix && type!=sci_sparse)
 		{
-		  sciprint("Error: instance matrix must be double\n");			
-		   fake_answer();
+		  Scierror (999,"Error: instance matrix must be double\n");			
 		  return 0;
 		}
 		
@@ -503,7 +491,6 @@ int sci_svmpredict(char * fname)
                                 if(++i>=argc)
                                 {
                                         exit_with_help_predict();
-                                        fake_answer();
                                         return 0;
                                 }
 				switch(argv[i-1][1])
@@ -512,9 +499,8 @@ int sci_svmpredict(char * fname)
 						prob_estimate_flag = atoi(argv[i]);
                                                 break;
                                         default:
-                                                sciprint("Unknown option: -%c\n", argv[i-1][1]);
+                                                sciprint ("Unknown option: -%c\n", argv[i-1][1]);
                                                 exit_with_help_predict();
-                                                fake_answer();
                                                 return 0;
                                 }
                         }
@@ -530,8 +516,7 @@ int sci_svmpredict(char * fname)
                 model = scilab_matrix_to_model(p_model, &error_msg);
                 if (model == NULL)
                 {
-                        sciprint("Error: can't read model: %s\n", error_msg);
-			fake_answer();
+                        Scierror (999,"Error: can't read model: %s\n", error_msg);
 			return 0;
 		}
 		#ifdef DEBUG
@@ -542,8 +527,7 @@ int sci_svmpredict(char * fname)
 		{
 			if(svm_check_probability_model(model)==0)
                         {
-                                sciprint("Model does not support probabiliy estimates\n");
-                                fake_answer();
+                                Scierror(999,"Model does not support probabiliy estimates\n");
                                 svm_free_and_destroy_model(&model);
                                 return 0;
                         }
@@ -567,8 +551,7 @@ int sci_svmpredict(char * fname)
         }
         else
         {
-		sciprint("model file should be a struct array\n");
-		fake_answer();
+		Scierror (999,"model file should be a struct array\n");
 	}
 
 	return 0;

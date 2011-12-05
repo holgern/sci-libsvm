@@ -49,4 +49,11 @@ cc = svmtrain(label,scaled_instance);
 [predicted_label]=svmtrain(label,svmscale(instance,scaled_parameters));
    ]]></programlisting>
 </refsection>
+
+<refsection>
+   <title>Authors</title>
+   <simplelist type="vert">
+   <member>Holger Nahrstaedt</member>
+   </simplelist>
+</refsection>
 </refentry>

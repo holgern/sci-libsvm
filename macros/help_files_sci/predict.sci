@@ -20,6 +20,11 @@ function [predicted_label, accuracy, decision_values/prob_estimates] = predict(t
 //each class. Note that the order of classes here is the same as 'Label'
 //field in the model structure.
 //
+// Examples
+// label_vector=[zeros(20,1);ones(20,1)];
+// instance_matrix = sparse([rand(20,2); -1*rand(20,2)]);
+// model=train(label_vector,instance_matrix,"-q")
+// [pred_label, accuracy, dec_values]=predict(label_vector,instance_matrix,model)
 //See also
 //train
 // Authors

@@ -14,6 +14,8 @@ function [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters
 //  [scaled_instance,scaled_parameters] = svmscale(instance,[-1,1]);
 //  cc = svmtrain(label,scaled_instance);
 //  [predicted_label]=svmtrain(label,svmscale(instance,scaled_parameters));
+// Authors
+//  Holger Nahrstaedt
 
 
         [nargout,nargin]=argn(0);

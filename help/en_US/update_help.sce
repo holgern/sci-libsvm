@@ -252,6 +252,7 @@ funmat = [
 "svmconfmat"
 "svmgridlinear"
 "svmpartest"
+"svmtoy"
   ];
 macrosdir = cwd +"../../macros";
 //demosdir = cwd +"../../demos";

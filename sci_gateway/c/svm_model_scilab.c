@@ -62,7 +62,7 @@ static const char *field_names[] = {
         "SVs"
 }; 
 
-void model_to_scilab_structure( int num_of_feature, struct svm_model *model)
+SciErr model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 {
         int i, j, n;
         double *ptr;
@@ -84,15 +84,15 @@ void model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 	_SciErr = createMList(pvApiCtx,Rhs + 1,12, &piAddr);
       if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 
 	  _SciErr = createMatrixOfStringInList(pvApiCtx, Rhs + 1, piAddr, 1, NUM_OF_RETURN_FIELD+2, 1, field_names);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	  
 	  //dims
@@ -102,8 +102,8 @@ void model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 	   _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 2, 1, 2 , &dims);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	       dims[0]=1;
 	       dims[1]=1;
@@ -115,8 +115,8 @@ void model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 	 _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 3, 5, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	
 	// Parameters
@@ -136,8 +136,8 @@ void model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 	 _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 4, 1, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		     // printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	 
 	
@@ -154,8 +154,8 @@ void model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 	 _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 5, 1, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	 
 	
@@ -172,8 +172,8 @@ void model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 	 _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 6, n, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	// rho
 	n = model->nr_class*(model->nr_class-1)/2;
@@ -190,8 +190,8 @@ void model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 	     _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 7, model->nr_class, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	  } else
 	     _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 7, 0, 0, &rhs[out_id]);
@@ -218,8 +218,8 @@ void model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 	    _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 8, n, 1, &rhs[out_id]);
 	     if(_SciErr.iErr)
 	{
-		printError(&_SciErr, 0);
-		return NULL;
+		//printError(&_SciErr, 0);
+		return _SciErr;
 	}
 	  } else
 	     _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 8, 0, 0, &rhs[out_id]);
@@ -244,8 +244,8 @@ void model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 	    _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 9, n, 1, &rhs[out_id]);
 	     if(_SciErr.iErr)
 	{
-		printError(&_SciErr, 0);
-		return NULL;
+		//printError(&_SciErr, 0);
+		return _SciErr;
 	}
 	  } else
 	     _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 9, 0, 0, &rhs[out_id]);
@@ -270,8 +270,8 @@ void model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 	    _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 10, model->nr_class, 1, &rhs[out_id]);
 	     if(_SciErr.iErr)
 	{
-		printError(&_SciErr, 0);
-		return NULL;
+		//printError(&_SciErr, 0);
+		return _SciErr;
 	}
 	  } else
 	     _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 10, 0, 0, &rhs[out_id]);
@@ -296,8 +296,8 @@ void model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 	  _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 11, model->l, model->nr_class-1, &rhs[out_id]);
 	   if(_SciErr.iErr)
 	{
-		printError(&_SciErr, 0);
-		return NULL;
+		//printError(&_SciErr, 0);
+		return _SciErr;
 	}
 	
 	// sv_coef
@@ -350,7 +350,7 @@ if (USE_SPARSE_IN_STRUCT==1) {
   if ((ConstrMat==(SciSparse *)0) || (ConstrMat->mnel==NULL) || (ConstrMat->R==NULL))
     {
       Scierror(999,  "error while allocating the sparse\n");
-      return NULL;
+      return _SciErr;
     }
 
 		// SV in column, easier accessing
@@ -422,8 +422,8 @@ if (USE_SPARSE_IN_STRUCT==1) {
 	   _SciErr = createSparseMatrixInList(pvApiCtx, Rhs+1, piAddr, 12,  ConstrMat->m, ConstrMat->n, ConstrMat->nel,  ConstrMat->mnel, ConstrMat->icol, ConstrMat->R); 
 	 if(_SciErr.iErr)
 	{
-		printError(&_SciErr, 0);
-		return NULL;
+		//printError(&_SciErr, 0);
+		return _SciErr;
 	}
 	 
 	
@@ -438,8 +438,8 @@ if (USE_SPARSE_IN_STRUCT==1) {
     _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 12, model->l, num_of_feature, &rhs[out_id]);
 	   if(_SciErr.iErr)
 	{
-		printError(&_SciErr, 0);
-		return NULL;
+		//printError(&_SciErr, 0);
+		return _SciErr;
 	}
 	
   ptr = (rhs[out_id]);
@@ -519,20 +519,8 @@ if (USE_SPARSE_IN_STRUCT==1) {
        
        
        
-        LhsVar(1) = Rhs+1; 
-	
-	
 
-
-	
-      // LhsVar(2) = Rhs+2; 
-  /* This function put on scilab stack, the lhs variable
-  which are at the position lhs(i) on calling stack */
-  /* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR 
-  was defined and equal to %t */
-  /* without this, you do not need to add PutLhsVar here */
-       PutLhsVar();
-        return NULL;
+        return _SciErr;
 }
 
 

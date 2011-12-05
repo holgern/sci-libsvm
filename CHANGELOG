@@ -1,3 +1,8 @@
+1.2.1
+ - svmtoy added
+ - improved error handling in sci_gateway
+ - improved help files
+ - bug in performance demo removed
 1.2
  - the Nan-Toolbox 1.3 is compatible to his toolbox now!
  - improved demos

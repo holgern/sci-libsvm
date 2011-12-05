@@ -53,11 +53,6 @@
 
 //#define DEBUG
 
-static void fake_answer()
-{
-  LhsVar(1) = 0;
-  LhsVar(2) = 0;
-}
 
 static char *line;
 static int max_line_len;
@@ -91,7 +86,7 @@ static char* readline(FILE *input)
 }
 
 // read in a problem (in libsvm format)
-void read_problem(const char *filename)
+int read_problem(const char *filename)
 {
   int max_index, min_index, inst_max_index, i;
   long elements, k;
@@ -104,9 +99,8 @@ void read_problem(const char *filename)
 
   if (fp == NULL)
     {
-      sciprint("can't open input file %s\n",filename);
-      fake_answer();
-      return;
+      Scierror (999,"can't open input file %s\n",filename);
+      return -1;
     }
   
   max_line_len = 1024;
@@ -144,9 +138,8 @@ void read_problem(const char *filename)
           index = (int)strtol(idx,&endptr,10);
           if (endptr == idx || errno != 0 || *endptr != '\0' || index <= inst_max_index)
             {
-              sciprint("Wrong input format at line %d\n",l+1);
-              fake_answer();
-              return;
+              Scierror (999,"Wrong input format at line %d\n",l+1);
+              return -1;
             }
           else
             {
@@ -198,9 +191,8 @@ void read_problem(const char *filename)
 #endif
       if (endptr == label)
         {
-          sciprint("Wrong input format at line %d\n",i+1);
-          fake_answer();
-          return;
+          Scierror (999,"Wrong input format at line %d\n",i+1);
+          return -1;
         }
       
       // features
@@ -222,9 +214,8 @@ void read_problem(const char *filename)
           samples_piNbItemRow[i]++;
           if (endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr)))
             {
-              sciprint("Wrong input format at line %d\n",i+1);
-              fake_answer();
-              return;
+              Scierror (999,"Wrong input format at line %d\n",i+1);
+              return -1;
             }
           ++k;
         }
@@ -243,6 +234,7 @@ void read_problem(const char *filename)
   PutLhsVar();
   fclose(fp);
   free(line);
+  return 0;
 }
 
 int sci_libsvmread(char * fname)
@@ -268,8 +260,7 @@ int sci_libsvmread(char * fname)
     }
   else
     {
-      sciprint("Usage: [label_vector, instance_matrix] = libsvmread('filename');\n");
-      fake_answer();
+     Scierror (999,"Usage: [label_vector, instance_matrix] = libsvmread('filename');\n");
     }
   
   return 0;

@@ -6,11 +6,11 @@ function model = svmtrain(training_label_vector, training_instance_matrix, libsv
 // Parameters
 // libsvm_options:
 // s svm_type : set type of SVM (default 0)
-// 0 : C-SVC
-// 1 : nu-SVC
-// 2 : one-class SVM
-// 3 : epsilon-SVR
-// 4 : nu-SVR
+// 0 : C-SVC (class seperation)
+// 1 : nu-SVC (nu - classification)
+// 2 : one-class SVM (one-class-classification)
+// 3 : epsilon-SVR (epsilon - regression)
+// 4 : nu-SVR (nu - regression)
 // -t kernel_type : set type of kernel function (default 2)
 // 0 -- linear: u'*v
 // 1 -- polynomial: (gamma*u'*v + coef0)^degree
@@ -43,21 +43,44 @@ function model = svmtrain(training_label_vector, training_instance_matrix, libsv
 //  model.sv_coef: coefficients for SVs in decision functions
 //  model.SVs: support vectors
 // Description
-// The k in the -g option means the number of attributes in the input data.
+// svm types:
 // 
-// option -v randomly splits the data into n parts and calculates crossvalidation accuracy/mean squared error on them.
+// Class separation (-s 0): optimal separating hyperplane between the two classes by maximizing the margin between the classes’ closest points
+//the points lying on the boundaries are called support vectors, and the middle of the margin is our optimal separating hyperplane
+//
+//nu-Classification (-s 1): this model allows for more control over the number of support vectors by specifying an additional parameter (-n nu) which approximates the fraction of support vectors.
+//
+//one-class-classification ( -s 2): this model tries to ﬁnd the support of a distribution and thus allows for outlier/novelty detection
 // 
-// Scale your data. For example, scale each attribute to [0,1] or [-1,+1].
+// epsilon-regression ( -s 3): here, the data points lie in between the two borders of the margin which is maximized under suitable conditions to avoid outlier inclusion.
+// 
+// nu-regression ( -s 4): With one additional parameter (-n nu)  which approximates the fraction of support vectors
+// 
+// 
+// Crossvalidation:
+// 
+// to assess the quality of the training result, a k-fold cross-classiﬁcation on the training data can be performed by setting the parameter 
+// (-v ) to n (default: 0). This option -v randomly splits the data into n parts and calculates crossvalidation accuracy/mean squared error on them.
+// The returned model is just a scalar: cross-validation accuracy for classification and mean-squared error for regression.
+// 
+// Scaling:
+// 
+// Scale your data. For example, scale each column of the instance matrix to [0,1] or [-1,+1].
+// 
+// Output:
 // 
 // The 'svmtrain' function returns a model which can be used for future
 //prediction.  It is a structure and is organized as [Parameters, nr_class,
 //totalSV, rho, Label, ProbA, ProbB, nSV, sv_coef, SVs]:
 //
 // If you do not use the option '-b 1', ProbA and ProbB are empty
-//matrices. If the '-v' option is specified, cross validation is
-//conducted and the returned model is just a scalar: cross-validation
-//accuracy for classification and mean-squared error for regression.
-//
+//matrices
+// Examples
+// label_vector=[zeros(20,1);ones(20,1)];
+// instance_matrix = [rand(20,2); -1*rand(20,2)];
+// model=svmtrain(label_vector,instance_matrix);
+// 
+// [pred,acc,dec]=svmpredict(label_vector,instance_matrix,model);
 //See also
 //svmpredict
 // Authors

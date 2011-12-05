@@ -56,10 +56,11 @@
 
 
 void svm_print_null(const char *s) {}
+void svm_print_string_scilab(const char *s) {sciprint(s);}
 
 void exit_with_help_train()
 {
-        sciprint(
+        Scierror (999,
         "Usage: model = svmtrain(training_label_vector, training_instance_matrix, 'libsvm_options');\n"
 	"libsvm_options:\n"
 	"-s svm_type : set type of SVM (default 0)\n"
@@ -153,7 +154,7 @@ int svm_parse_command_line(int nrhs, const char *cmd, char *model_file_name)
         //char cmd[CMD_LEN];
 	//char *cmd = NULL;
         char *argv[CMD_LEN/2];
-        void (*print_func)(const char *) = NULL;        // default printing to stdout
+        void (*print_func)(const char *) = svm_print_string_scilab;        // default printing to stdout
          SciErr _SciErr;
 	   int m1 = 0, n1 = 0;
         int* piLenVarOne = NULL;
@@ -292,7 +293,7 @@ int svm_parse_command_line(int nrhs, const char *cmd, char *model_file_name)
                                 nr_fold = atoi(argv[i]);
                                 if(nr_fold < 2)
                                 {
-					sciprint("n-fold cross validation: n must >= 2\n");
+					Scierror (999,"n-fold cross validation: n must >= 2\n");
 					return 1;
 				}
 				break;
@@ -304,7 +305,7 @@ int svm_parse_command_line(int nrhs, const char *cmd, char *model_file_name)
 				param.weight[param.nr_weight-1] = atof(argv[i]);
 				break;
 			default:
-				sciprint("Unknown option -%c\n", argv[i-1][1]);
+				Scierror (999,"Unknown option -%c\n", argv[i-1][1]);
                                 return 1;
                 }
         }
@@ -326,18 +327,31 @@ int svm_read_problem_dense(int *label_vec, int *instance_mat)
 	prob.y = NULL;
 	x_space = NULL;
 	
-        _SciErr = getMatrixOfDouble(pvApiCtx, instance_mat, &r_samples, &c_samples, &samples);
-	if(_SciErr.iErr)
-		{
-			printError(&_SciErr, 0);
-			return -1;
-		}
+
         _SciErr = getMatrixOfDouble(pvApiCtx, label_vec, &r_labels, &c_labels, &labels);
 	if(_SciErr.iErr)
 		{
 			printError(&_SciErr, 0);
 			return -1;
 		}
+	if (c_labels > 1){
+	  Scierror (999,"Error: Wrong size for argument %d: Row Vector expected.\n", 1);
+	  return -1;
+	} 
+	  if (c_labels*r_labels == 0){
+	    Scierror (999,"Error: Wrong size for input argument #%d: Non-empty vector expected.\n", 1);
+	    return -1;
+	  }
+        _SciErr = getMatrixOfDouble(pvApiCtx, instance_mat, &r_samples, &c_samples, &samples);
+	if(_SciErr.iErr)
+		{
+			printError(&_SciErr, 0);
+			return -1;
+		}
+	if (c_samples*r_samples == 0){
+	    Scierror (999,"Error: Wrong size for input argument #%d: Non-empty matrix expected.\n", 2);
+	    return -1;
+	  }
 
 	//labels = mxGetPr(label_vec);
 	//samples = mxGetPr(instance_mat);
@@ -351,7 +365,7 @@ int svm_read_problem_dense(int *label_vec, int *instance_mat)
 
 	if(label_vector_row_num!=prob.l)
 	{
-		sciprint("Length of label vector does not match # of instances.\n");
+		Scierror(999,"Length of label vector does not match # of instances.\n");
 		return -1;
 	}
 
@@ -400,7 +414,7 @@ int svm_read_problem_dense(int *label_vec, int *instance_mat)
 		{
 			if((int)prob.x[i][0].value <= 0 || (int)prob.x[i][0].value > max_index)
 			{
-				sciprint("Wrong input format: sample_serial_number out of range\n");
+				Scierror(999,"Wrong input format: sample_serial_number out of range\n");
 				return -1;
 			}
 		}
@@ -440,12 +454,25 @@ int svm_read_problem_sparse(int *label_vec,  int *instance_mat)
 			printError(&_SciErr, 0);
 			return -1;
 		}
+		
+	if (c_labels > 1){
+	  Scierror (999,"Error: Wrong size for argument %d: Row Vector expected.\n", 1);
+	  return -1;
+	} 
+	  if (c_labels*r_labels == 0){
+	    Scierror (999,"Error: Wrong size for input argument #%d: Non-empty vector expected.\n", 1);
+	    return -1;
+	  }
 	 _SciErr = getSparseMatrix(pvApiCtx,instance_mat,&r_samples, &c_samples, &num_samples, &ir, &jc, &samples);
 	 if(_SciErr.iErr)
 		{
 			printError(&_SciErr, 0);
 			return -1;
 		}
+      if (c_samples*r_samples == 0){
+	    Scierror (999,"Error: Wrong size for input argument #%d: Non-empty matrix expected.\n", 2);
+	    return -1;
+	  }
 	// each column is one instance
 	//labels = mxGetPr(label_vec);
 	//samples = mxGetPr(instance_mat_col);
@@ -461,7 +488,7 @@ int svm_read_problem_sparse(int *label_vec,  int *instance_mat)
 
 	if(label_vector_row_num!=prob.l)
 	{
-		sciprint("Length of label vector does not match # of instances.\n");
+		Scierror (999,"Length of label vector does not match # of instances.\n");
 		return -1;
 	}
 
@@ -498,10 +525,6 @@ int svm_read_problem_sparse(int *label_vec,  int *instance_mat)
         return 0;
 }
 
-static void svm_fake_answer()
-{
-	  LhsVar(1) = 0;
-}
 
 // Interface function of scilab
 // now assume prhs[0]: label prhs[1]: features
@@ -541,8 +564,7 @@ int sci_svmtrain(char * fname)
 		}
 		if (type!=sci_matrix && type!=sci_sparse)
 		{
-		  sciprint("Error: label vector must be double\n");	
-		   svm_fake_answer();
+		  Scierror (999,"%s: label vector must be double\n",fname);	
 		  return 0;
 		}
 		_SciErr = getVarAddressFromPosition(pvApiCtx, 2, &p_instance_matrix);
@@ -559,8 +581,7 @@ int sci_svmtrain(char * fname)
 		}
 		 if (type!=sci_matrix && type!=sci_sparse)
 		{
-		  sciprint("Error: instance matrix must be double\n");			
-		   svm_fake_answer();
+		  Scierror (999,"%s: instance matrix must be double\n",fname);			
 		  return 0;
 		}
 		
@@ -589,7 +610,6 @@ int sci_svmtrain(char * fname)
 		    {
 			    exit_with_help_train();
 			    svm_destroy_param(&param);
-			    svm_fake_answer();
 			    return 0;
 		    }
 		  if (option_string != NULL)
@@ -601,8 +621,7 @@ int sci_svmtrain(char * fname)
 		  
 			if(param.kernel_type == PRECOMPUTED)
 			{
-			   sciprint("Error: Precomputed kernel requires dense matrix\n");	
-			    svm_fake_answer();
+			   Scierror (999,"%s: Precomputed kernel requires dense matrix\n",fname);	
 		            return 0;
 			  /*
 				// precomputed kernel requires dense matrix, so we make one
@@ -638,12 +657,13 @@ int sci_svmtrain(char * fname)
 		if(err || error_msg)
 		{
 			if (error_msg != NULL)
-				sciprint("Error: %s\n", error_msg);
+				Scierror (999,"%s: %s\n", fname,error_msg);
+			else
+				Scierror(999,"Error!\n");
 			svm_destroy_param(&param);
                         free(prob.y);
                         free(prob.x);
                         free(x_space);
-                        svm_fake_answer();
                         return 0;
                 }
 
@@ -675,14 +695,26 @@ int sci_svmtrain(char * fname)
                         #ifdef DEBUG
                            printf("c_samples %d\n",nr_feat);
                         #endif
-                        const char *error_msg;
+                        //const char *error_msg;
                         model = svm_train(&prob, &param);
 			#ifdef DEBUG
                               printf("DEBUG: svm train done\n");
                         #endif 
-                        model_to_scilab_structure(nr_feat, model);
-			
-			
+                        _SciErr = model_to_scilab_structure(nr_feat, model);
+			if(_SciErr.iErr)
+		        {
+			    printError(&_SciErr, 0);
+			    exit_with_help_train();
+			    return 0;
+		         }
+			 LhsVar(1) = Rhs+1; 
+		      // LhsVar(2) = Rhs+2; 
+		  /* This function put on scilab stack, the lhs variable
+		  which are at the position lhs(i) on calling stack */
+		  /* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR 
+		  was defined and equal to %t */
+		  /* without this, you do not need to add PutLhsVar here */
+		      PutLhsVar();
                         //if(error_msg)
                         //        sciprint("Error: can't convert libsvm model to matrix structure: %s\n", error_msg);
                         svm_free_and_destroy_model(&model);
@@ -695,7 +727,6 @@ int sci_svmtrain(char * fname)
         else
         {
                 exit_with_help_train();
-                svm_fake_answer();
                 return 0;
         }
 }

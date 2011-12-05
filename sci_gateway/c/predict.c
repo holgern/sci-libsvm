@@ -50,6 +50,8 @@
 
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 
+//#define DEBUG
+
 int col_format_flag;
 
 // void read_sparse_instance(const mxArray *prhs, int index, struct feature_node *x, int feature_number, double bias)
@@ -80,14 +82,8 @@ int col_format_flag;
 // 	x[j].index = -1;
 // }
 
-static void fake_answer()
-{
-	LhsVar(1) = 0;
-	LhsVar(2) = 0;
-	LhsVar(3) = 0;
-}
 
-void do_predict(int *label_vec,  int *instance_mat, struct model *model_, const int predict_probability_flag)
+int do_predict(int *label_vec,  int *instance_mat, struct model *model_, const int predict_probability_flag)
 {
 	int label_vector_row_num, label_vector_col_num;
 	int feature_number, testing_instance_number;
@@ -119,8 +115,10 @@ void do_predict(int *label_vec,  int *instance_mat, struct model *model_, const 
         _SciErr = getVarType(pvApiCtx, instance_mat, &type);
 	 if (type==sci_sparse)
 	   _SciErr = getSparseMatrix(pvApiCtx,instance_mat,&r_samples, &c_samples, &num_samples, &ir, &jc, &ptr_instance);
-         else
-	   sciprint("Testing_instance_matrix must be sparse\n");
+         else{
+	   Scierror (999,"Testing_instance_matrix must be sparse\n");
+	   return -1;
+	 }
 	
 	
 	
@@ -129,24 +127,27 @@ void do_predict(int *label_vec,  int *instance_mat, struct model *model_, const 
 	testing_instance_number = r_samples;//(int) mxGetM(prhs[1]);
 	if(col_format_flag)
 	{
-		feature_number = r_samples;//(int) mxGetM(prhs[1]);
-		testing_instance_number = c_samples;//(int) mxGetN(prhs[1]);
+		Scierror (999,"Testing_instance_matrix in column format is not supported yet!\n");
+		return -1;
 	}
+// 	if(col_format_flag)
+// 	{
+// 		feature_number = r_samples;//(int) mxGetM(prhs[1]);
+// 		testing_instance_number = c_samples;//(int) mxGetN(prhs[1]);
+// 	}
 
 	label_vector_row_num = r_labels;//(int) mxGetM(prhs[0]);
 	label_vector_col_num = c_labels;//(int) mxGetN(prhs[0]);
 
 	if(label_vector_row_num!=testing_instance_number)
 	{
-		sciprint("Length of label vector does not match # of instances.\n");
-		fake_answer();
-		return;
+		Scierror (999,"Length of label vector does not match # of instances.\n");
+		return -1;
 	}
 	if(label_vector_col_num!=1)
 	{
-		sciprint("label (1st argument) should be a vector (# of column is 1).\n");
-		fake_answer();
-		return;
+		Scierror (999,"label (1st argument) should be a vector (# of column is 1).\n");
+		return -1;
 	}
 
 	//ptr_instance = mxGetPr(prhs[1]);
@@ -245,8 +246,9 @@ void do_predict(int *label_vec,  int *instance_mat, struct model *model_, const 
 			++correct;
 		++total;
 	}
+	#ifdef DEBUG
 	sciprint("Accuracy = %g%% (%d/%d)\n", (double) correct/total*100,correct,total);
-
+	#endif
 	// return accuracy, mean squared error, squared correlation coefficient
 	//plhs[1] = mxCreateDoubleMatrix(1, 1, mxREAL);
 	//ptr = mxGetPr(plhs[1]);
@@ -293,7 +295,7 @@ void do_predict(int *label_vec,  int *instance_mat, struct model *model_, const 
 
 void lin_exit_with_help()
 {
-	sciprint(
+	Scierror (999,
 			"Usage: [predicted_label, accuracy, decision_values/prob_estimates] = predict(testing_label_vector, testing_instance_matrix, model, 'liblinear_options','col')\n"
 			"liblinear_options:\n"
 			"-b probability_estimates: whether to predict probability estimates, 0 or 1 (default 0)\n"
@@ -325,7 +327,6 @@ int  sci_predict(char * fname)
 	if(Rhs > 5 || Rhs < 3)
 	{
 		lin_exit_with_help();
-		fake_answer();
 		return 0;
 	}
 	if(Rhs == 5)
@@ -370,8 +371,7 @@ int  sci_predict(char * fname)
 		      } 
 		if (type!=sci_matrix && type!=sci_sparse)
 		{
-		  sciprint("Error: label vector must be double\n");	
-		   fake_answer();
+		  Scierror (999,"Error: label vector must be double\n");	
 		  return 0;
 		}
 		_SciErr = getVarAddressFromPosition(pvApiCtx, 2, &p_instance_matrix);
@@ -383,8 +383,7 @@ int  sci_predict(char * fname)
                 _SciErr = getVarType(pvApiCtx, p_instance_matrix, &type);
 		 if (type!=sci_sparse)
 		{
-		  sciprint("Error: Testing_instance_matrix  must be sparse\n");			
-		   fake_answer();
+		  Scierror (999,"Error: Testing_instance_matrix  must be sparse\n");			
 		  return 0;
 		}
 		
@@ -443,7 +442,6 @@ int  sci_predict(char * fname)
 				if(++i>=argc)
 				{
 					lin_exit_with_help();
-					fake_answer();
 					return;
 				}
 				switch(argv[i-1][1])
@@ -454,7 +452,6 @@ int  sci_predict(char * fname)
 					default:
 						sciprint("unknown option\n");
 						lin_exit_with_help();
-						fake_answer();
 						return;
 				}
 			}
@@ -463,12 +460,13 @@ int  sci_predict(char * fname)
 		}
 
 		model_ = Malloc(struct model, 1);
-		error_msg = scilab_matrix_to_linear_model(p_model,model_);
-		if(error_msg)
+		_SciErr = scilab_matrix_to_linear_model(p_model,model_);
+		if(_SciErr.iErr)
 		{
-			sciprint("Error: can't read model: %s\n", error_msg);
+			//sciprint("Error: can't read model: %s\n", error_msg);
+			 printError(&_SciErr, 0);
+			 lin_exit_with_help();
 			free_and_destroy_model(&model_);
-			fake_answer();
 			return;
 		}
 
@@ -494,8 +492,7 @@ int  sci_predict(char * fname)
 	}
 	else
 	{
-		sciprint("model file should be a struct array\n");
-		fake_answer();
+		Scierror (999,"model file should be a struct array\n");
 	}
 
 	return 0;

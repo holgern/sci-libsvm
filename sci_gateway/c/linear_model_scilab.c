@@ -1,4 +1,4 @@
-//////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 // Copyright (c) 2000-2011 Chih-Chung Chang and Chih-Jen Lin
 // Modifiered 2011 by Holger Nahrstaedt
 // All rights reserved.
@@ -56,7 +56,7 @@ static const char *field_names[] = {
 	"w"
 };
 
-const char *linear_model_to_scilab_structure( struct model *model_)
+SciErr linear_model_to_scilab_structure( struct model *model_)
 {
 	int i;
 	int nr_w;
@@ -73,22 +73,22 @@ const char *linear_model_to_scilab_structure( struct model *model_)
 	_SciErr = createMList(pvApiCtx,Rhs + 1,NUM_OF_RETURN_FIELD+2, &piAddr);
       if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	
 	_SciErr = createMatrixOfStringInList(pvApiCtx, Rhs + 1, piAddr, 1, NUM_OF_RETURN_FIELD+2, 1, field_names);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	      
 	  _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 2, 1, 2 , &dims);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	       dims[0]=1;
 	       dims[1]=1;
@@ -100,8 +100,8 @@ const char *linear_model_to_scilab_structure( struct model *model_)
         _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 3, 1, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	ptr = (rhs[out_id]);
 	ptr[0] = model_->param.solver_type;
@@ -111,8 +111,8 @@ const char *linear_model_to_scilab_structure( struct model *model_)
 	_SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 4, 1, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	//rhs[out_id] = mxCreateDoubleMatrix(1, 1, mxREAL);
 	ptr = (rhs[out_id]);
@@ -128,8 +128,8 @@ const char *linear_model_to_scilab_structure( struct model *model_)
 		_SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 5, 1, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	//rhs[out_id] = mxCreateDoubleMatrix(1, 1, mxREAL);
 	ptr = (rhs[out_id]);
@@ -140,8 +140,8 @@ const char *linear_model_to_scilab_structure( struct model *model_)
 	_SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 6, 1, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	//rhs[out_id] = mxCreateDoubleMatrix(1, 1, mxREAL);
 	ptr = (rhs[out_id]);
@@ -160,8 +160,8 @@ const char *linear_model_to_scilab_structure( struct model *model_)
 	    _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 7, model_->nr_class, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 		//rhs[out_id] = mxCreateDoubleMatrix(model_->nr_class, 1, mxREAL);
 		ptr = (rhs[out_id]);
@@ -177,8 +177,8 @@ const char *linear_model_to_scilab_structure( struct model *model_)
 	_SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr,8, nr_w, w_size, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
-		      printError(&_SciErr, 0);
-		      return NULL;
+		      //printError(&_SciErr, 0);
+		      return _SciErr;
 	      }
 	//rhs[out_id] = mxCreateDoubleMatrix(nr_w, w_size, mxREAL);
 	ptr = (rhs[out_id]);
@@ -196,17 +196,11 @@ const char *linear_model_to_scilab_structure( struct model *model_)
 	//plhs[0] = return_model;
 	//mxFree(rhs);
 	
-	  LhsVar(1) = Rhs+1; 
-  /* This function put on scilab stack, the lhs variable
-  which are at the position lhs(i) on calling stack */
-  /* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR 
-  was defined and equal to %t */
-  /* without this, you do not need to add PutLhsVar here */
-       PutLhsVar();
-	return NULL;
+
+	return _SciErr;
 }
 
-const char *scilab_matrix_to_linear_model(int *scilab_struct, struct model *model_)
+SciErr scilab_matrix_to_linear_model(int *scilab_struct, struct model *model_)
 {
 	int i, num_of_fields;
 	int nr_w;
@@ -227,8 +221,8 @@ const char *scilab_matrix_to_linear_model(int *scilab_struct, struct model *mode
 	_SciErr = getListItemNumber(pvApiCtx, scilab_struct, &num_of_fields);
 	if(_SciErr.iErr)
 	{
-		printError(&_SciErr, 0);
-		return NULL;
+		//printError(&_SciErr, 0);
+		return _SciErr;
 	}
 	
 
@@ -242,8 +236,8 @@ const char *scilab_matrix_to_linear_model(int *scilab_struct, struct model *mode
 	_SciErr = getMatrixOfDoubleInList(pvApiCtx, scilab_struct, 3, &iRows, &iCols, &ptr);
 	    if(_SciErr.iErr)
 	{
-		printError(&_SciErr, 0);
-		return NULL;
+		//printError(&_SciErr, 0);
+		return _SciErr;
 	}
 	//ptr = mxGetPr(rhs[id]);
 	model_->param.solver_type = (int)ptr[0];
@@ -253,8 +247,8 @@ const char *scilab_matrix_to_linear_model(int *scilab_struct, struct model *mode
 	_SciErr = getMatrixOfDoubleInList(pvApiCtx, scilab_struct, 4, &iRows, &iCols, &ptr);
 	    if(_SciErr.iErr)
 	{
-		printError(&_SciErr, 0);
-		return NULL;
+		//printError(&_SciErr, 0);
+		return _SciErr;
 	}
 	//ptr = mxGetPr(rhs[id]);
 	model_->nr_class = (int)ptr[0];
@@ -269,8 +263,8 @@ const char *scilab_matrix_to_linear_model(int *scilab_struct, struct model *mode
 		_SciErr = getMatrixOfDoubleInList(pvApiCtx, scilab_struct, 5, &iRows, &iCols, &ptr);
 	    if(_SciErr.iErr)
 	{
-		printError(&_SciErr, 0);
-		return NULL;
+		//printError(&_SciErr, 0);
+		return _SciErr;
 	}
 	//ptr = mxGetPr(rhs[id]);
 	model_->nr_feature = (int)ptr[0];
@@ -280,8 +274,8 @@ const char *scilab_matrix_to_linear_model(int *scilab_struct, struct model *mode
 	_SciErr = getMatrixOfDoubleInList(pvApiCtx, scilab_struct, 6, &iRows, &iCols, &ptr);
 	    if(_SciErr.iErr)
 	{
-		printError(&_SciErr, 0);
-		return NULL;
+		//printError(&_SciErr, 0);
+		return _SciErr;
 	}
 	//ptr = mxGetPr(rhs[id]);
 	model_->bias = (int)ptr[0];
@@ -297,8 +291,8 @@ const char *scilab_matrix_to_linear_model(int *scilab_struct, struct model *mode
         _SciErr = getMatrixOfDoubleInList(pvApiCtx, scilab_struct, 7, &iRows, &iCols, &ptr);
 	    if(_SciErr.iErr)
 	{
-		printError(&_SciErr, 0);
-		return NULL;
+		//printError(&_SciErr, 0);
+		return _SciErr;
 	}
 	//ptr = mxGetPr(rhs[id]);
 	model_->label=Malloc(int, model_->nr_class);
@@ -309,8 +303,8 @@ const char *scilab_matrix_to_linear_model(int *scilab_struct, struct model *mode
         _SciErr = getMatrixOfDoubleInList(pvApiCtx, scilab_struct, 8, &iRows, &iCols, &ptr);
 	    if(_SciErr.iErr)
 	{
-		printError(&_SciErr, 0);
-		return NULL;
+		//printError(&_SciErr, 0);
+		return _SciErr;
 	}
 	//ptr = mxGetPr(rhs[id]);
 	model_->w=Malloc(double, w_size*nr_w);
@@ -319,6 +313,6 @@ const char *scilab_matrix_to_linear_model(int *scilab_struct, struct model *mode
 	id++;
 	//mxFree(rhs);
 
-	return NULL;
+	return _SciErr;
 }
 

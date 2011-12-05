@@ -39,7 +39,11 @@ function model = train(weight_vector, training_label_vector, training_instance_m
 // The 'train' function returns a model which can be used for future prediction.  It is a structure and is organized as [Parameters, nr_class, nr_feature, bias, Label, w]
 // 
 // If the '-v' option is specified, cross validation is conducted and the returned model is just a scalar: cross-validation accuracy.
-// 
+// Examples
+// label_vector=[zeros(20,1);ones(20,1)];
+// instance_matrix = sparse([rand(20,2); -1*rand(20,2)]);
+// model=train(label_vector,instance_matrix,"-q")
+// [pred_label, accuracy, dec_values]=predict(label_vector,instance_matrix,model)
 // See also
 // predict
 // Authors
