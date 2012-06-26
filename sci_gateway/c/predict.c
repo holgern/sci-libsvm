@@ -38,7 +38,7 @@
 
 
 #include <api_scilab.h>
-#include <stack-c.h>
+// #include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>
@@ -100,7 +100,9 @@ int do_predict(int *label_vec,  int *instance_mat, struct model *model_, const i
 
 	int correct = 0;
 	int total = 0;
-
+	double error = 0;
+	double sump = 0, sumt = 0, sumpp = 0, sumtt = 0, sumpt = 0;
+	
 	int nr_class=get_nr_class(model_);
 	int nr_w;
 	double *prob_estimates=NULL;
@@ -195,10 +197,10 @@ int do_predict(int *label_vec,  int *instance_mat, struct model *model_, const i
 	for(instance_index=0;instance_index<testing_instance_number;instance_index++)
 	{
 		int i,j;
-		double target,v;
+		double target_label,predict_label;
                 int low,high;
 		
-		target = ptr_label[instance_index];
+		target_label = ptr_label[instance_index];
 
 		// prhs[1] and prhs[1]^T are sparse
 		//read_sparse_instance(pplhs[0], instance_index, x, feature_number, model_->bias);
@@ -225,42 +227,64 @@ int do_predict(int *label_vec,  int *instance_mat, struct model *model_, const i
 
 		if(predict_probability_flag)
 		{
-			v = predict_probability(model_, x, prob_estimates);
-			ptr_predict_label[instance_index] = v;
+			predict_label = predict_probability(model_, x, prob_estimates);
+			ptr_predict_label[instance_index] = predict_label;
 			for(i=0;i<nr_class;i++)
 				ptr_prob_estimates[instance_index + i * testing_instance_number] = prob_estimates[i];
 		}
 		else
 		{
 			double *dec_values = Malloc(double, nr_class);
-			v = predict(model_, x);
-			ptr_predict_label[instance_index] = v;
+			//v = predict(model_, x);
+			predict_label = predict_values(model_, x, dec_values);
+			ptr_predict_label[instance_index] = predict_label;
 
-			predict_values(model_, x, dec_values);
+			
 			for(i=0;i<nr_w;i++)
 				ptr_dec_values[instance_index + i * testing_instance_number] = dec_values[i];
 			free(dec_values);
 		}
 
-		if(v == target)
+		if(predict_label == target_label)
 			++correct;
+		error += (predict_label-target_label)*(predict_label-target_label);
+		sump += predict_label;
+		sumt += target_label;
+		sumpp += predict_label*predict_label;
+		sumtt += target_label*target_label;
+		sumpt += predict_label*target_label;
+		
 		++total;
 	}
 	#ifdef DEBUG
+	if(model_->param.solver_type==L2R_L2LOSS_SVR || 
+           model_->param.solver_type==L2R_L1LOSS_SVR_DUAL || 
+           model_->param.solver_type==L2R_L2LOSS_SVR_DUAL)
+        {
+                sciprint("Mean squared error = %g (regression)\n",error/total);
+                sciprint("Squared correlation coefficient = %g (regression)\n",
+                       ((total*sumpt-sump*sumt)*(total*sumpt-sump*sumt))/
+                       ((total*sumpp-sump*sump)*(total*sumtt-sumt*sumt))
+                       );
+        }
+	else
 	sciprint("Accuracy = %g%% (%d/%d)\n", (double) correct/total*100,correct,total);
 	#endif
 	// return accuracy, mean squared error, squared correlation coefficient
 	//plhs[1] = mxCreateDoubleMatrix(1, 1, mxREAL);
 	//ptr = mxGetPr(plhs[1]);
-	ptr = (double*)malloc(sizeof(double) * 1*1);
+	ptr = (double*)malloc(sizeof(double) * 3*1);
 	ptr[0] = (double) correct/total*100;
-
+	ptr[1] = error/total;
+	ptr[2] = ((total*sumpt-sump*sumt)*(total*sumpt-sump*sumt))/
+				((total*sumpp-sump*sump)*(total*sumtt-sumt*sumt));
+	
 	createMatrixOfDouble(pvApiCtx, Rhs + 1, testing_instance_number, 1, ptr_predict_label);
         free(ptr_predict_label);
         LhsVar(1) = Rhs + 1; 
 	
 	if (Lhs	> 1){
-	    createMatrixOfDouble(pvApiCtx, Rhs + 2, 1, 1, ptr);
+	    createMatrixOfDouble(pvApiCtx, Rhs + 2, 3, 1, ptr);
 	    free(ptr);
 	    LhsVar(2) = Rhs + 2; 
         } else
@@ -298,9 +322,12 @@ void lin_exit_with_help()
 	Scierror (999,
 			"Usage: [predicted_label, accuracy, decision_values/prob_estimates] = predict(testing_label_vector, testing_instance_matrix, model, 'liblinear_options','col')\n"
 			"liblinear_options:\n"
-			"-b probability_estimates: whether to predict probability estimates, 0 or 1 (default 0)\n"
-			"col:\n"
-			"	if 'col' is setted testing_instance_matrix is parsed in column format, otherwise is in row format"
+			"-b probability_estimates: whether to output probability estimates, 0 or 1 (default 0); currently for logistic regression only\n"
+			"col: if 'col' is setted testing_instance_matrix is parsed in column format, otherwise is in row format\n"
+			"Returns:\n"
+			"  predicted_label: prediction output vector.\n"
+			"  accuracy: a vector with accuracy, mean squared error, squared correlation coefficient.\n"
+			"  prob_estimates: If selected, probability estimate vector.\n"
 			);
 }
 
@@ -383,7 +410,7 @@ int  sci_predict(char * fname)
                 _SciErr = getVarType(pvApiCtx, p_instance_matrix, &type);
 		 if (type!=sci_sparse)
 		{
-		  Scierror (999,"Error: Testing_instance_matrix  must be sparse\n");			
+		  Scierror (999,"Testing_instance_matrix must be sparse; Use sparse(Testing_instance_matrix) first\n");			
 		  return 0;
 		}
 		

@@ -1,3 +1,7 @@
+// This file is released under the 3-clause BSD license. See COPYING-BSD.
+
+function builder_gw_c()
+
 CURRENT_PATH = strsubst(get_absolute_file_path("builder_gateway_c.sce"), "\", "/");
 
 lib_name = 'svmlib_c';
@@ -22,7 +26,7 @@ CFLAGS = '-I' + CURRENT_PATH;
 
 tbx_build_gateway(lib_name, table, files, CURRENT_PATH, "", "", CFLAGS);
 
+endfunction
 
-clear lib_name table files  CURRENT_PATH CFLAGS;
-
-clear WITHOUT_AUTO_PUTLHSVAR;
+builder_gw_c();
+clear builder_gw_c; // remove builder_gw_c on stack

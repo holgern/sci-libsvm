@@ -43,7 +43,7 @@ of svmtrain or svmpredict.
 <refsection>
    <title>Examples</title>
    <programlisting role="example"><![CDATA[
-[heart_scale_label, heart_scale_inst] = libsvmread('heart_scale');
+[heart_scale_label, heart_scale_inst] = libsvmread(libsvm_getpath()+'/demos/heart_scale');
    ]]></programlisting>
 </refsection>
 

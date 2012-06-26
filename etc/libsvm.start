@@ -1,4 +1,11 @@
-mprintf("libsvm  Toolbox - (1.2.1)\n");
+// Copyright (C) 2008 - INRIA
+// Copyright (C) 2009 - DIGITEO
+
+// This file is released under the 3-clause BSD license. See COPYING-BSD.
+
+function libsvmlib = svmlib_load()
+
+mprintf("libsvm  Toolbox - (1.3.0)\n");
 
 if isdef("libsvmlib") then
 	warning("libsvm Toolbox library is already loaded");
@@ -32,9 +39,11 @@ clear pathmacros;
 
 // load gateways
 // =============================================================================
-mprintf("\tLoad gateways\n");
-ilib_verbose(0);
-exec(pathconvert(root_tlbx+"/sci_gateway/loader_gateway.sce",%f));
+  mprintf("\tLoad gateways\n");
+  verboseMode = ilib_verbose();
+  ilib_verbose(0);
+  exec(pathconvert(root_tlbx+"/sci_gateway/loader_gateway.sce",%f));
+  ilib_verbose(verboseMode);
 
 // Load and add help chapter
 // =============================================================================
@@ -43,9 +52,7 @@ if or(getscilabmode() == ["NW";"STD"]) then
 	path_addchapter = pathconvert(root_tlbx+"/jar");
 	if ( isdir(path_addchapter) <> [] ) then
 		add_help_chapter("libsvm", path_addchapter, %F);
-		clear add_help_chapter;
 	end
-	clear path_addchapter;
 end
 
 // Load demos
@@ -54,8 +61,26 @@ if or(getscilabmode() == ["NW";"STD"]) then
 	mprintf("\tLoad demos\n");
 	pathdemos = pathconvert(root_tlbx+"/demos/libsvm.dem.gateway.sce",%F,%T);
 	add_demo("libsvm",pathdemos);
-	clear pathdemos add_demo;
 end
 
-clear root_tlbx;
-clear etc_tlbx;
+	// =============================================================================
+	// Create a function which returns the path to the module
+	longpath = getlongpathname(root_tlbx)
+	deff("path = libsvm_getpath()","path="""+longpath+"""");
+	
+	// =============================================================================
+	// Create variables at level #0
+	//[libsvmlib, libsvm_getpath] = resume(libsvmlib, libsvm_getpath);
+	[libsvm_getpath] = resume(libsvm_getpath);
+
+
+endfunction
+
+	
+if ( isdef("libsvmlib") ) then
+	warning("Library is already loaded (""ulink(); clear libsvmlib;"" to unload.)");
+	return;
+end
+
+libsvmlib = svmlib_load();
+clear svmlib_load;

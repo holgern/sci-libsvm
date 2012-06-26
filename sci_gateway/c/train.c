@@ -38,13 +38,14 @@
 #include "linear.h"
 
 #include <api_scilab.h>
-#include <stack-c.h>
+// #include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>
 
 #include "linear_model_scilab.h"
 
+//#define DEBUG
 
 #define CMD_LEN 2048
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
@@ -60,25 +61,34 @@ void exit_with_help()
 	"Usage: model = train(weight_vector, training_label_vector, training_instance_matrix, 'liblinear_options', 'col');\n"
 	"liblinear_options:\n"
 	"-s type : set type of solver (default 1)\n"
-	"	0 -- L2-regularized logistic regression (primal)\n"
-	"	1 -- L2-regularized L2-loss support vector classification (dual)\n"	
-	"	2 -- L2-regularized L2-loss support vector classification (primal)\n"
-	"	3 -- L2-regularized L1-loss support vector classification (dual)\n"
-	"	4 -- multi-class support vector classification by Crammer and Singer\n"
-	"	5 -- L1-regularized L2-loss support vector classification\n"
-	"	6 -- L1-regularized logistic regression\n"
-	"	7 -- L2-regularized logistic regression (dual)\n"
+	"	 0 -- L2-regularized logistic regression (primal)\n"
+	"	 1 -- L2-regularized L2-loss support vector classification (dual)\n"	
+	"	 2 -- L2-regularized L2-loss support vector classification (primal)\n"
+	"	 3 -- L2-regularized L1-loss support vector classification (dual)\n"
+	"	 4 -- multi-class support vector classification by Crammer and Singer\n"
+	"	 5 -- L1-regularized L2-loss support vector classification\n"
+	"	 6 -- L1-regularized logistic regression\n"
+	"	 7 -- L2-regularized logistic regression (dual)\n"
+	"	11 -- L2-regularized L2-loss epsilon support vector regression (primal)\n"
+	"	12 -- L2-regularized L2-loss epsilon support vector regression (dual)\n"
+	"	13 -- L2-regularized L1-loss epsilon support vector regression (dual)\n"
 	"-c cost : set the parameter C (default 1)\n"
+	"-p epsilon : set the epsilon in loss function of epsilon-SVR (default 0.1)\n"
 	"-e epsilon : set tolerance of termination criterion\n"
 	"	-s 0 and 2\n" 
 	"		|f'(w)|_2 <= eps*min(pos,neg)/l*|f'(w0)|_2,\n" 
 	"		where f is the primal function and pos/neg are # of\n" 
 	"		positive/negative data (default 0.01)\n"
+	"	-s 11\n"
+	"		|f'(w)|_2 <= eps*|f'(w0)|_2 (default 0.001)\n" 
 	"	-s 1, 3, 4 and 7\n"
 	"		Dual maximal violation <= eps; similar to libsvm (default 0.1)\n"
 	"	-s 5 and 6\n"
 	"		|f'(w)|_1 <= eps*min(pos,neg)/l*|f'(w0)|_1,\n"
 	"		where f is the primal function (default 0.01)\n"
+	"	-s 12 and 13\n"
+	"		|f'(alpha)|_1 <= eps |f'(alpha0)|,\n"
+	"		where f is the dual function (default 0.1)\n"
 	"-B bias : if bias >= 0, instance x becomes [x; bias]; if < 0, no bias term added (default -1)\n"
 	"-wi weight: weights adjust the parameter C of different classes (see README for details)\n"
 	"-v n: n-fold cross validation mode\n"
@@ -103,17 +113,46 @@ double do_cross_validation()
 {
 	int i;
 	int total_correct = 0;
-	int *target = Malloc(int,prob_.l);
+	double total_error = 0;
+	double sumv = 0, sumy = 0, sumvv = 0, sumyy = 0, sumvy = 0;
+	double *target = Malloc(double, prob_.l);
 	double retval = 0.0;
 
 	cross_validation(&prob_,&param_,nr_fold_,target);
-
-	for(i=0;i<prob_.l;i++)
-		if(target[i] == prob_.y[i])
-			++total_correct;
-	sciprint("Cross Validation Accuracy = %g%%\n",100.0*total_correct/prob_.l);
-	retval = 100.0*total_correct/prob_.l;
-
+	if(param_.solver_type == L2R_L2LOSS_SVR || 
+	   param_.solver_type == L2R_L1LOSS_SVR_DUAL || 
+	   param_.solver_type == L2R_L2LOSS_SVR_DUAL)
+	{
+		for(i=0;i<prob_.l;i++)
+                {
+                        double y = prob_.y[i];
+                        double v = target[i];
+                        total_error += (v-y)*(v-y);
+                        sumv += v;
+                        sumy += y;
+                        sumvv += v*v;
+                        sumyy += y*y;
+                        sumvy += v*y;
+                }
+                #ifdef DEBUG
+                sciprint("Cross Validation Mean squared error = %g\n",total_error/prob_.l);
+                sciprint("Cross Validation Squared correlation coefficient = %g\n",
+                        ((prob_.l*sumvy-sumv*sumy)*(prob_.l*sumvy-sumv*sumy))/
+                        ((prob_.l*sumvv-sumv*sumv)*(prob_.l*sumyy-sumy*sumy))
+                        );
+		#endif
+		retval = total_error/prob_.l;
+	}
+	else
+	{
+		for(i=0;i<prob_.l;i++)
+			if(target[i] == prob_.y[i])
+				++total_correct;
+	  #ifdef DEBUG
+	  sciprint("Cross Validation Accuracy = %g%%\n",100.0*total_correct/prob_.l);
+          #endif
+	  retval = 100.0*total_correct/prob_.l;
+	}
 	free(target);
 	return retval;
 }
@@ -130,6 +169,7 @@ int parse_command_line(int nrhs, const char *cmd, const char *cmd_col, char *mod
 	param_.solver_type = L2R_L2LOSS_SVC_DUAL;
 	param_.C = 1;
 	param_.eps = INF; // see setting below
+	param_.p = 0.1;
 	param_.nr_weight = 0;
 	param_.weight_label = NULL;
 	param_.weight = NULL;
@@ -172,6 +212,9 @@ int parse_command_line(int nrhs, const char *cmd, const char *cmd_col, char *mod
 			case 'c':
 				param_.C = atof(argv[i]);
 				break;
+			case 'p':
+				param_.p = atof(argv[i]);
+				break;
 			case 'e':
 				param_.eps = atof(argv[i]);
 				break;
@@ -208,12 +251,30 @@ int parse_command_line(int nrhs, const char *cmd, const char *cmd_col, char *mod
 
 	if(param_.eps == INF)
 	{
-		if(param_.solver_type == L2R_LR || param_.solver_type == L2R_L2LOSS_SVC)
-			param_.eps = 0.01;
-		else if(param_.solver_type == L2R_L2LOSS_SVC_DUAL || param_.solver_type == L2R_L1LOSS_SVC_DUAL || param_.solver_type == MCSVM_CS || param_.solver_type == L2R_LR_DUAL)
-			param_.eps = 0.1;
-		else if(param_.solver_type == L1R_L2LOSS_SVC || param_.solver_type == L1R_LR)
-			param_.eps = 0.01;
+		switch(param_.solver_type)
+		{
+			case L2R_LR: 
+			case L2R_L2LOSS_SVC:
+				param_.eps = 0.01;
+				break;
+			case L2R_L2LOSS_SVR:
+				param_.eps = 0.001;
+				break;
+			case L2R_L2LOSS_SVC_DUAL: 
+			case L2R_L1LOSS_SVC_DUAL: 
+			case MCSVM_CS: 
+			case L2R_LR_DUAL: 
+				param_.eps = 0.1;
+				break;
+			case L1R_L2LOSS_SVC: 
+			case L1R_LR:
+				param_.eps = 0.01;
+				break;
+			case L2R_L1LOSS_SVR_DUAL:
+			case L2R_L2LOSS_SVR_DUAL:
+				param_.eps = 0.1;
+				break;
+		}
 	}
 	return 0;
 }
@@ -228,12 +289,12 @@ int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat)
 	double *samples, *labels, *weights;
 	int *instance_mat_col; // instance sparse matrix in column format
         SciErr _SciErr;
- 
+
 	prob_.x = NULL;
 	prob_.y = NULL;
 	prob_.W = NULL;
 	x_space_ = NULL;
-	
+
 
 
  	if(col_format_flag_)
@@ -259,7 +320,7 @@ int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat)
 	  
 	 _SciErr = getMatrixOfDouble(pvApiCtx, weight_vec, &r_weights, &c_weights, &weights);
 	 if(_SciErr.iErr)
-		{
+	{
 			printError(&_SciErr, 0);
 			return -1;
 		}
@@ -283,8 +344,8 @@ int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat)
 		{
 			printError(&_SciErr, 0);
 			return -1;
-		}
-		
+	}
+
 		
 		
 	// the number of instance
@@ -319,7 +380,7 @@ int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat)
 	elements = num_samples + prob_.l*2;
 	max_index = c_samples;//(int) mxGetM(instance_mat_col);
 
-	prob_.y = Malloc(int, prob_.l);
+	prob_.y = Malloc(double, prob_.l);
 	prob_.W = Malloc(double,prob_.l);
 	prob_.x = Malloc(struct feature_node*, prob_.l);
 	x_space_ = Malloc(struct feature_node, elements);
@@ -330,7 +391,7 @@ int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat)
 	for(i=0;i<prob_.l;i++)
 	{
 		prob_.x[i] = &x_space_[j];
-		prob_.y[i] = (int) labels[i];
+		prob_.y[i] = labels[i];
 		prob_.W[i] = 1;
 		if (weight_vector_row_num == prob_.l)
 		  prob_.W[i] *= (double) weights[i];
@@ -406,7 +467,7 @@ int sci_train(char * fname)
 		  getAllocatedSingleString(pvApiCtx, p_option_string, &option_string);
 	  
 	}
-	
+
 	// Transform the input Matrix to libsvm format
 	if(Rhs > (1+rhs_offset) && (Rhs < 5+rhs_offset))
 	{
@@ -488,8 +549,8 @@ int sci_train(char * fname)
 		 if (type3==sci_strings)
 		  {
 		    getAllocatedSingleString(pvApiCtx, p_col_string, &col_string);
-		  } 
-		  
+		}
+
 		    
 		}
 		if (weight_vector_flag==1) {
@@ -526,7 +587,7 @@ int sci_train(char * fname)
 		 freeAllocatedSingleString(option_string);
 		if (col_string!=NULL)
                  freeAllocatedSingleString(col_string);
-		
+
 		if(type==sci_sparse)
 			err = read_problem_sparse(p_weight_vector,p_label_vector, p_instance_matrix);
 		else
@@ -582,7 +643,7 @@ int sci_train(char * fname)
 				//Scierror (999,"Error: can't convert libsvm model to matrix structure: %s\n", error_msg);
 			        printError(&_SciErr, 0);
 				exit_with_help();
-				
+
 			}else{
 			    /* This function put on scilab stack, the lhs variable
 		    which are at the position lhs(i) on calling stack */

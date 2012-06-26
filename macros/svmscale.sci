@@ -8,12 +8,17 @@ function [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters
 //   
 //  [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters] = svmscale(instance,[lower,upper],label,[label_lower, label_upper]);
 //  Description
-//   Scale your data. For example, scale each attribute to [0,1] or [-1,+1].
+//  
+//  Scaling before applying SVM is very important in order to avoid several  numerical problems! Normally good ranges are [0,1] or [-1,+1]. 
+//  Each feature row in the instance matrix has be scaled indepented from the other features.
+//  
+//  It is important to scale the testing data with the same scale as the training data!
 //  Examples
-//  [label,instance]=libsvmread("demos/heart_scale");
+//  [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
 //  [scaled_instance,scaled_parameters] = svmscale(instance,[-1,1]);
 //  cc = svmtrain(label,scaled_instance);
-//  [predicted_label]=svmtrain(label,svmscale(instance,scaled_parameters));
+//  [predicted_label,accuracy]=svmpredict(label,svmnormalize(instance,scaled_parameters),cc);
+// disp("accuracy: "+string(accuracy(1))+" %");
 // Authors
 //  Holger Nahrstaedt
 

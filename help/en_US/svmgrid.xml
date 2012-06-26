@@ -42,6 +42,12 @@
       <listitem><para> fold</para></listitem></varlistentry>
    <varlistentry><term>option_string:</term>
       <listitem><para> additional parameters for svmtrain</para></listitem></varlistentry>
+   <varlistentry><term>best_rate :</term>
+      <listitem><para> cross validation accuracy for the best parameter combination</para></listitem></varlistentry>
+   <varlistentry><term>best_c :</term>
+      <listitem><para> best parameter c</para></listitem></varlistentry>
+   <varlistentry><term>best_g :</term>
+      <listitem><para> best parameter gamma</para></listitem></varlistentry>
    </variablelist>
 </refsection>
 
@@ -59,8 +65,9 @@ your problem.
 <refsection>
    <title>Examples</title>
    <programlisting role="example"><![CDATA[
-[label,instance]=libsvmread("demos/heart_scale");
-best_rate = svmgrid(label,instance);
+[label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+[best_rate,best_c,best_g] = svmgrid(label,instance)
+
    ]]></programlisting>
 </refsection>
 

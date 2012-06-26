@@ -1,4 +1,10 @@
+mode(1);lines(0);
 
+   
+// Welcome to the libsvm Toolbox for Scilab 
+// 
+// Please wait, demo is working ....
+mode(-1);
 //Test libsvm's performance
 result = [];
 for N = [100 500 1000 ]

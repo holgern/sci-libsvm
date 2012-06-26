@@ -24,11 +24,11 @@
 <refsynopsisdiv>
    <title>Calling Sequence</title>
    <synopsis>
-   [best_rate,best_c,best_g] = svmgridlinear(label,instance)
-   [best_rate,best_c,best_g] = svmgridlinear(label,instance,log2c)
-   [best_rate,best_c,best_g] = svmgridlinear(label,instance,log2c,s_seq)
-   [best_rate,best_c,best_g] = svmgridlinear(label,instance,log2c,s_seq,v)
-   [best_rate,best_c,best_g] = svmgridlinear(label,instance,log2c,s_seq,v,option_string)
+   [best_rate,best_c,best_s] = svmgridlinear(label,instance)
+   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c)
+   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq)
+   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq,v)
+   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq,v,option_string)
    </synopsis>
 </refsynopsisdiv>
 
@@ -38,11 +38,17 @@
    <varlistentry><term>log2c :</term>
       <listitem><para> [begin,end,step]</para></listitem></varlistentry>
    <varlistentry><term>s_seq :</term>
-      <listitem><para> linear kernels (0 - 7), e.g. [0 1 4]</para></listitem></varlistentry>
+      <listitem><para> linear kernels (0 - 7, 11 - 13), e.g. [0 1 4]</para></listitem></varlistentry>
    <varlistentry><term>v :</term>
       <listitem><para> fold</para></listitem></varlistentry>
    <varlistentry><term>option_string:</term>
       <listitem><para> additional parameters for svmtrain</para></listitem></varlistentry>
+   <varlistentry><term>best_rate :</term>
+      <listitem><para> cross validation accuracy for the best parameter combination</para></listitem></varlistentry>
+   <varlistentry><term>best_c :</term>
+      <listitem><para> best parameter c</para></listitem></varlistentry>
+   <varlistentry><term>best_s :</term>
+      <listitem><para> best linear kernel</para></listitem></varlistentry>
    </variablelist>
 </refsection>
 
@@ -59,8 +65,8 @@ your problem.
 <refsection>
    <title>Examples</title>
    <programlisting role="example"><![CDATA[
-[label,instance]=libsvmread("demos/heart_scale");
-best_rate = svmgridlinear(label,instance);
+[label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+[best_rate,best_c,best_s] = svmgridlinear(label,instance)
    ]]></programlisting>
 </refsection>
 

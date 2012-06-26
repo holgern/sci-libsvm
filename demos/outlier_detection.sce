@@ -11,8 +11,10 @@ mode(1);lines(0);
 halt('Press return'); clc;
 //
 // We are generating a random dataset and add one outlier
-x=rand(90,1);
-x(10)=1.5;
+x=rand(100,1);
+
+//  outlier at pos 10
+x(30)=1.2;
 
 // Press any key to continue...
 halt('Press return');
@@ -28,8 +30,13 @@ model=svmtrain(ones(x),x,'-s 2');
 halt('Press return');
 
 scf();clf();
+subplot(211)
+plot(x);
+xgrid(1);
+
+subplot(212)
 plot(dec_val);
 xgrid(1);
-xtitle("The is an outlier at pos 10");
+xtitle("There seems to be an outlier at pos 30");
 
 

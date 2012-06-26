@@ -1,81 +1,148 @@
 function svmpartest(x)
-//This function calculate the performance, based on Bayes theorem, of a
-//clinical test.
+//This function calculate the performance, based on Bayes theorem, of a clinical test.
 // Calling Sequence
 // svmpartest(X)
 // Parameters
+//      
+//      X :is a  2x2 matrix
+//      Outputs:
+//           :- Prevalence of disease
+//           :- Test Sensibility with 95% confidence interval
+//           :- Test Specificity with 95% confidence interval
+//           :- False positive and negative proportions
+//           :- Youden's Index
+//           :- Test Accuracy
+//           :- Mis-classification Rate
+//           :- Positive predictivity with 95% confidence interval
+//           :- Positive Likelihood Ratio
+//           :- Negative predictivity with 95% confidence interval
+//           :- Negative Likelihood Ratio
+//           :- Error odds ratio
+//           :- Diagnostic odds ratio
+//           :- Discriminant Power
+//           :- Test bias
+//           :- Number needed to Diagnose (NDD)
+// Description     
+//           X is the following 2x2 matrix.
 //
-//     Outputs:
-//     
-//           - Prevalence of disease:
-//           - Test Sensibility with 95% confidence interval:
-//           - Test Specificity with 95% confidence interval:
-//           - False positive and negative proportions:
-//           - Youden's Index:
-//           - Test Accuracy:
-//           - Mis-classification Rate:
-//           - Positive predictivity with 95% confidence interval:
-//           - Positive Likelihood Ratio:
-//           - Negative predictivity with 95% confidence interval:
-//           - Negative Likelihood Ratio:
-//           - Error odds ratio:
-//           - Diagnostic odds ratio:
-//           - Discriminant Power:
-//           - Test bias:
-//           - Number needed to Diagnose (NDD):
+//....................Affected(D+)..Healthy(D-)
 //
-//  Examples
+// ...................._______________________
+//                    
+//Positive Test(T+)  |   True    |  False    |
+//
+//.................... | positives | positive  |
+//                   
+// ....................|___________|___________|
+//                   
+// ....................|  False    |   True    |
+//                   
+//Negative Test(T-)  | negative  | negatives |
+//
+//.................... |___________|___________|
+//
+// 
+//Sensitivity and Specificity
+//
+//The Sensitivity is the probability that the test is positive on sick subjects: P(T+|D+) 
+//The Specificity is the probability that the test is negative on healthy subjects: P(T-|D-) 
+//
+//Positive and Negative predictivity
+//
+//Positive predictivity is the probability that a subject is sick when test is positive: P(D+|T+)
+//Negative predictivity is the probability that a subject is healthy when test is negative: P(D-|T-)
+//Positive predictivity=Precision
+//
+//Youden's Index
+//
+//Youden's J statistics (also called Youden's index) is a single statistic that
+//captures the performance of a diagnostic test. The use of such a single index
+//is "not generally to be recommended". It is equal to the risk difference for a
+//dichotomous test and it defined as: J = Sensitivity + Specificity - 1. 
+//A perfect test has J=1. 
+//
+//Positive and Negative Likelihood Ratio
+//
+//When we decide to order a diagnostic test, we want to know which test (or
+//tests) will best help us rule-in or rule-out disease in our patient.  In the
+//language of clinical epidemiology, we take our initial assessment of the
+//likelihood of disease (“pre-test probability”), do a test to help us shift our
+//suspicion one way or the other, and then determine a final assessment of the
+//likelihood of disease (“post-test probability”). 
+//Likelihood ratios tell us how much we should shift our suspicion for a
+//particular test result. Because tests can be positive or negative, there are at
+//least two likelihood ratios for each test.  The “positive likelihood ratio”
+//(LR+) tells us how much to increase the probability of disease if the test is
+//positive, while the “negative likelihood ratio” (LR-) tells us how much to
+//decrease it if the test is negative.
+//You can also define the LR+ and LR- in terms of sensitivity and specificity:
+//LR+ = sensitivity / (1-specificity)
+//LR- = (1-sensitivity) / specificity
+//
+//Accuracy and Mis-classification rate
+//
+//The Accuracy (or Power) is the probability that the test correctly classifies 
+//the subjects; the Mis-classification rate is its complement to 1.
+//In statistics, the F1 score (also F-score or F-measure) is a measure of a
+//test's accuracy. It considers both the Precision (positive predictivity) 
+//and the Sensitivity of the test to compute the score: 
+//P is the number of correct results divided by the number of all returned results
+//S is the number of correct results divided by the number of results that should 
+//have been returned. 
+//The F1 score can be interpreted as a weighted average of the Precision and
+//Sensitivity, where an F1 score reaches its best value at 1 and worst score at 0. 
+//
+//Test Bias (TB)
+//
+//A test which shows provable and systematic differences in the results of people
+//based on group membership. For example, a test might be considered biased if
+//members of one particular gender or race consistently and systematic have
+//statistically different results from the rest of the testing population. 
+//It is defined as (T+)/(D+)=(TP+FP)/(TP+FN)
+//A perfect test has a TB=1;
+//If TB<1 the test underestimates the disease because there are more affected than positive test
+//If TB>1 the test overestimates the disease because there are more positive test than affected
+//
+//Error Odds Ratio. 
+//
+//Indicates if the probability of being wrongly classified is highest in the
+//diseased or in the non-diseased group. If the error odds is higher than one the
+//probability is highest in the diseased group (and the specificity of the test
+//is better than the sensitivity), if the value is lower than one the probability
+//of an incorrect classification is highest in the non-diseased group (and the
+//sensitivity of the test is better than the specificity).     
+//It is defined as (Sensitivity/(1-Sensitivity))/(Specificity/(1-Specificity));
+//
+//Diagnostic Odds Ratio. 
+//
+//Often used as a measure of the discriminative power of the test. Has the value
+//one if the test does not discriminate between diseased and not diseased. Very
+//high values above one means that a test discriminates well. Values lower than
+//one mean that there is something wrong in the application of the test.   
+//It is defined as (Sensitivity/(1-Sensitivity))/((1-Specificity)/Specificity);
+//
+//Discriminant power
+//
+//The discriminant power for a test, also termed the test effectiveness, is a
+//measure of how well a test distinguishes between affected and unaffected
+//persons. It is the sum of logs of Sensivity and Specificity over own false
+//proportion, scaled by the standard deviation of the logistic normal
+//distribution curve (square root of 3 divided by π). Test effectiveness is
+//interpreted as the standardized distance between the means for both populations.     
+//A test with a discriminant value of 1 is not effective in discriminating between affected and unaffected individuals.
+//A test with a discriminant value of 3 is effective in discriminating between affected and unaffected individuals.
+//
+//
+//      Examples
 //
 //           X=[80 3; 5 20];
 //
 //           svmpartest(X)
-//
-//           Answer is:
-//
-// Prevalence: 78.7%
-//  
-// Sensitivity (probability that test is positive on unhealthy subject): 94.1%
-// 95% confidence interval: 89.1% - 99.1%
-// False negative proportion: 5.9%
-//  
-// Specificity (probability that test is negative on healthy subject): 87.0%
-// 95% confidence interval: 73.2% - 100.0%
-// False positive proportion: 13.0%
-//  
-// Youden's Index (a perfect test would have a Youden index of +1): 0.8107
-//  
-// Accuracy or Potency: 92.6%
-// Mis-classification Rate: 7.4%
-//  
-// Predictivity of positive test (probability that a subject is unhealthy when test is positive): 96.4%
-// 95% confidence interval: 92.4% - 100.0%
-// Positive Likelihood Ratio: 7.2
-// Moderate increase in possibility of disease presence
-//  
-// Predictivity of negative test (probability that a subject is healthy when test is negative): 80.0%
-// 95% confidence interval: 64.3% - 95.7%
-// Negative Likelihood Ratio: 0.1
-// Large (often conclusive) increase in possibility of disease absence
-//  
-// Error odds ratio: 2.4000
-// Diagnostic odds ratio: 106.6667
-// Discriminant Power: 2.6
-//      A test with a discriminant value of 1 is not effective in discriminating between affected and unaffected individuals.
-//      A test with a discriminant value of 3 is effective in discriminating between affected and unaffected individuals.
-// Test bias: 0.9765
-// Test underestimates the phenomenon
-// Number needed to Diagnose (NDD): 1.2
-//
-//           Created by Giuseppe Cardillo
-//           giuseppe.cardillo-edta@poste.it
-//
-// To cite this file, this would be an appropriate format:
-// Cardillo G. (2006). Clinical test performance: the performance of a
-// clinical test based on the Bayes theorem. 
-// http://www.mathworks.com/matlabcentral/fileexchange/12705
 // Authors
-// Giuseppe Cardillo
-// Holger Nahrstaedt
+//           Created by Giuseppe Cardillo           giuseppe.cardillo-edta@poste.it
+//           H. Nahrstaedt - 2012
+//
+
 
 //Input Error handling
 [r,c] = size(x);
@@ -221,22 +288,31 @@ printf('Sensitivity:\t %0.1f%% \t %0.1f%% - %0.1f%%\n',SS(1)*100,Seci);
 //printf('\nSpecificity (probability that test is negative on healthy subject):\n')
 printf('Specificity\t %0.1f%% \t %0.1f%% - %0.1f%%\n',SS(2)*100,Spci);
 
-printf('\nTrue positve:\t %0.1f%% \t %0.1f%% - %0.1f%%\n',PNp(1)*100,Ppci);
+printf('\nTrue positve:\t %0.1f%% \t %0.1f%% - %0.1f%%\n',SS(1)*100,Seci);
 printf('False positive:\t %0.1f%% \t %0.1f%% - %0.1f%%\n',fp(2)*100,fPpci)
 
-printf('\True negative:\t %0.1f%% \t %0.1f%% - %0.1f%%\n',PNp(2)*100,Npci);
+printf('\True negative:\t %0.1f%% \t %0.1f%% - %0.1f%%\n',SS(2)*100,Spci);
 printf('False negative:\t %0.1f%% \t %0.1f%% - %0.1f%%\n',fp(1)*100,fNpci);
+
+
 
 printf('\nYouden''s Index (a perfect test would have a Youden index of +1): %0.4f\n', J)
 printf('F-measure: %0.1f%%\n', FMeasure*100)
 printf('Accuracy or Potency: %0.1f%%\n', acc*100)
 printf('Mis-classification Rate: %0.1f%%\n', mcr*100)
+disp(' ')
+//  printf('\nPositive Likelihood Ratio: %0.1f\n', plr)
+//  dlr(plr)
+//  printf('\nNegative Likelihood Ratio: %0.1f\n', nlr)
+//  dlr(nlr)
 
- printf('\nPositive Likelihood Ratio: %0.1f\n', plr)
- dlr(plr)
- printf('\nNegative Likelihood Ratio: %0.1f\n', nlr)
- dlr(nlr)
+printf('Predictivity of positive test : \t %0.1f%% \t %0.1f%% - %0.1f%%\n', PNp(1)*100, Ppci)
+printf('Positive Likelihood Ratio: %0.1f\n', plr)
+dlr(plr)
+printf('Predictivity of negative test : \t %0.1f%% \t %0.1f%% - %0.1f%%\n', PNp(2)*100,Npci)
+printf('Negative Likelihood Ratio: %0.1f\n', nlr)
 
+dlr(nlr)
 disp(' ')
 printf('Error odds ratio: %0.4f\n',EOR)
 printf('Diagnostic odds ratio: %0.4f\n',DOR)

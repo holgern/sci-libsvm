@@ -36,7 +36,7 @@
 #include "svm.h"
 
 #include <api_scilab.h>
-#include <stack-c.h>
+// #include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>
@@ -61,6 +61,17 @@ static const char *field_names[] = {
 	"sv_coef",
         "SVs"
 }; 
+
+typedef struct scisparse {
+         int m;
+         int n;
+         int it;
+         int nel; 
+         int *mnel;
+         int *icol; 
+         double *R; 
+         double *I ; 
+ } SciSparse ;
 
 SciErr model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 {
@@ -434,6 +445,13 @@ if (USE_SPARSE_IN_STRUCT==1) {
   if (ConstrMat)       FREE(ConstrMat);
 	 
 } else {
+  
+  if(model->param.kernel_type == PRECOMPUTED)
+  {
+			nonzero_element = model->l;
+			num_of_feature = 1;
+    
+  }
   
     _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 12, model->l, num_of_feature, &rhs[out_id]);
 	   if(_SciErr.iErr)

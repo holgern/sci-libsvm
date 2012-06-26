@@ -8,7 +8,7 @@ function [label_vector, instance_matrix] = libsvmread('data.txt');
 // 
 // 
 // Examples
-// [heart_scale_label, heart_scale_inst] = libsvmread('heart_scale');
+// [heart_scale_label, heart_scale_inst] = libsvmread(libsvm_getpath()+'/demos/heart_scale');
 // See also
 // libsvmwrite
 // Authors

@@ -11,10 +11,10 @@ function [cm]= svmconfmat(g,ghat)
 //    whose known group labels are group J and whose predicted group labels
 //    are group I.
 //   Examples
-//    [label,instance]=libsvmread("demos/heart_scale");
+//    [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
 //    cc = svmtrain(label,instance);
 //    [predicted_label]=svmpredict(label,instance,cc);
-//    cm = svmconfmat(label,  predicted_label);
+//    cm = svmconfmat(label,  predicted_label)
 // Authors
 // Holger Nahrstaedt
 

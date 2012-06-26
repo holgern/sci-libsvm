@@ -1,24 +1,27 @@
-function [best_rate,best_c,best_s,rate_matrix] = svmgridlinear(label,instance,log2c,s_seq,fold,option_string)
+function [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq,fold,option_string)
 // parameter selection tool for linear classification
 // Calling Sequence
-//   [best_rate,best_c,best_g] = svmgridlinear(label,instance)
-//   [best_rate,best_c,best_g] = svmgridlinear(label,instance,log2c)
-//   [best_rate,best_c,best_g] = svmgridlinear(label,instance,log2c,s_seq)
-//   [best_rate,best_c,best_g] = svmgridlinear(label,instance,log2c,s_seq,v)
-//   [best_rate,best_c,best_g] = svmgridlinear(label,instance,log2c,s_seq,v,option_string)
+//   [best_rate,best_c,best_s] = svmgridlinear(label,instance)
+//   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c)
+//   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq)
+//   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq,v)
+//   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq,v,option_string)
 //  Parameters
 //  log2c : [begin,end,step]
-//  s_seq : linear kernels (0 - 7), e.g. [0 1 4]
+//  s_seq : linear kernels (0 - 7, 11 - 13), e.g. [0 1 4]
 //  v : fold
 //  option_string: additional parameters for svmtrain
+//  best_rate : cross validation accuracy for the best parameter combination
+//  best_c : best parameter c 
+//  best_s : best linear kernel
 //  Description
 //  svmgrid is a parameter selection tool for linear classification. It uses cross validation (CV)
 //technique to estimate the accuracy of each parameter combination in
 //the specified range and helps you to decide the best parameters for
 //your problem.
 // Examples
-//    [label,instance]=libsvmread("demos/heart_scale");
-//    best_rate = svmgridlinear(label,instance);
+//    [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+//    [best_rate,best_c,best_s] = svmgridlinear(label,instance)
 // Authors
 // Holger Nahrstaedt
 // 

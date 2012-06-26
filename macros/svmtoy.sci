@@ -5,10 +5,8 @@ function svmtoy(label_vector, instance_matrix, options, contour_level)
 // Parameters
 // label_vector: N by 1, has to be two-class
 // instance_matrix: N by 2
-// options: default '',
-//          see libsvm-mat-8 README, has to be a classification formulation.
-// contour_level: default [0 0], 
-//                change to [-1 0 1] for showing the +/- 1 margin.
+// options: default '',  see svmtrain, has to be a classification formulation (e.g."-c 1000 -g 0.5") .
+// contour_level: default [0 0],    change to [-1 0 1] for showing the +/- 1 margin.
 // Description
 // svmtoy shows the two-class classification boundary of the 2-D data
 // Examples
@@ -17,6 +15,7 @@ function svmtoy(label_vector, instance_matrix, options, contour_level)
 // svmtoy(label_vector, instance_matrix)
 // 
 // svmtoy(label_vector, instance_matrix,"-c 1000 -g 0.5",[-1 0 1])
+// 
 // 
 // Authors
 // Holger Nahrstaedt

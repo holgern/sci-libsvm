@@ -8,7 +8,7 @@ function [predicted_label, accuracy, decision_values/prob_estimates] = predict(t
 // liblinear_options: -b probability_estimates: whether to predict probability estimates, 0 or 1 (default 0)
 // col: if 'col' is setted testing_instance_matrix is parsed in column format, otherwise is in row format
 // predicted_label:a vector of predicted labels
-// accuracy: a scalar meaning accuracy
+// accuracy: a vector with accuracy, mean squared error, squared correlation coefficient
 // decision_values/prob_estimates: a matrix containing decision values or probability estimates (if '-b 1' is specified).
 // Description
 // 
@@ -24,7 +24,17 @@ function [predicted_label, accuracy, decision_values/prob_estimates] = predict(t
 // label_vector=[zeros(20,1);ones(20,1)];
 // instance_matrix = sparse([rand(20,2); -1*rand(20,2)]);
 // model=train(label_vector,instance_matrix,"-q")
-// [pred_label, accuracy, dec_values]=predict(label_vector,instance_matrix,model)
+// [pred_label, accuracy, dec_values]=predict(label_vector,instance_matrix,model);
+// disp("accuracy: "+string(accuracy(1))+" %");
+// 
+// //---------------------
+// // heart scale demo
+// [heart_scale_label, heart_scale_inst] = libsvmread(libsvm_getpath()+"/demos/heart_scale");
+// model = train(heart_scale_label, heart_scale_inst, '-c 1');
+// [predict_label, accuracy, dec_values] = predict(heart_scale_label, heart_scale_inst, model); // test the training data
+// disp("accuracy: "+string(accuracy(1))+" %");
+// 
+// 
 //See also
 //train
 // Authors

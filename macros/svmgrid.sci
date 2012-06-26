@@ -10,6 +10,9 @@ function [best_rate,best_c,best_g,rate_matrix] = svmgrid(label,instance,log2c,lo
 //  log2g : [begin,end,step]
 //  v : fold
 //  option_string: additional parameters for svmtrain
+//  best_rate : cross validation accuracy for the best parameter combination
+//  best_c : best parameter c 
+//  best_g : best parameter gamma
 //  Description
 //  svmgrid is a parameter selection tool for C-SVM classification using
 //the RBF (radial basis function) kernel. It uses cross validation (CV)
@@ -17,8 +20,9 @@ function [best_rate,best_c,best_g,rate_matrix] = svmgrid(label,instance,log2c,lo
 //the specified range and helps you to decide the best parameters for
 //your problem.
 // Examples
-//    [label,instance]=libsvmread("demos/heart_scale");
-//    best_rate = svmgrid(label,instance);
+//    [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+//    [best_rate,best_c,best_g] = svmgrid(label,instance)
+//
 // Authors
 // Holger Nahrstaedt
 // 
@@ -32,14 +36,20 @@ function [best_rate,best_c,best_g,rate_matrix] = svmgrid(label,instance,log2c,lo
               log2c=[ -5, 15, 2];
               log2g=[ 3, -15, -2]; 
                fold = 5;
+         elseif isempty(log2c) then
+             log2c=[ -5, 15, 2];
          end;
 
          if nargin<4 then
                log2g=[ 3, -15, -2]; 
                fold = 5;
+        elseif isempty(log2g) then
+              log2g=[ 3, -15, -2]; 
          end;
 
          if nargin<5 then
+               fold = 5;
+         elseif isempty(fold) then
                fold = 5;
          end;
 

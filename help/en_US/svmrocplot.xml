@@ -45,11 +45,22 @@ Use the given model to predict testing data and obtain decision values  for ROC
    <title>Examples</title>
    <programlisting role="example"><![CDATA[
 
-[label,instance]=libsvmread("demos/heart_scale");
-svmrocplot(heart_scale_label, heart_scale_inst,'-v 5');
+[label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+// 5-fold cross-classiﬁcation, training of svm is done inside of svmrocplot
+svmrocplot(label, instance,'-v 5');
 
-[label,instance]=libsvmread("demos/heart_scale");
+// training using svmtrain
 model = svmtrain(label,instance);
+svmrocplot(label,instance,model);
+
+//--------------------------
+//svmrocplot for linear models
+[label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+// 5-fold cross-classiﬁcation, training of svm is done inside of svmrocplot
+svmrocplot(label, instance,'-v 5',%t);
+
+// training using train
+model = train(label,instance);
 svmrocplot(label,instance,model);
    ]]></programlisting>
 </refsection>

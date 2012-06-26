@@ -37,7 +37,7 @@
 
 
 #include <api_scilab.h>
-#include <stack-c.h>
+// #include <stack-c.h>
 #include <sciprint.h>
 #include <Scierror.h>
 #include <MALLOC.h>

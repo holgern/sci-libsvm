@@ -11,11 +11,22 @@ function auc = svmrocplot(y,x,params,uselinear)
 //  Use the given model to predict testing data and obtain decision values  for ROC
 // Examples
 //   
-//      [label,instance]=libsvmread("demos/heart_scale");
-// 	svmrocplot(heart_scale_label, heart_scale_inst,'-v 5');
+//      [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+//      // 5-fold cross-classiﬁcation, training of svm is done inside of svmrocplot
+// 	svmrocplot(label, instance,'-v 5');
 //
-//      [label,instance]=libsvmread("demos/heart_scale");
+//      // training using svmtrain
 //   	model = svmtrain(label,instance);
+// 	svmrocplot(label,instance,model);
+//      
+//      //--------------------------
+//      //svmrocplot for linear models
+//      [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+//      // 5-fold cross-classiﬁcation, training of svm is done inside of svmrocplot
+// 	svmrocplot(label, instance,'-v 5',%t); 
+// 	
+// 	// training using train
+//   	model = train(label,instance);
 // 	svmrocplot(label,instance,model);
 // Authors
 //  Holger Nahrstaedt
@@ -37,10 +48,14 @@ function auc = svmrocplot(y,x,params,uselinear)
 		error('ROC is only applicable to binary classes with labels 1, -1'); // check the trainig_file is binary
 	elseif exists('params') & type(params)~=10
 		model = params;
-                [predict_label,mse,deci] = svmpredict(y,x,model); // the procedure for predicting
-                if isempty(predict_label) then
-                [predict_label,mse,deci] = predict(y,x,model); 
-                end;
+                try
+		  [predict_label,mse,deci] = svmpredict(y,x,model); // the procedure for predicting
+		  if isempty(predict_label) then
+		  [predict_label,mse,deci] = predict(y,x,model); 
+		  end;
+                catch
+                  [predict_label,mse,deci] = predict(y,x,model); 
+                end
 		auc = roc_curve(deci*y(1),y);
 	else
 		if ~exists('params')

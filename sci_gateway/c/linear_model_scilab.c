@@ -36,7 +36,7 @@
 #include "linear.h"
 
 #include <api_scilab.h>
-#include <stack-c.h>
+//#include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>
@@ -294,10 +294,15 @@ SciErr scilab_matrix_to_linear_model(int *scilab_struct, struct model *model_)
 		//printError(&_SciErr, 0);
 		return _SciErr;
 	}
-	//ptr = mxGetPr(rhs[id]);
-	model_->label=Malloc(int, model_->nr_class);
-	for(i=0; i<model_->nr_class; i++)
-		model_->label[i]=(int)ptr[i];
+	
+	//Label
+	if (iRows>0 && iCols>0)
+	{
+	  //ptr = mxGetPr(rhs[id]);
+	  model_->label=Malloc(int, model_->nr_class);
+	  for(i=0; i<model_->nr_class; i++)
+		  model_->label[i]=(int)ptr[i];
+	}
 	id++;
 	
         _SciErr = getMatrixOfDoubleInList(pvApiCtx, scilab_struct, 8, &iRows, &iCols, &ptr);
