@@ -1,12 +1,12 @@
-function [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters] = svmscale(instance,x,label,y)
+function [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters] = libsvm_scale(instance,x,label,y)
 //scale the input data for correct learning
 // Calling Sequence
-//   [scaled_instance,scaled_parameters] = svmscale(instance);
-//   [scaled_instance,scaled_parameters] = svmscale(instance,[lower,upper]);
+//   [scaled_instance,scaled_parameters] = libsvm_scale(instance);
+//   [scaled_instance,scaled_parameters] = libsvm_scale(instance,[lower,upper]);
 //
-//   [scaled_instance] = svmscale(instance,scaled_parameters);
+//   [scaled_instance] = libsvm_scale(instance,scaled_parameters);
 //   
-//  [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters] = svmscale(instance,[lower,upper],label,[label_lower, label_upper]);
+//  [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters] = libsvm_scale(instance,[lower,upper],label,[label_lower, label_upper]);
 //  Description
 //  
 //  Scaling before applying SVM is very important in order to avoid several  numerical problems! Normally good ranges are [0,1] or [-1,+1]. 
@@ -15,10 +15,12 @@ function [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters
 //  It is important to scale the testing data with the same scale as the training data!
 //  Examples
 //  [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
-//  [scaled_instance,scaled_parameters] = svmscale(instance,[-1,1]);
-//  cc = svmtrain(label,scaled_instance);
-//  [predicted_label,accuracy]=svmpredict(label,svmnormalize(instance,scaled_parameters),cc);
+//  [scaled_instance,scaled_parameters] = libsvm_scale(instance,[-1,1]);
+//  cc = libsvm_svmtrain(label,scaled_instance);
+//  [predicted_label,accuracy]=libsvm_svmpredict(label,svmnormalize(instance,scaled_parameters),cc);
 // disp("accuracy: "+string(accuracy(1))+" %");
+// See also
+//   libsvm_normalize
 // Authors
 //  Holger Nahrstaedt
 
@@ -27,7 +29,7 @@ function [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters
 	//rand('state',0); // reset random seed
 
 	if nargin < 1
-		error("[scaled_instance,scaling_param] = svmscale(instance,[lower,upper])");
+		error("[scaled_instance,scaling_param] = libsvm_scale(instance,[lower,upper])");
         elseif nargin < 2
                 lower = -1;
                 upper = 1;

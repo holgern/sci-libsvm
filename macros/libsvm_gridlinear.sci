@@ -1,11 +1,11 @@
-function [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq,fold,option_string)
+function [best_rate,best_c,best_s] = libsvm_gridlinear(label,instance,log2c,s_seq,fold,option_string)
 // parameter selection tool for linear classification
 // Calling Sequence
-//   [best_rate,best_c,best_s] = svmgridlinear(label,instance)
-//   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c)
-//   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq)
-//   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq,v)
-//   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq,v,option_string)
+//   [best_rate,best_c,best_s] = libsvm_gridlinear(label,instance)
+//   [best_rate,best_c,best_s] = libsvm_gridlinear(label,instance,log2c)
+//   [best_rate,best_c,best_s] = libsvm_gridlinear(label,instance,log2c,s_seq)
+//   [best_rate,best_c,best_s] = libsvm_gridlinear(label,instance,log2c,s_seq,v)
+//   [best_rate,best_c,best_s] = libsvm_gridlinear(label,instance,log2c,s_seq,v,option_string)
 //  Parameters
 //  log2c : [begin,end,step]
 //  s_seq : linear kernels (0 - 7, 11 - 13), e.g. [0 1 4]
@@ -15,13 +15,15 @@ function [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq,fo
 //  best_c : best parameter c 
 //  best_s : best linear kernel
 //  Description
-//  svmgrid is a parameter selection tool for linear classification. It uses cross validation (CV)
+//  libsvm_gridlinear is a parameter selection tool for linear classification. It uses cross validation (CV)
 //technique to estimate the accuracy of each parameter combination in
 //the specified range and helps you to decide the best parameters for
 //your problem.
 // Examples
 //    [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
-//    [best_rate,best_c,best_s] = svmgridlinear(label,instance)
+//    [best_rate,best_c,best_s] = libsvm_gridlinear(label,instance)
+//  See also
+//    libsvm_grid
 // Authors
 // Holger Nahrstaedt
 // 
@@ -68,7 +70,7 @@ function [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq,fo
          for c=c_seq(c_seqind)
            for s=s_seq(s_seqind)
             
-              rate = train(label,instance,"-s "+string(s)+" -c "+string(2^c)+" -v "+string(fold)+" -q "+option_string);
+              rate = libsvm_lintrain(label,instance,"-s "+string(s)+" -c "+string(2^c)+" -v "+string(fold)+" -q "+option_string);
             
               if sum(rate_matrix)==0 then
                   rate_matrix=ones(length(c_seq),length(s_seq))*rate;

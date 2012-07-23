@@ -37,7 +37,8 @@
 #include "svm.h"
 
 #include <api_scilab.h>
-// #include <stack-c.h>
+#define __USE_DEPRECATED_STACK_FUNCTIONS__
+#include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>
@@ -370,7 +371,7 @@ if (Lhs > 2) {
 void exit_with_help_predict()
 {
        Scierror (999,
-                "Usage: [predicted_label, accuracy, decision_values/prob_estimates] = svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')\n"
+                "Usage: [predicted_label, accuracy, decision_values/prob_estimates] = libsvm_svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')\n"
 		"Parameters:\n"
 		"  model: SVM model structure from svmtrain.\n"
 		"  libsvm_options:\n"

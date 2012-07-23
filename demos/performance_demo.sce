@@ -13,8 +13,8 @@ for N = [100 500 1000 ]
     l = [ones(N,1); -ones(N,1)]; // label
     d = [l/2 + rand(2*N,1,'norm')/1  l-rand(2*N,1,'norm')/1 rand(2*N, dim-2,'norm')]; // data
 
-    tic();model = svmtrain(l,d,'-t 0 -q');x = toc();
-    tic();[predicted_label, accuracy, decision_values] = svmpredict(l, d, model);y = toc();
+    tic();model = libsvm_svmtrain(l,d,'-t 0 -q');x = toc();
+    tic();[predicted_label, accuracy, decision_values] = libsvm_svmpredict(l, d, model);y = toc();
     
     result = [result; [N dim x y]];
     

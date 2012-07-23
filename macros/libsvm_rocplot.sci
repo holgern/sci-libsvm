@@ -1,10 +1,10 @@
-function auc = svmrocplot(y,x,params,uselinear)
+function auc = libsvm_rocplot(y,x,params,uselinear)
 //plotroc draws the recevier operating characteristic(ROC) curve for an svm-model
 // Calling Sequence
-//auc = svmrocplot(training_label, training_instance) 
-//auc = svmrocplot(training_label, training_instance , model) 
-//auc = svmrocplot(training_label, training_instance , libsvm_options) 
-//auc = svmrocplot(training_label, training_instance , libsvm_options, uselinear) 
+//auc = libsvm_rocplot(training_label, training_instance) 
+//auc = libsvm_rocplot(training_label, training_instance , model) 
+//auc = libsvm_rocplot(training_label, training_instance , libsvm_options) 
+//auc = libsvm_rocplot(training_label, training_instance , libsvm_options, uselinear) 
 // Description
 //  Use cross-validation on training data to get decision values and plot ROC curve.
 //
@@ -12,22 +12,25 @@ function auc = svmrocplot(y,x,params,uselinear)
 // Examples
 //   
 //      [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
-//      // 5-fold cross-classiﬁcation, training of svm is done inside of svmrocplot
-// 	svmrocplot(label, instance,'-v 5');
+//      // 5-fold cross-classiﬁcation, training of svm is done inside of libsvm_rocplot
+// 	libsvm_rocplot(label, instance,'-v 5');
 //
-//      // training using svmtrain
-//   	model = svmtrain(label,instance);
-// 	svmrocplot(label,instance,model);
+//      // training using libsvm_svmtrain
+//   	model = libsvm_svmtrain(label,instance);
+// 	libsvm_rocplot(label,instance,model);
 //      
 //      //--------------------------
-//      //svmrocplot for linear models
+//      //libsvm_rocplot for linear models
 //      [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
-//      // 5-fold cross-classiﬁcation, training of svm is done inside of svmrocplot
-// 	svmrocplot(label, instance,'-v 5',%t); 
+//      // 5-fold cross-classiﬁcation, training of svm is done inside of libsvm_rocplot
+// 	libsvm_rocplot(label, instance,'-v 5',%t); 
 // 	
 // 	// training using train
-//   	model = train(label,instance);
-// 	svmrocplot(label,instance,model);
+//   	model = libsvm_lintrain(label,instance);
+// 	libsvm_rocplot(label,instance,model);
+// See also
+//   libsvm_confmat
+//   libsvm_partest
 // Authors
 //  Holger Nahrstaedt
 
@@ -41,7 +44,7 @@ function auc = svmrocplot(y,x,params,uselinear)
               
      
 	if nargin < 2
-		error("auc = svmplotroc(testing_label, testing_instance, model,uselinear)");
+		error("auc = libsvm_rocplot(testing_label, testing_instance, model,uselinear)");
 	elseif isempty(y) | isempty(x)
 		error('Input data is empty');
 	elseif sum(y == 1) + sum(y == -1) ~= length(y)
@@ -49,12 +52,12 @@ function auc = svmrocplot(y,x,params,uselinear)
 	elseif exists('params') & type(params)~=10
 		model = params;
                 try
-		  [predict_label,mse,deci] = svmpredict(y,x,model); // the procedure for predicting
+		  [predict_label,mse,deci] = libsvm_svmpredict(y,x,model); // the procedure for predicting
 		  if isempty(predict_label) then
-		  [predict_label,mse,deci] = predict(y,x,model); 
+		  [predict_label,mse,deci] = libsvm_linpredict(y,x,model); 
 		  end;
                 catch
-                  [predict_label,mse,deci] = predict(y,x,model); 
+                  [predict_label,mse,deci] = libsvm_linpredict(y,x,model); 
                 end
 		auc = roc_curve(deci*y(1),y);
 	else
@@ -88,17 +91,17 @@ function auc = svmrocplot(y,x,params,uselinear)
                                    // disp(size(prob_x(train_ind,:)));
                                    // disp(size(params)); disp(type(params));
                                    if (uselinear)
-                                       CC = train(prob_y(train_ind),prob_x(train_ind,:),params);
+                                       CC = libsvm_lintrain(prob_y(train_ind),prob_x(train_ind,:),params);
                                    else
-				      CC = svmtrain(prob_y(train_ind),prob_x(train_ind,:),params);
+				      CC = libsvm_svmtrain(prob_y(train_ind),prob_x(train_ind,:),params);
                                    end;
 				    //end;
 				    //disp(size(CC));
 				   // disp(type(CC));
                                      if (uselinear)
-                                          [predict_label,mse,subdeci] = predict(prob_y(test_ind),prob_x(test_ind,:),CC);
+                                          [predict_label,mse,subdeci] = libsvm_linpredict(prob_y(test_ind),prob_x(test_ind,:),CC);
                                     else
-                         		   [predict_label,mse,subdeci] = svmpredict(prob_y(test_ind),prob_x(test_ind,:),CC);
+                         		   [predict_label,mse,subdeci] = libsvm_svmpredict(prob_y(test_ind),prob_x(test_ind,:),CC);
  				    end;
                                     deci(test_ind) = subdeci.*CC.Label(1);
 				    label_y(test_ind) = prob_y(test_ind);

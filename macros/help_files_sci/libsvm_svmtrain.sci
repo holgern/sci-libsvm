@@ -1,8 +1,8 @@
-function model = svmtrain(training_label_vector, training_instance_matrix, libsvm_options)
+function model = libsvm_svmtrain(training_label_vector, training_instance_matrix, libsvm_options)
 // trains a svm model
 // Calling Sequence
-// model = svmtrain(training_label_vector, training_instance_matrix);
-// model = svmtrain(training_label_vector, training_instance_matrix,libsvm_options);
+// model = libsvm_svmtrain(training_label_vector, training_instance_matrix);
+// model = libsvm_svmtrain(training_label_vector, training_instance_matrix,libsvm_options);
 // Parameters
 // libsvm_options:
 // s svm_type : set type of SVM (default 0)
@@ -78,11 +78,11 @@ function model = svmtrain(training_label_vector, training_instance_matrix, libsv
 // Examples
 // label_vector=[zeros(20,1);ones(20,1)];
 // instance_matrix = [rand(20,2); -1*rand(20,2)];
-// model=svmtrain(label_vector,instance_matrix);
+// model=libsvm_svmtrain(label_vector,instance_matrix);
 // 
-// [pred,acc,dec]=svmpredict(label_vector,instance_matrix,model);
+// [pred,acc,dec]=libsvm_svmpredict(label_vector,instance_matrix,model);
 //See also
-//svmpredict
+//libsvm_svmpredict
 // Authors
 // Chih-Chung Chang
 // Chih-Jen Lin

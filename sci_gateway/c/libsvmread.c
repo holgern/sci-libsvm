@@ -38,7 +38,8 @@
 #include <errno.h>
 
 #include <api_scilab.h>
-// #include <stack-c.h>
+#define __USE_DEPRECATED_STACK_FUNCTIONS__
+#include <stack-c.h>
 #include <sciprint.h>
 #include <Scierror.h>
 #include <MALLOC.h>

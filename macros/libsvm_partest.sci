@@ -1,7 +1,7 @@
-function svmpartest(x)
+function libsvm_partest(x)
 //This function calculate the performance, based on Bayes theorem, of a clinical test.
 // Calling Sequence
-// svmpartest(X)
+// libsvm_partest(X)
 // Parameters
 //      
 //      X :is a  2x2 matrix
@@ -24,22 +24,19 @@ function svmpartest(x)
 //           :- Number needed to Diagnose (NDD)
 // Description     
 //           X is the following 2x2 matrix.
+//           
 //
-//....................Affected(D+)..Healthy(D-)
+//....................................Affected(D+)......Healthy(D-)
 //
-// ...................._______________________
+// ...................................___________________________
 //                    
-//Positive Test(T+)  |   True    |  False    |
-//
-//.................... | positives | positive  |
+//Positive Test(T+) ... |   True  positives  |  False positive   |
+//              
+// ..................................|_____________|_____________|
 //                   
-// ....................|___________|___________|
+// Negative Test(T-)....|  False negative   |   True  negatives  |
 //                   
-// ....................|  False    |   True    |
-//                   
-//Negative Test(T-)  | negative  | negatives |
-//
-//.................... |___________|___________|
+//.................................. |_____________|_____________|
 //
 // 
 //Sensitivity and Specificity
@@ -135,9 +132,11 @@ function svmpartest(x)
 //
 //      Examples
 //
-//           X=[80 3; 5 20];
-//
-//           svmpartest(X)
+//     X=[80 3; 5 20];
+//     libsvm_partest(X)
+// See also
+//   libsvm_rocplot
+//   libsvm_confmat
 // Authors
 //           Created by Giuseppe Cardillo           giuseppe.cardillo-edta@poste.it
 //           H. Nahrstaedt - 2012
@@ -463,7 +462,7 @@ axis square
 //hold on
 for I=1:k
     theta=[ang(I) linspace(ang(I),ang(I+1),500) ang(I+1)];
-    rho=[0 mtlb_repmat(sqrt(x(I)),1,500) 0];
+    rho=[0 repmat(sqrt(x(I)),1,500) 0];
     [xg,yg]=pol2cart(theta,rho);
     H(I)=patch(xg,yg,color(I));
 end

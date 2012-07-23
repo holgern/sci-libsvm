@@ -2,11 +2,11 @@
 
 <!--
  *
- * This help file was generated from svmconfmat.sci using help_from_sci().
+ * This help file was generated from libsvm_confmat.sci using help_from_sci().
  *
  -->
 
-<refentry version="5.0-subset Scilab" xml:id="svmconfmat" xml:lang="en"
+<refentry version="5.0-subset Scilab" xml:id="libsvm_confmat" xml:lang="en"
           xmlns="http://docbook.org/ns/docbook"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           xmlns:svg="http://www.w3.org/2000/svg"
@@ -16,7 +16,7 @@
 
 
   <refnamediv>
-    <refname>svmconfmat</refname><refpurpose>Confusion matrix for classification algorithms.</refpurpose>
+    <refname>libsvm_confmat</refname><refpurpose>Confusion matrix for classification algorithms.</refpurpose>
   </refnamediv>
 
 
@@ -24,7 +24,7 @@
 <refsynopsisdiv>
    <title>Calling Sequence</title>
    <synopsis>
-   cm = svmconfmat(g, ghat)
+   cm = libsvm_confmat(g, ghat)
    </synopsis>
 </refsynopsisdiv>
 
@@ -53,9 +53,9 @@ are group I.
    <title>Examples</title>
    <programlisting role="example"><![CDATA[
 [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
-cc = svmtrain(label,instance);
-[predicted_label]=svmpredict(label,instance,cc);
-cm = svmconfmat(label,  predicted_label)
+cc = libsvm_svmtrain(label,instance);
+[predicted_label]=libsvm_svmpredict(label,instance,cc);
+cm = libsvm_confmat(label,  predicted_label)
    ]]></programlisting>
 </refsection>
 

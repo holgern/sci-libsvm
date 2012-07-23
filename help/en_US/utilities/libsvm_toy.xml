@@ -2,11 +2,11 @@
 
 <!--
  *
- * This help file was generated from svmtoy.sci using help_from_sci().
+ * This help file was generated from libsvm_toy.sci using help_from_sci().
  *
  -->
 
-<refentry version="5.0-subset Scilab" xml:id="svmtoy" xml:lang="en"
+<refentry version="5.0-subset Scilab" xml:id="libsvm_toy" xml:lang="en"
           xmlns="http://docbook.org/ns/docbook"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           xmlns:svg="http://www.w3.org/2000/svg"
@@ -16,7 +16,7 @@
 
 
   <refnamediv>
-    <refname>svmtoy</refname><refpurpose>shows the two-class classification boundary of the 2-D data</refpurpose>
+    <refname>libsvm_toy</refname><refpurpose>shows the two-class classification boundary of the 2-D data</refpurpose>
   </refnamediv>
 
 
@@ -24,7 +24,7 @@
 <refsynopsisdiv>
    <title>Calling Sequence</title>
    <synopsis>
-   svmtoy(label_vector, instance_matrix, options, contour_level)
+   libsvm_toy(label_vector, instance_matrix, options, contour_level)
    </synopsis>
 </refsynopsisdiv>
 
@@ -45,7 +45,7 @@
 <refsection>
    <title>Description</title>
    <para>
-svmtoy shows the two-class classification boundary of the 2-D data
+libsvm_toy shows the two-class classification boundary of the 2-D data
 </para>
 </refsection>
 
@@ -54,9 +54,9 @@ svmtoy shows the two-class classification boundary of the 2-D data
    <programlisting role="example"><![CDATA[
 instance_matrix = [rand(20,2); -1*rand(20,2)];
 label_vector=[zeros(20,1);ones(20,1)];
-svmtoy(label_vector, instance_matrix)
+libsvm_toy(label_vector, instance_matrix)
 
-svmtoy(label_vector, instance_matrix,"-c 1000 -g 0.5",[-1 0 1])
+libsvm_toy(label_vector, instance_matrix,"-c 1000 -g 0.5",[-1 0 1])
 
 
    ]]></programlisting>

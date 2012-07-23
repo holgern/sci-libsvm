@@ -1,20 +1,20 @@
-function svmtoy(label_vector, instance_matrix, options, contour_level)
+function libsvm_toy(label_vector, instance_matrix, options, contour_level)
 // shows the two-class classification boundary of the 2-D data
 // Calling Sequence
-// svmtoy(label_vector, instance_matrix, options, contour_level)
+// libsvm_toy(label_vector, instance_matrix, options, contour_level)
 // Parameters
 // label_vector: N by 1, has to be two-class
 // instance_matrix: N by 2
 // options: default '',  see svmtrain, has to be a classification formulation (e.g."-c 1000 -g 0.5") .
 // contour_level: default [0 0],    change to [-1 0 1] for showing the +/- 1 margin.
 // Description
-// svmtoy shows the two-class classification boundary of the 2-D data
+// libsvm_toy shows the two-class classification boundary of the 2-D data
 // Examples
 // instance_matrix = [rand(20,2); -1*rand(20,2)];
 // label_vector=[zeros(20,1);ones(20,1)];
-// svmtoy(label_vector, instance_matrix)
+// libsvm_toy(label_vector, instance_matrix)
 // 
-// svmtoy(label_vector, instance_matrix,"-c 1000 -g 0.5",[-1 0 1])
+// libsvm_toy(label_vector, instance_matrix,"-c 1000 -g 0.5",[-1 0 1])
 // 
 // 
 // Authors
@@ -51,7 +51,7 @@ if size(instance_matrix, 2) ~= 2
   error('svmtoy only works for 2-D data\n');
 end
 
-mdl = svmtrain(label_vector, instance_matrix, options);
+mdl = libsvm_svmtrain(label_vector, instance_matrix, options);
 
 nclass = mdl.nr_class;
 svmtype = mdl.Parameters(1);
@@ -80,7 +80,7 @@ ntest=size(bigX, 1) * size(bigX, 2);
 instance_test=[matrix(bigX, ntest, 1), matrix(bigY, ntest, 1)];
 label_test = zeros(size(instance_test, 1), 1);
 
-[Z, acc] = svmpredict(label_test, instance_test, mdl);
+[Z, acc] = libsvm_svmpredict(label_test, instance_test, mdl);
 
 bigZ = matrix(Z, size(bigX, 1), size(bigX, 2));
 

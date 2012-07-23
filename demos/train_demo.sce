@@ -1,5 +1,3 @@
-demopath = get_absolute_file_path("train_demo.sce");
-
 
 mode(1);lines(0);
 
@@ -19,16 +17,16 @@ halt('Press return'); clc;
 //  # of features: 10
 // We can load the data using readsparse
     
-[label_vector, instance_vector] = libsvmread(demopath+'/svmguide4');
-[label_vector_test, instance_vector_test] = libsvmread(demopath+'/svmguide4.t');
+[label_vector, instance_vector] = libsvmread(libsvm_getpath()+'demos/svmguide4');
+[label_vector_test, instance_vector_test] = libsvmread(libsvm_getpath()+'demos/svmguide4.t');
 
 // Press any key to continue...
 halt('Press return');
 
 // At first we will train and test the classificator without any scaling
-model=svmtrain(label_vector,instance_vector,'-s 1 -c 1 -t 0 -d 1 -q');
+model=libsvm_svmtrain(label_vector,instance_vector,'-s 1 -c 1 -t 0 -d 1 -q');
 
-[label,acc,prob_est]=svmpredict(label_vector_test,instance_vector_test,model);
+[label,acc,prob_est]=libsvm_svmpredict(label_vector_test,instance_vector_test,model);
 disp("Accuracy: "+string(acc(1)));
 
 // The result is realy bad
@@ -36,11 +34,11 @@ disp("Accuracy: "+string(acc(1)));
 halt('Press return');
 
 // In next step we will scale the traindataset to [0,1] and then we scale the test dataset seperatlly to [0,1]
-instance_vector_scale=svmscale(instance_vector,[0 1]);
-model=svmtrain(label_vector,instance_vector_scale,'-s 1 -c 1 -t 0 -d 1 -q');
+instance_vector_scale=libsvm_scale(instance_vector,[0 1]);
+model=libsvm_svmtrain(label_vector,instance_vector_scale,'-s 1 -c 1 -t 0 -d 1 -q');
 
-instance_vector_test_sc=svmscale(instance_vector_test,[0 1]);
-[label,acc,prob_est]=svmpredict(label_vector_test,instance_vector_test_sc,model);
+instance_vector_test_sc=libsvm_scale(instance_vector_test,[0 1]);
+[label,acc,prob_est]=libsvm_svmpredict(label_vector_test,instance_vector_test_sc,model);
 disp("Accuracy: "+string(acc(1)));
 
 
@@ -49,12 +47,12 @@ disp("Accuracy: "+string(acc(1)));
 halt('Press return'); 
 
 // In next step we will scale the traindataset to [0,1] and then use the same scaling for the test dataset
-[instance_vector_scale,scale_factor]=svmscale(instance_vector,[0 1]);
-model=svmtrain(label_vector,instance_vector_scale,'-s 1 -c 1 -t 0 -d 1 -q');
+[instance_vector_scale,scale_factor]=libsvm_scale(instance_vector,[0 1]);
+model=libsvm_svmtrain(label_vector,instance_vector_scale,'-s 1 -c 1 -t 0 -d 1 -q');
 
 
-instance_vector_test_sc=svmscale(instance_vector_test,scale_factor);
-[label,acc,prob_est]=svmpredict(label_vector_test,instance_vector_test_sc,model);
+instance_vector_test_sc=libsvm_scale(instance_vector_test,scale_factor);
+[label,acc,prob_est]=libsvm_svmpredict(label_vector_test,instance_vector_test_sc,model);
 disp("Accuracy: "+string(acc(1)));
 
 

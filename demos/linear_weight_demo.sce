@@ -1,6 +1,3 @@
-demopath = get_absolute_file_path("linear_weight_demo.sce");
-
-
 mode(1);lines(0);
 
 
@@ -14,15 +11,15 @@ halt('Press return'); clc;
 
 //Train and test on the provided data heart_scale
     
-[heart_scale_label, heart_scale_inst] = libsvmread(demopath+'/heart_scale');
+[heart_scale_label, heart_scale_inst] = libsvmread(libsvm_getpath()+'demos/heart_scale');
 
-heart_scale_weight = fscanfMat(demopath+'/heart_scale.wgt');
+heart_scale_weight = fscanfMat(libsvm_getpath()+'demos/heart_scale.wgt');
 
-model = train(heart_scale_weight, heart_scale_label, heart_scale_inst, '-c 1 -q');
+model = libsvm_lintrain(heart_scale_weight, heart_scale_label, heart_scale_inst, '-c 1 -q');
 
 // test the training data
 // 
-[predict_label, accuracy, dec_values] = predict(heart_scale_label, heart_scale_inst, model); 
+[predict_label, accuracy, dec_values] = libsvm_linpredict(heart_scale_label, heart_scale_inst, model); 
 //
 //
 disp("Accuracy: "+string(accuracy(1)));
@@ -33,9 +30,9 @@ halt('Press return');
 
 //Train and test without weights:
 
- model = train(heart_scale_label, heart_scale_inst, '-c 1 -q');
+ model = libsvm_lintrain(heart_scale_label, heart_scale_inst, '-c 1 -q');
 // test the training data
-[predict_label, accuracy, dec_values] = predict(heart_scale_label, heart_scale_inst, model); 
+[predict_label, accuracy, dec_values] = libsvm_linpredict(heart_scale_label, heart_scale_inst, model); 
 //
 //
 disp("Accuracy: "+string(accuracy(1)));

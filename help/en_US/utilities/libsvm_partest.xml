@@ -2,11 +2,11 @@
 
 <!--
  *
- * This help file was generated from svmpartest.sci using help_from_sci().
+ * This help file was generated from libsvm_partest.sci using help_from_sci().
  *
  -->
 
-<refentry version="5.0-subset Scilab" xml:id="svmpartest" xml:lang="en"
+<refentry version="5.0-subset Scilab" xml:id="libsvm_partest" xml:lang="en"
           xmlns="http://docbook.org/ns/docbook"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           xmlns:svg="http://www.w3.org/2000/svg"
@@ -16,7 +16,7 @@
 
 
   <refnamediv>
-    <refname>svmpartest</refname><refpurpose>This function calculate the performance, based on Bayes theorem, of a clinical test.</refpurpose>
+    <refname>libsvm_partest</refname><refpurpose>This function calculate the performance, based on Bayes theorem, of a clinical test.</refpurpose>
   </refnamediv>
 
 
@@ -24,7 +24,7 @@
 <refsynopsisdiv>
    <title>Calling Sequence</title>
    <synopsis>
-   svmpartest(X)
+   libsvm_partest(X)
    </synopsis>
 </refsynopsisdiv>
 
@@ -76,28 +76,24 @@
 X is the following 2x2 matrix.
    </para>
    <para>
-....................Affected(D+)..Healthy(D-)
    </para>
    <para>
-...................._______________________
+....................................Affected(D+)......Healthy(D-)
    </para>
    <para>
-Positive Test(T+)  |   True    |  False    |
+...................................___________________________
    </para>
    <para>
-.................... | positives | positive  |
+Positive Test(T+) ... |   True  positives  |  False positive   |
    </para>
    <para>
-....................|___________|___________|
+..................................|_____________|_____________|
    </para>
    <para>
-....................|  False    |   True    |
+Negative Test(T-)....|  False negative   |   True  negatives  |
    </para>
    <para>
-Negative Test(T-)  | negative  | negatives |
-   </para>
-   <para>
-.................... |___________|___________|
+.................................. |_____________|_____________|
    </para>
    <para>
    </para>
@@ -220,9 +216,16 @@ A test with a discriminant value of 3 is effective in discriminating between aff
    <programlisting role="example"><![CDATA[
 
 X=[80 3; 5 20];
-
-svmpartest(X)
+libsvm_partest(X)
    ]]></programlisting>
+</refsection>
+
+<refsection>
+   <title>See also</title>
+   <simplelist type="inline">
+   <member><link linkend="libsvm_rocplot">libsvm_rocplot</link></member>
+   <member><link linkend="libsvm_confmat">libsvm_confmat</link></member>
+   </simplelist>
 </refsection>
 
 <refsection>

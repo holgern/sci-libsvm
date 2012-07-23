@@ -36,7 +36,8 @@
 #include "svm.h"
 
 #include <api_scilab.h>
-// #include <stack-c.h>
+#define __USE_DEPRECATED_STACK_FUNCTIONS__
+#include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>
@@ -61,7 +62,7 @@ static const char *field_names[] = {
 	"sv_coef",
         "SVs"
 }; 
-
+#ifndef __USE_DEPRECATED_STACK_FUNCTIONS__
 typedef struct scisparse {
          int m;
          int n;
@@ -72,7 +73,8 @@ typedef struct scisparse {
          double *R; 
          double *I ; 
  } SciSparse ;
-
+#endif
+ 
 SciErr model_to_scilab_structure( int num_of_feature, struct svm_model *model)
 {
         int i, j, n;

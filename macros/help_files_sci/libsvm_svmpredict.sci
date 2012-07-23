@@ -1,8 +1,8 @@
-function [predicted_label, accuracy, decision_values/prob_estimates] = svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')
+function [predicted_label, accuracy, decision_values/prob_estimates] = libsvm_svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')
 // Does prediction for a calculated svm model
 // Calling Sequence
-// [predicted_label, accuracy, decision_values] = svmpredict(testing_label_vector, testing_instance_matrix, model)
-// [predicted_label, accuracy, decision_values] = svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')
+// [predicted_label, accuracy, decision_values] = libsvm_svmpredict(testing_label_vector, testing_instance_matrix, model)
+// [predicted_label, accuracy, decision_values] = libsvm_svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')
 // Parameters
 //  model: SVM model structure from svmtrain.
 //   libsvm_options:-b probability_estimates: whether to predict probability estimates, 0 or 1 (default 0); one-class SVM not supported yet
@@ -32,9 +32,9 @@ function [predicted_label, accuracy, decision_values/prob_estimates] = svmpredic
 // Examples
 // label_vector=[zeros(20,1);ones(20,1)];
 // instance_matrix = [rand(20,2); -1*rand(20,2)];
-// model=svmtrain(label_vector,instance_matrix);
+// model=libsvm_svmtrain(label_vector,instance_matrix);
 // 
-// [pred,accuracy,dec]=svmpredict(label_vector,instance_matrix,model);
+// [pred,accuracy,dec]=libsvm_svmpredict(label_vector,instance_matrix,model);
 // disp("accuracy: "+string(accuracy(1))+" %");
 // 
 //  // -------------------------------------
@@ -47,12 +47,12 @@ function [predicted_label, accuracy, decision_values/prob_estimates] = svmpredic
 //   test_label = heart_scale_label(151:270,:);
 //   
 //   //linear kernel
-//   model_linear = svmtrain(train_label, train_data, '-t 0');
-//   [predict_label_L, accuracy_L, dec_values_L] = svmpredict(test_label, test_data, model_linear);
+//   model_linear = libsvm_svmtrain(train_label, train_data, '-t 0');
+//   [predict_label_L, accuracy_L, dec_values_L] = libsvm_svmpredict(test_label, test_data, model_linear);
 //   
 //   //precomputed kernel
-//   model_precomputed = svmtrain(train_label, full([(1:150)', train_data*train_data']), '-t 4');
-//   [predict_label_P, accuracy_P, dec_values_P] = svmpredict(test_label, full([(1:120)', test_data*train_data']), model_precomputed);
+//   model_precomputed = libsvm_svmtrain(train_label, full([(1:150)', train_data*train_data']), '-t 4');
+//   [predict_label_P, accuracy_P, dec_values_P] = libsvm_svmpredict(test_label, full([(1:120)', test_data*train_data']), model_precomputed);
 //   
 //   disp("accuracy using linear kernel: "+string(accuracy_L(1)));
 //   disp("accuracy using precomputed kernel: "+string(accuracy_P(1)));
@@ -61,12 +61,12 @@ function [predicted_label, accuracy, decision_values/prob_estimates] = svmpredic
 //   //probability estimatation demo (you need '-b 1' for training and testing)
 //   
 //   [heart_scale_label, heart_scale_inst] = libsvmread(libsvm_getpath()+"/demos/heart_scale");
-//   model = svmtrain(heart_scale_label, heart_scale_inst, '-c 1 -g 0.07 -b 1');
-//   [predict_label, accuracy, prob_estimates] = svmpredict(heart_scale_label, heart_scale_inst, model, '-b 1');
+//   model = libsvm_svmtrain(heart_scale_label, heart_scale_inst, '-c 1 -g 0.07 -b 1');
+//   [predict_label, accuracy, prob_estimates] = libsvm_svmpredict(heart_scale_label, heart_scale_inst, model, '-b 1');
 //   prob_estimates
 //
 // See also
-// svmtrain
+// libsvm_svmtrain
 // Authors
 // Chih-Chung Chang
 // Chih-Jen Lin

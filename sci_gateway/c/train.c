@@ -38,7 +38,8 @@
 #include "linear.h"
 
 #include <api_scilab.h>
-// #include <stack-c.h>
+#define __USE_DEPRECATED_STACK_FUNCTIONS__
+#include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>
@@ -57,8 +58,8 @@ void print_string_scilab(const char *s) {sciprint(s);}
 void exit_with_help()
 {
 	Scierror (999,
-	"Usage: model = train(training_label_vector, training_instance_matrix, 'liblinear_options', 'col');\n"
-	"Usage: model = train(weight_vector, training_label_vector, training_instance_matrix, 'liblinear_options', 'col');\n"
+	"Usage: model = libsvm_lintrain(training_label_vector, training_instance_matrix, 'liblinear_options', 'col');\n"
+	"Usage: model = libsvm_lintrain(weight_vector, training_label_vector, training_instance_matrix, 'liblinear_options', 'col');\n"
 	"liblinear_options:\n"
 	"-s type : set type of solver (default 1)\n"
 	"	 0 -- L2-regularized logistic regression (primal)\n"

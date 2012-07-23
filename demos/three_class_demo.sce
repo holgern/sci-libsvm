@@ -24,7 +24,7 @@ bestcv = 0;
 for log2c = -1.1:3.1,
   for log2g = -4.1:1.1,
     cmd = ['-t 0 -v 2 -c '+ string(2^log2c)+ ' -g '+ string(2^log2g)+' -q'];
-    cv = svmtrain(l, d, cmd);
+    cv = libsvm_svmtrain(l, d, cmd);
     if (cv >= bestcv),
       bestcv = cv; bestc = 2^log2c; bestg = 2^log2g;
       printf('%g %g %g (best c=%g, g=%g, rate=%g)\n', log2c, log2g, cv, bestc, bestg, bestcv);
@@ -35,7 +35,7 @@ end
 // After finding the best parameter value for C, we train the entire data
 // again using this parameter value
 cmd = ['-t 0 -c '+ string(bestc)+ ' -g '+ string(bestg)+' -q'];
-tic;model = svmtrain(l, d, cmd);toc
+tic;model = libsvm_svmtrain(l, d, cmd);toc
 
 // now plot support vectors
 sv = full(model.SVs);
@@ -44,7 +44,7 @@ plot(sv(:,1),sv(:,2),'ko');
 // now plot decision area
 [xi,yi] = meshgrid([min(d(:,1)):0.1:max(d(:,1))],[min(d(:,2)):0.1:max(d(:,2))]);
 dd = [xi(:),yi(:)];
-tic;[predicted_label, accuracy, decision_values] = svmpredict(zeros(size(dd,1),1), dd, model);toc
+tic;[predicted_label, accuracy, decision_values] = libsvm_svmpredict(zeros(size(dd,1),1), dd, model);toc
 pos = find(predicted_label==1);
 
 

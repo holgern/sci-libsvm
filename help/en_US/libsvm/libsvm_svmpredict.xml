@@ -2,11 +2,11 @@
 
 <!--
  *
- * This help file was generated from svmpredict.sci using help_from_sci().
+ * This help file was generated from libsvm_svmpredict.sci using help_from_sci().
  *
  -->
 
-<refentry version="5.0-subset Scilab" xml:id="svmpredict" xml:lang="en"
+<refentry version="5.0-subset Scilab" xml:id="libsvm_svmpredict" xml:lang="en"
           xmlns="http://docbook.org/ns/docbook"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           xmlns:svg="http://www.w3.org/2000/svg"
@@ -16,7 +16,7 @@
 
 
   <refnamediv>
-    <refname>svmpredict</refname><refpurpose>Does prediction for a calculated svm model</refpurpose>
+    <refname>libsvm_svmpredict</refname><refpurpose>Does prediction for a calculated svm model</refpurpose>
   </refnamediv>
 
 
@@ -24,8 +24,8 @@
 <refsynopsisdiv>
    <title>Calling Sequence</title>
    <synopsis>
-   [predicted_label, accuracy, decision_values] = svmpredict(testing_label_vector, testing_instance_matrix, model)
-   [predicted_label, accuracy, decision_values] = svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')
+   [predicted_label, accuracy, decision_values] = libsvm_svmpredict(testing_label_vector, testing_instance_matrix, model)
+   [predicted_label, accuracy, decision_values] = libsvm_svmpredict(testing_label_vector, testing_instance_matrix, model, 'libsvm_options')
    </synopsis>
 </refsynopsisdiv>
 
@@ -85,9 +85,9 @@ To use precomputed kernel, you must include sample serial number as the first co
    <programlisting role="example"><![CDATA[
 label_vector=[zeros(20,1);ones(20,1)];
 instance_matrix = [rand(20,2); -1*rand(20,2)];
-model=svmtrain(label_vector,instance_matrix);
+model=libsvm_svmtrain(label_vector,instance_matrix);
 
-[pred,accuracy,dec]=svmpredict(label_vector,instance_matrix,model);
+[pred,accuracy,dec]=libsvm_svmpredict(label_vector,instance_matrix,model);
 disp("accuracy: "+string(accuracy(1))+" %");
 
 // -------------------------------------
@@ -100,12 +100,12 @@ test_data = heart_scale_inst(151:270,:);
 test_label = heart_scale_label(151:270,:);
 
 //linear kernel
-model_linear = svmtrain(train_label, train_data, '-t 0');
-[predict_label_L, accuracy_L, dec_values_L] = svmpredict(test_label, test_data, model_linear);
+model_linear = libsvm_svmtrain(train_label, train_data, '-t 0');
+[predict_label_L, accuracy_L, dec_values_L] = libsvm_svmpredict(test_label, test_data, model_linear);
 
 //precomputed kernel
-model_precomputed = svmtrain(train_label, full([(1:150)', train_data*train_data']), '-t 4');
-[predict_label_P, accuracy_P, dec_values_P] = svmpredict(test_label, full([(1:120)', test_data*train_data']), model_precomputed);
+model_precomputed = libsvm_svmtrain(train_label, full([(1:150)', train_data*train_data']), '-t 4');
+[predict_label_P, accuracy_P, dec_values_P] = libsvm_svmpredict(test_label, full([(1:120)', test_data*train_data']), model_precomputed);
 
 disp("accuracy using linear kernel: "+string(accuracy_L(1)));
 disp("accuracy using precomputed kernel: "+string(accuracy_P(1)));
@@ -114,8 +114,8 @@ disp("accuracy using precomputed kernel: "+string(accuracy_P(1)));
 //probability estimatation demo (you need '-b 1' for training and testing)
 
 [heart_scale_label, heart_scale_inst] = libsvmread(libsvm_getpath()+"/demos/heart_scale");
-model = svmtrain(heart_scale_label, heart_scale_inst, '-c 1 -g 0.07 -b 1');
-[predict_label, accuracy, prob_estimates] = svmpredict(heart_scale_label, heart_scale_inst, model, '-b 1');
+model = libsvm_svmtrain(heart_scale_label, heart_scale_inst, '-c 1 -g 0.07 -b 1');
+[predict_label, accuracy, prob_estimates] = libsvm_svmpredict(heart_scale_label, heart_scale_inst, model, '-b 1');
 prob_estimates
 
    ]]></programlisting>
@@ -124,7 +124,7 @@ prob_estimates
 <refsection>
    <title>See also</title>
    <simplelist type="inline">
-   <member><link linkend="svmtrain">svmtrain</link></member>
+   <member><link linkend="libsvm_svmtrain">libsvm_svmtrain</link></member>
    </simplelist>
 </refsection>
 

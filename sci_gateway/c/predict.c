@@ -38,7 +38,8 @@
 
 
 #include <api_scilab.h>
-// #include <stack-c.h>
+#define __USE_DEPRECATED_STACK_FUNCTIONS__
+#include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>
@@ -320,7 +321,7 @@ int do_predict(int *label_vec,  int *instance_mat, struct model *model_, const i
 void lin_exit_with_help()
 {
 	Scierror (999,
-			"Usage: [predicted_label, accuracy, decision_values/prob_estimates] = predict(testing_label_vector, testing_instance_matrix, model, 'liblinear_options','col')\n"
+			"Usage: [predicted_label, accuracy, decision_values/prob_estimates] = libsvm_linpredict(testing_label_vector, testing_instance_matrix, model, 'liblinear_options','col')\n"
 			"liblinear_options:\n"
 			"-b probability_estimates: whether to output probability estimates, 0 or 1 (default 0); currently for logistic regression only\n"
 			"col: if 'col' is setted testing_instance_matrix is parsed in column format, otherwise is in row format\n"

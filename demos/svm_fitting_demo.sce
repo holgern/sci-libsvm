@@ -17,7 +17,7 @@ end
 // the data is normalized so that max is 1, and min is 0
 //x = (x -repmat(min(x,'r'),size(x,1),1)).*repmat((1 ./(max(x,'r')-min(x,'r'))),size(x,1),1);
 
-x=svmscale(x,[0 1]);
+x=libsvm_scale(x,[0 1]);
 
 // t1 = randn(N,1);
 // t2 = randn(N,1);
@@ -32,8 +32,8 @@ y = 2*t + rand(N,1,"norm")/2 + 7;
 // b= glmfit(x,y);
 for ii = 1
     for jj=1
-        model = svmtrain(y(1:N/2),x(1:N/2,:),'-s 4 -t 2 -n ' +string(ii/2)+ ' -c ' +string(1));
-        zz=svmpredict(y(N/2+1:$),x(N/2+1:$,:),model);
+        model = libsvm_svmtrain(y(1:N/2),x(1:N/2,:),'-s 4 -t 2 -n ' +string(ii/2)+ ' -c ' +string(1));
+        zz=libsvm_svmpredict(y(N/2+1:$),x(N/2+1:$,:),model);
         xtmp=zz;ytmp=y(N/2+1:$);
         //tmp = corrcoef(zz, y(N/2+1:$));
         tmp = sum((xtmp-mean(xtmp)).*(ytmp-mean(ytmp)))./sqrt(sum((xtmp-mean(xtmp)).^2)*sum((ytmp-mean(ytmp)).^2));  

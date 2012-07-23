@@ -37,7 +37,8 @@
 
 
 #include <api_scilab.h>
-// #include <stack-c.h>
+#define __USE_DEPRECATED_STACK_FUNCTIONS__
+#include <stack-c.h>
 #include <sciprint.h>
 #include <Scierror.h>
 #include <MALLOC.h>
@@ -47,7 +48,7 @@
 
 int libsvmwrite(const char *filename, int * label_vec, int * instance_mat)
 {
-  FILE *fp = fopen(filename,"w+"); // w+ pour linux ?
+  FILE *fp = fopen(filename,"w"); 
   int i, k, low, high, r_samples, c_samples, r_labels, c_labels, index;
   int label_vector_row_num, type, tmp, elements;
   int * samples_piNbItemRow = NULL, * samples_piColPos = NULL;
@@ -190,5 +191,12 @@ int sci_libsvmwrite(char * fname)
       Scierror (999,"Usage: libsvmwrite('filename', label_vector, instance_matrix);\n");
     }
 
+      /* This function put on scilab stack, the lhs variable
+  which are at the position lhs(i) on calling stack */
+  /* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR 
+  was defined and equal to %t */
+  /* without this, you do not need to add PutLhsVar here */
+  PutLhsVar();
+    
   return 0;
 }

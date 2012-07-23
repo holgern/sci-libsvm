@@ -1,12 +1,12 @@
-function [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters] = svmnormalize(instance,x,label,y)
+function [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters] = libsvm_normalize(instance,x,label,y)
 //scale the input data for correct learning
 // Calling Sequence
-//   [scaled_instance,scaled_parameters] = svmnormalize(instance);
-//   [scaled_instance,scaled_parameters] = svmnormalize(instance,[meanV,stdV]);
+//   [scaled_instance,scaled_parameters] = libsvm_normalize(instance);
+//   [scaled_instance,scaled_parameters] = libsvm_normalize(instance,[meanV,stdV]);
 //
-//   [scaled_instance] = svmnormalize(instance,scaled_parameters);
+//   [scaled_instance] = libsvm_normalize(instance,scaled_parameters);
 //   
-//  [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters] = svmnormalize(instance,[meanV,stdV],label,[label_mean, label_std]);
+//  [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters] = libsvm_normalize(instance,[meanV,stdV],label,[label_mean, label_std]);
 //  Description
 //  Scaling before applying SVM is very important in order to avoid several  numerical problems! 
 //  Each feature row in the instance matrix has be scaled indepented from the other features.
@@ -15,10 +15,12 @@ function [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters
 //   Scale your data. For example, scale each attribute to a mean of 0 and a standard deviation of 1.
 //  Examples
 //  [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
-//  [scaled_instance,scaled_parameters] = svmnormalize(instance,[0,1]);
-//  cc = svmtrain(label,scaled_instance);
-//  [predicted_label,accuracy]=svmpredict(label,svmnormalize(instance,scaled_parameters),cc);
+//  [scaled_instance,scaled_parameters] = libsvm_normalize(instance,[0,1]);
+//  cc = libsvm_svmtrain(label,scaled_instance);
+//  [predicted_label,accuracy]=libsvm_svmpredict(label,libsvm_normalize(instance,scaled_parameters),cc);
 // disp("accuracy: "+string(accuracy(1))+" %");
+// See also
+//   libsvm_scale
 // Authors
 // Holger Nahrstaedt
 

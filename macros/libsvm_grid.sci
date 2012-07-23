@@ -1,10 +1,10 @@
-function [best_rate,best_c,best_g,rate_matrix] = svmgrid(label,instance,log2c,log2g,fold,option_string)
+function [best_rate,best_c,best_g,rate_matrix] = libsvm_grid(label,instance,log2c,log2g,fold,option_string)
 // parameter selection tool for C-SVM classification using the RBF (radial basis function) kernel
 // Calling Sequence
-//   [best_rate,best_c,best_g] = svmgrid(label,instance)
-//   [best_rate,best_c,best_g] = svmgrid(label,instance,log2c,log2g)
-//   [best_rate,best_c,best_g] = svmgrid(label,instance,log2c,log2g,v)
-//   [best_rate,best_c,best_g] = svmgrid(label,instance,log2c,log2g,v,option_string)
+//   [best_rate,best_c,best_g] = libsvm_grid(label,instance)
+//   [best_rate,best_c,best_g] = libsvm_grid(label,instance,log2c,log2g)
+//   [best_rate,best_c,best_g] = libsvm_grid(label,instance,log2c,log2g,v)
+//   [best_rate,best_c,best_g] = libsvm_grid(label,instance,log2c,log2g,v,option_string)
 //  Parameters
 //  log2c : [begin,end,step]
 //  log2g : [begin,end,step]
@@ -14,15 +14,17 @@ function [best_rate,best_c,best_g,rate_matrix] = svmgrid(label,instance,log2c,lo
 //  best_c : best parameter c 
 //  best_g : best parameter gamma
 //  Description
-//  svmgrid is a parameter selection tool for C-SVM classification using
+//  libsvm_grid is a parameter selection tool for C-SVM classification using
 //the RBF (radial basis function) kernel. It uses cross validation (CV)
 //technique to estimate the accuracy of each parameter combination in
 //the specified range and helps you to decide the best parameters for
 //your problem.
 // Examples
 //    [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
-//    [best_rate,best_c,best_g] = svmgrid(label,instance)
+//    [best_rate,best_c,best_g] = libsvm_grid(label,instance)
 //
+//See also
+//libsvm_gridlinear
 // Authors
 // Holger Nahrstaedt
 // 
@@ -78,7 +80,7 @@ function [best_rate,best_c,best_g,rate_matrix] = svmgrid(label,instance,log2c,lo
          for c=c_seq(c_seqind)
            for g=g_seq(g_seqind)
             
-               rate = svmtrain(label,instance,"-c "+string(2^c)+" -g "+string(2^g)+" -v "+string(fold)+" -q "+option_string);
+               rate = libsvm_svmtrain(label,instance,"-c "+string(2^c)+" -g "+string(2^g)+" -v "+string(fold)+" -q "+option_string);
 
               if sum(rate_matrix)==0 then
                   rate_matrix=ones(length(c_seq),length(g_seq))*rate;

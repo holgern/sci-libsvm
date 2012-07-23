@@ -2,11 +2,11 @@
 
 <!--
  *
- * This help file was generated from svmtrain.sci using help_from_sci().
+ * This help file was generated from libsvm_svmtrain.sci using help_from_sci().
  *
  -->
 
-<refentry version="5.0-subset Scilab" xml:id="svmtrain" xml:lang="en"
+<refentry version="5.0-subset Scilab" xml:id="libsvm_svmtrain" xml:lang="en"
           xmlns="http://docbook.org/ns/docbook"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           xmlns:svg="http://www.w3.org/2000/svg"
@@ -16,7 +16,7 @@
 
 
   <refnamediv>
-    <refname>svmtrain</refname><refpurpose>trains a svm model</refpurpose>
+    <refname>libsvm_svmtrain</refname><refpurpose>trains a svm model</refpurpose>
   </refnamediv>
 
 
@@ -24,8 +24,8 @@
 <refsynopsisdiv>
    <title>Calling Sequence</title>
    <synopsis>
-   model = svmtrain(training_label_vector, training_instance_matrix);
-   model = svmtrain(training_label_vector, training_instance_matrix,libsvm_options);
+   model = libsvm_svmtrain(training_label_vector, training_instance_matrix);
+   model = libsvm_svmtrain(training_label_vector, training_instance_matrix,libsvm_options);
    </synopsis>
 </refsynopsisdiv>
 
@@ -165,16 +165,16 @@ matrices
    <programlisting role="example"><![CDATA[
 label_vector=[zeros(20,1);ones(20,1)];
 instance_matrix = [rand(20,2); -1*rand(20,2)];
-model=svmtrain(label_vector,instance_matrix);
+model=libsvm_svmtrain(label_vector,instance_matrix);
 
-[pred,acc,dec]=svmpredict(label_vector,instance_matrix,model);
+[pred,acc,dec]=libsvm_svmpredict(label_vector,instance_matrix,model);
    ]]></programlisting>
 </refsection>
 
 <refsection>
    <title>See also</title>
    <simplelist type="inline">
-   <member><link linkend="svmpredict">svmpredict</link></member>
+   <member><link linkend="libsvm_svmpredict">libsvm_svmpredict</link></member>
    </simplelist>
 </refsection>
 

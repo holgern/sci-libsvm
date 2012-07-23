@@ -1,10 +1,10 @@
-function model = train(weight_vector, training_label_vector, training_instance_matrix, 'liblinear_options', 'col')
+function model = libsvm_lintrain(weight_vector, training_label_vector, training_instance_matrix, 'liblinear_options', 'col')
 // trains a linear model
 // Calling Sequence
-// model = train(training_label_vector, training_instance_matrix)
-// model = train(training_label_vector, training_instance_matrix, 'liblinear_options')
-// model = train(training_label_vector, training_instance_matrix, 'liblinear_options', 'col')
-// model = train(weight_vector, training_label_vector, training_instance_matrix, ['liblinear_options', 'col'])
+// model = libsvm_lintrain(training_label_vector, training_instance_matrix)
+// model = libsvm_lintrain(training_label_vector, training_instance_matrix, 'liblinear_options')
+// model = libsvm_lintrain(training_label_vector, training_instance_matrix, 'liblinear_options', 'col')
+// model = libsvm_lintrain(weight_vector, training_label_vector, training_instance_matrix, ['liblinear_options', 'col'])
 // Parameters
 // liblinear_options:
 // -s type : set type of solver (default 1)
@@ -42,7 +42,7 @@ function model = train(weight_vector, training_label_vector, training_instance_m
 // model.w: a nr_w-by-n matrix for the weights, where n is nr_feature      or nr_feature+1 depending on the existence of the bias term.          nr_w is 1 if nr_class=2 and -s is not 4 (i.e., not         multi-class svm by Crammer and Singer). It is          nr_class otherwise.
 // 
 // Description
-// The 'train' function returns a model which can be used for future prediction.  It is a structure and is organized as [Parameters, nr_class, nr_feature, bias, Label, w]
+// The 'libsvm_lintrain' function returns a model which can be used for future prediction.  It is a structure and is organized as [Parameters, nr_class, nr_feature, bias, Label, w]
 // 
 // If the '-v' option is specified, cross validation is conducted and the returned model is just a scalar: cross-validation accuracy.
 // 
@@ -52,11 +52,11 @@ function model = train(weight_vector, training_label_vector, training_instance_m
 // Examples
 // label_vector=[zeros(20,1);ones(20,1)];
 // instance_matrix = sparse([rand(20,2); -1*rand(20,2)]);
-// model=train(label_vector,instance_matrix,"-q")
-// [pred_label, accuracy, dec_values]=predict(label_vector,instance_matrix,model);
+// model=libsvm_lintrain(label_vector,instance_matrix,"-q")
+// [pred_label, accuracy, dec_values]=libsvm_linpredict(label_vector,instance_matrix,model);
 // disp("accuracy: "+string(accuracy(1)));
 // See also
-// predict
+// libsvm_linpredict
 // Authors
 // Chih-Chung Chang
 // Chih-Jen Lin

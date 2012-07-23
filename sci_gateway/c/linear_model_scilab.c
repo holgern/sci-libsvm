@@ -36,7 +36,8 @@
 #include "linear.h"
 
 #include <api_scilab.h>
-//#include <stack-c.h>
+#define __USE_DEPRECATED_STACK_FUNCTIONS__
+#include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>

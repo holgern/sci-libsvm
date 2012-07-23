@@ -17,6 +17,6 @@ label_vector=[zeros(20,1);ones(20,1)];
 halt('Press return');
 //
 scf(1);clf(1);
-svmtoy(label_vector, instance_matrix,"-c 1000 -g 0.5",[-1 0 1])
+libsvm_toy(label_vector, instance_matrix,"-c 1000 -g 0.5",[-1 0 1])
 
 

@@ -1,9 +1,9 @@
-function [predicted_label, accuracy, decision_values/prob_estimates] = predict(testing_label_vector, testing_instance_matrix, model, 'liblinear_options','col')
+function [predicted_label, accuracy, decision_values/prob_estimates] = libsvm_linpredict(testing_label_vector, testing_instance_matrix, model, 'liblinear_options','col')
 // Does prediction for a calculated svm model
 // Calling Sequence
-// [predicted_label, accuracy, decision_values/prob_estimates] = predict(testing_label_vector, testing_instance_matrix, model)
-// [predicted_label, accuracy, decision_values/prob_estimates] = predict(testing_label_vector, testing_instance_matrix, model,'liblinear_options')
-// [predicted_label, accuracy, decision_values/prob_estimates] = predict(testing_label_vector, testing_instance_matrix, model, 'liblinear_options','col')
+// [predicted_label, accuracy, decision_values/prob_estimates] = libsvm_linpredict(testing_label_vector, testing_instance_matrix, model)
+// [predicted_label, accuracy, decision_values/prob_estimates] = libsvm_linpredict(testing_label_vector, testing_instance_matrix, model,'liblinear_options')
+// [predicted_label, accuracy, decision_values/prob_estimates] = libsvm_linpredict(testing_label_vector, testing_instance_matrix, model, 'liblinear_options','col')
 // Parameters
 // liblinear_options: -b probability_estimates: whether to predict probability estimates, 0 or 1 (default 0)
 // col: if 'col' is setted testing_instance_matrix is parsed in column format, otherwise is in row format
@@ -23,20 +23,20 @@ function [predicted_label, accuracy, decision_values/prob_estimates] = predict(t
 // Examples
 // label_vector=[zeros(20,1);ones(20,1)];
 // instance_matrix = sparse([rand(20,2); -1*rand(20,2)]);
-// model=train(label_vector,instance_matrix,"-q")
-// [pred_label, accuracy, dec_values]=predict(label_vector,instance_matrix,model);
+// model=libsvm_lintrain(label_vector,instance_matrix,"-q")
+// [pred_label, accuracy, dec_values]=libsvm_linpredict(label_vector,instance_matrix,model);
 // disp("accuracy: "+string(accuracy(1))+" %");
 // 
 // //---------------------
 // // heart scale demo
 // [heart_scale_label, heart_scale_inst] = libsvmread(libsvm_getpath()+"/demos/heart_scale");
-// model = train(heart_scale_label, heart_scale_inst, '-c 1');
-// [predict_label, accuracy, dec_values] = predict(heart_scale_label, heart_scale_inst, model); // test the training data
+// model = libsvm_lintrain(heart_scale_label, heart_scale_inst, '-c 1');
+// [predict_label, accuracy, dec_values] = libsvm_linpredict(heart_scale_label, heart_scale_inst, model); // test the training data
 // disp("accuracy: "+string(accuracy(1))+" %");
 // 
 // 
 //See also
-//train
+//libsvm_lintrain
 // Authors
 // Chih-Chung Chang
 // Chih-Jen Lin

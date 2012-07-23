@@ -20,9 +20,9 @@ x(30)=1.2;
 halt('Press return');
 //
 // At first we will train and test the dataset. We set the classifier to one-class SVM (-s 2)
-model=svmtrain(ones(x),x,'-s 2');
+model=libsvm_svmtrain(ones(x),x,'-s 2');
 //
-[label,acc,dec_val]=svmpredict(ones(x),x,model);
+[label,acc,dec_val]=libsvm_svmpredict(ones(x),x,model);
 //
 
 // Now we can check the decision_values

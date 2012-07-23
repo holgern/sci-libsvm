@@ -2,11 +2,11 @@
 
 <!--
  *
- * This help file was generated from svmgridlinear.sci using help_from_sci().
+ * This help file was generated from libsvm_grid.sci using help_from_sci().
  *
  -->
 
-<refentry version="5.0-subset Scilab" xml:id="svmgridlinear" xml:lang="en"
+<refentry version="5.0-subset Scilab" xml:id="libsvm_grid" xml:lang="en"
           xmlns="http://docbook.org/ns/docbook"
           xmlns:xlink="http://www.w3.org/1999/xlink"
           xmlns:svg="http://www.w3.org/2000/svg"
@@ -16,7 +16,7 @@
 
 
   <refnamediv>
-    <refname>svmgridlinear</refname><refpurpose>parameter selection tool for linear classification</refpurpose>
+    <refname>libsvm_grid</refname><refpurpose>parameter selection tool for C-SVM classification using the RBF (radial basis function) kernel</refpurpose>
   </refnamediv>
 
 
@@ -24,11 +24,10 @@
 <refsynopsisdiv>
    <title>Calling Sequence</title>
    <synopsis>
-   [best_rate,best_c,best_s] = svmgridlinear(label,instance)
-   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c)
-   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq)
-   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq,v)
-   [best_rate,best_c,best_s] = svmgridlinear(label,instance,log2c,s_seq,v,option_string)
+   [best_rate,best_c,best_g] = libsvm_grid(label,instance)
+   [best_rate,best_c,best_g] = libsvm_grid(label,instance,log2c,log2g)
+   [best_rate,best_c,best_g] = libsvm_grid(label,instance,log2c,log2g,v)
+   [best_rate,best_c,best_g] = libsvm_grid(label,instance,log2c,log2g,v,option_string)
    </synopsis>
 </refsynopsisdiv>
 
@@ -37,8 +36,8 @@
    <variablelist>
    <varlistentry><term>log2c :</term>
       <listitem><para> [begin,end,step]</para></listitem></varlistentry>
-   <varlistentry><term>s_seq :</term>
-      <listitem><para> linear kernels (0 - 7, 11 - 13), e.g. [0 1 4]</para></listitem></varlistentry>
+   <varlistentry><term>log2g :</term>
+      <listitem><para> [begin,end,step]</para></listitem></varlistentry>
    <varlistentry><term>v :</term>
       <listitem><para> fold</para></listitem></varlistentry>
    <varlistentry><term>option_string:</term>
@@ -47,15 +46,16 @@
       <listitem><para> cross validation accuracy for the best parameter combination</para></listitem></varlistentry>
    <varlistentry><term>best_c :</term>
       <listitem><para> best parameter c</para></listitem></varlistentry>
-   <varlistentry><term>best_s :</term>
-      <listitem><para> best linear kernel</para></listitem></varlistentry>
+   <varlistentry><term>best_g :</term>
+      <listitem><para> best parameter gamma</para></listitem></varlistentry>
    </variablelist>
 </refsection>
 
 <refsection>
    <title>Description</title>
    <para>
-svmgrid is a parameter selection tool for linear classification. It uses cross validation (CV)
+libsvm_grid is a parameter selection tool for C-SVM classification using
+the RBF (radial basis function) kernel. It uses cross validation (CV)
 technique to estimate the accuracy of each parameter combination in
 the specified range and helps you to decide the best parameters for
 your problem.
@@ -66,8 +66,16 @@ your problem.
    <title>Examples</title>
    <programlisting role="example"><![CDATA[
 [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
-[best_rate,best_c,best_s] = svmgridlinear(label,instance)
+[best_rate,best_c,best_g] = libsvm_grid(label,instance)
+
    ]]></programlisting>
+</refsection>
+
+<refsection>
+   <title>See also</title>
+   <simplelist type="inline">
+   <member><link linkend="libsvm_gridlinear">libsvm_gridlinear</link></member>
+   </simplelist>
 </refsection>
 
 <refsection>

@@ -38,7 +38,8 @@
 #include "svm.h"
 
 #include <api_scilab.h>
-// #include <stack-c.h>
+#define __USE_DEPRECATED_STACK_FUNCTIONS__
+#include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>
@@ -61,7 +62,7 @@ void svm_print_string_scilab(const char *s) {sciprint(s);}
 void exit_with_help_train()
 {
         Scierror (999,
-        "Usage: model = svmtrain(training_label_vector, training_instance_matrix, 'libsvm_options');\n"
+        "Usage: model = libsvm_svmtrain(training_label_vector, training_instance_matrix, 'libsvm_options');\n"
 	"libsvm_options:\n"
 	"-s svm_type : set type of SVM (default 0)\n"
 	"	0 -- C-SVC\n"
