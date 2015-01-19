@@ -3,28 +3,15 @@
 
 // This file is released under the 3-clause BSD license. See COPYING-BSD.
 
-function libsvmlib = svmlib_load()
+function root_tlbx = svmlib_load()
 
-mprintf("libsvm  Toolbox - (1.4.0)\n");
+mprintf("libsvm  Toolbox - (1.4.4)\n");
 
 if isdef("libsvmlib") then
 	warning("libsvm Toolbox library is already loaded");
 	return;
 end
 
-if isdef("nanlib") then
-        tmp=%f;
-	try
-          tmp=type(train)==130;
-	catch
- 
-        end;
-		  if tmp then
-		         warning('libsvm Toolbox is not compatible to this old Nan Toolbox version! Please update your Nan Toolbox.\n');
-			return;
-		 end;
-	clear tmp;
-end
 
 etc_tlbx  = get_absolute_file_path("libsvm.start");
 etc_tlbx  = getshortpathname(etc_tlbx);
@@ -35,7 +22,6 @@ root_tlbx = strncpy( etc_tlbx, length(etc_tlbx)-length("\etc") );
 mprintf("\tLoad macros\n");
 pathmacros = pathconvert( root_tlbx ) + "macros" + filesep();
 libsvmlib = lib(pathmacros);
-clear pathmacros;
 
 // load gateways
 // =============================================================================
@@ -65,22 +51,22 @@ end
 
 	// =============================================================================
 	// Create a function which returns the path to the module
-	longpath = getlongpathname(root_tlbx)
-	deff("path = libsvm_getpath()","path="""+longpath+"""");
-	
+	//longpath = getlongpathname(root_tlbx)
+	//deff("path = libsvm_getpath()","path="""+longpath+"""");
+
 	// =============================================================================
 	// Create variables at level #0
 	//[libsvmlib, libsvm_getpath] = resume(libsvmlib, libsvm_getpath);
-	[libsvm_getpath] = resume(libsvm_getpath);
+	[libsvmlib] = resume(libsvmlib);
 
 
 endfunction
 
-	
+
 if ( isdef("libsvmlib") ) then
 	warning("Library is already loaded (""ulink(); clear libsvmlib;"" to unload.)");
 	return;
 end
 
-libsvmlib = svmlib_load();
+svmlib_load();
 clear svmlib_load;

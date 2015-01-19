@@ -11,9 +11,9 @@ halt('Press return'); clc;
 
 //Train and test on the provided data heart_scale
     
-[heart_scale_label, heart_scale_inst] = libsvmread(libsvm_getpath()+'demos/heart_scale');
+[heart_scale_label, heart_scale_inst] = libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 
-heart_scale_weight = fscanfMat(libsvm_getpath()+'demos/heart_scale.wgt');
+heart_scale_weight = fscanfMat(fullfile(libsvm_getpath(),"demos","heart_scale.wgt"));
 
 model = libsvm_lintrain(heart_scale_weight, heart_scale_label, heart_scale_inst, '-c 1 -q');
 

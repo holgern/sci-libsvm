@@ -38,8 +38,8 @@
 #include "linear.h"
 
 #include <api_scilab.h>
-#define __USE_DEPRECATED_STACK_FUNCTIONS__
-#include <stack-c.h>
+// #define __USE_DEPRECATED_STACK_FUNCTIONS__
+// #include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>
@@ -62,26 +62,28 @@ void exit_with_help()
 	"Usage: model = libsvm_lintrain(weight_vector, training_label_vector, training_instance_matrix, 'liblinear_options', 'col');\n"
 	"liblinear_options:\n"
 	"-s type : set type of solver (default 1)\n"
+	"  for multi-class classification\n"
 	"	 0 -- L2-regularized logistic regression (primal)\n"
-	"	 1 -- L2-regularized L2-loss support vector classification (dual)\n"	
+	"	 1 -- L2-regularized L2-loss support vector classification (dual)\n"
 	"	 2 -- L2-regularized L2-loss support vector classification (primal)\n"
 	"	 3 -- L2-regularized L1-loss support vector classification (dual)\n"
-	"	 4 -- multi-class support vector classification by Crammer and Singer\n"
+	"	 4 -- support vector classification by Crammer and Singer\n"
 	"	 5 -- L1-regularized L2-loss support vector classification\n"
 	"	 6 -- L1-regularized logistic regression\n"
 	"	 7 -- L2-regularized logistic regression (dual)\n"
-	"	11 -- L2-regularized L2-loss epsilon support vector regression (primal)\n"
-	"	12 -- L2-regularized L2-loss epsilon support vector regression (dual)\n"
-	"	13 -- L2-regularized L1-loss epsilon support vector regression (dual)\n"
+	"  for regression\n"
+	"	11 -- L2-regularized L2-loss support vector regression (primal)\n"
+	"	12 -- L2-regularized L2-loss support vector regression (dual)\n"
+	"	13 -- L2-regularized L1-loss support vector regression (dual)\n"
 	"-c cost : set the parameter C (default 1)\n"
-	"-p epsilon : set the epsilon in loss function of epsilon-SVR (default 0.1)\n"
+	"-p epsilon : set the epsilon in loss function of SVR (default 0.1)\n"
 	"-e epsilon : set tolerance of termination criterion\n"
-	"	-s 0 and 2\n" 
-	"		|f'(w)|_2 <= eps*min(pos,neg)/l*|f'(w0)|_2,\n" 
-	"		where f is the primal function and pos/neg are # of\n" 
+	"	-s 0 and 2\n"
+	"		|f'(w)|_2 <= eps*min(pos,neg)/l*|f'(w0)|_2,\n"
+	"		where f is the primal function and pos/neg are # of\n"
 	"		positive/negative data (default 0.01)\n"
 	"	-s 11\n"
-	"		|f'(w)|_2 <= eps*|f'(w0)|_2 (default 0.001)\n" 
+	"		|f'(w)|_2 <= eps*|f'(w0)|_2 (default 0.001)\n"
 	"	-s 1, 3, 4 and 7\n"
 	"		Dual maximal violation <= eps; similar to libsvm (default 0.1)\n"
 	"	-s 5 and 6\n"
@@ -120,8 +122,8 @@ double do_cross_validation()
 	double retval = 0.0;
 
 	cross_validation(&prob_,&param_,nr_fold_,target);
-	if(param_.solver_type == L2R_L2LOSS_SVR || 
-	   param_.solver_type == L2R_L1LOSS_SVR_DUAL || 
+	if(param_.solver_type == L2R_L2LOSS_SVR ||
+	   param_.solver_type == L2R_L1LOSS_SVR_DUAL ||
 	   param_.solver_type == L2R_L2LOSS_SVR_DUAL)
 	{
 		for(i=0;i<prob_.l;i++)
@@ -254,20 +256,20 @@ int parse_command_line(int nrhs, const char *cmd, const char *cmd_col, char *mod
 	{
 		switch(param_.solver_type)
 		{
-			case L2R_LR: 
+			case L2R_LR:
 			case L2R_L2LOSS_SVC:
 				param_.eps = 0.01;
 				break;
 			case L2R_L2LOSS_SVR:
 				param_.eps = 0.001;
 				break;
-			case L2R_L2LOSS_SVC_DUAL: 
-			case L2R_L1LOSS_SVC_DUAL: 
-			case MCSVM_CS: 
-			case L2R_LR_DUAL: 
+			case L2R_L2LOSS_SVC_DUAL:
+			case L2R_L1LOSS_SVC_DUAL:
+			case MCSVM_CS:
+			case L2R_LR_DUAL:
 				param_.eps = 0.1;
 				break;
-			case L1R_L2LOSS_SVC: 
+			case L1R_L2LOSS_SVC:
 			case L1R_LR:
 				param_.eps = 0.01;
 				break;
@@ -318,7 +320,7 @@ int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat)
 // 		mxDestroyArray(prhs[0]);
 // 	}
         if (weight_vector_flag==1){
-	  
+
 	 _SciErr = getMatrixOfDouble(pvApiCtx, weight_vec, &r_weights, &c_weights, &weights);
 	 if(_SciErr.iErr)
 	{
@@ -326,7 +328,7 @@ int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat)
 			return -1;
 		}
 
-	  
+
 	} else {
 	  r_weights=0;
 	  c_weights=0;
@@ -347,15 +349,15 @@ int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat)
 			return -1;
 	}
 
-		
-		
+
+
 	// the number of instance
 	//prob.l = (int) mxGetN(instance_mat_col);
 	prob_.l = r_samples;
 	weight_vector_row_num = r_weights;
 	label_vector_row_num = r_labels;//(int) mxGetM(label_vec);
 
-	if(weight_vector_row_num == 0) 
+	if(weight_vector_row_num == 0)
 		//sciprint("Warning: treat each instance with weight 1.0\n");
 		;
 	else if(weight_vector_row_num!=prob_.l)
@@ -363,13 +365,13 @@ int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat)
 		sciprint("Length of weight vector does not match # of instances.\n");
 		return -1;
 	}
-	
+
 	if(label_vector_row_num!=prob_.l)
 	{
 		sciprint("Length of label vector does not match # of instances.\n");
 		return -1;
 	}
-	
+
 	// each column is one instance
 	//labels = mxGetPr(label_vec);
 	//samples = mxGetPr(instance_mat_col);
@@ -446,7 +448,7 @@ int sci_train(char * fname)
 	srand(1);
 	// check for weight vector
 	weight_vector_flag=0;
-	if (Rhs>2) {
+	if (nbInputArgument(pvApiCtx)>2) {
 	  _SciErr = getVarAddressFromPosition(pvApiCtx, 3, &p_option_string);
 		if(_SciErr.iErr)
 		{
@@ -466,11 +468,11 @@ int sci_train(char * fname)
 		  p_option_string=NULL;
 		} else
 		  getAllocatedSingleString(pvApiCtx, p_option_string, &option_string);
-	  
+
 	}
 
 	// Transform the input Matrix to libsvm format
-	if(Rhs > (1+rhs_offset) && (Rhs < 5+rhs_offset))
+	if(nbInputArgument(pvApiCtx) > (1+rhs_offset) && (nbInputArgument(pvApiCtx) < 5+rhs_offset))
 	{
 		int err=0;
 		if ( weight_vector_flag==1){
@@ -488,11 +490,11 @@ int sci_train(char * fname)
 			      }
 			      if (type!=sci_matrix)
 			      {
-				Scierror (999,"Error: weight vector must be double\n");	
+				Scierror (999,"Error: weight vector must be double\n");
 				return 0;
 			      }
-			      
-		  
+
+
 		}
 
 		_SciErr = getVarAddressFromPosition(pvApiCtx, 1+rhs_offset, &p_label_vector);
@@ -509,7 +511,7 @@ int sci_train(char * fname)
 		}
 		if (type!=sci_matrix)
 		{
-		  Scierror (999,"Error: label vector must be double\n");	
+		  Scierror (999,"Error: label vector must be double\n");
 		  return 0;
 		}
 		if (weight_vector_flag==0) {
@@ -526,15 +528,15 @@ int sci_train(char * fname)
 			printError(&_SciErr, 0);
 			return 0;
 		}
-		
+
 		 if (type!=sci_matrix && type!=sci_sparse)
 		{
-		 Scierror (999,"Error: instance matrix must be double or sparse\n");			
+		 Scierror (999,"Error: instance matrix must be double or sparse\n");
 		  return 0;
 		}
 
-		
-		if (Rhs==(4+rhs_offset)) {
+
+		if (nbInputArgument(pvApiCtx)==(4+rhs_offset)) {
 		    _SciErr = getVarAddressFromPosition(pvApiCtx, 4+rhs_offset, &p_col_string);
 		    if(_SciErr.iErr)
 		    {
@@ -552,10 +554,10 @@ int sci_train(char * fname)
 		    getAllocatedSingleString(pvApiCtx, p_col_string, &col_string);
 		}
 
-		    
+
 		}
 		if (weight_vector_flag==1) {
-		if (Rhs>(2+rhs_offset)) {
+		if (nbInputArgument(pvApiCtx)>(2+rhs_offset)) {
 		    _SciErr = getVarAddressFromPosition(pvApiCtx, 3+rhs_offset, &p_option_string);
 		    if(_SciErr.iErr)
 		    {
@@ -571,13 +573,13 @@ int sci_train(char * fname)
 		 if (type3==sci_strings)
 		  {
 		    getAllocatedSingleString(pvApiCtx, p_option_string, &option_string);
-		  } 
-		  
-		    
+		  }
+
+
 		}
 		}
-		
-		if(parse_command_line(Rhs,option_string,col_string, NULL))
+
+		if(parse_command_line(nbInputArgument(pvApiCtx),option_string,col_string, NULL))
 		{
 
 			destroy_param(&param_);
@@ -593,7 +595,7 @@ int sci_train(char * fname)
 			err = read_problem_sparse(p_weight_vector,p_label_vector, p_instance_matrix);
 		else
 		{
-			destroy_param(&param_);	
+			destroy_param(&param_);
 			Scierror (999,"Training_instance_matrix must be sparse\n");
 			return 0;
 		}
@@ -617,7 +619,7 @@ int sci_train(char * fname)
 		if(cross_validation_flag)
 		{
 			double *ptr;
-			_SciErr = allocMatrixOfDouble(pvApiCtx, Rhs + 1, 1, 1, &ptr);
+			_SciErr = allocMatrixOfDouble(pvApiCtx, nbInputArgument(pvApiCtx) + 1, 1, 1, &ptr);
 			if(_SciErr.iErr)
 		        {
 			    printError(&_SciErr, 0);
@@ -626,13 +628,13 @@ int sci_train(char * fname)
 			//plhs[0] = mxCreateDoubleMatrix(1, 1, mxREAL);
 			//ptr = mxGetPr(plhs[0]);
 			ptr[0] = do_cross_validation();
-			LhsVar(1) = Rhs + 1;
+			AssignOutputVariable(pvApiCtx,1) = nbInputArgument(pvApiCtx) + 1;
 			  /* This function put on scilab stack, the lhs variable
 			which are at the position lhs(i) on calling stack */
-			/* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR 
+			/* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR
 			was defined and equal to %t */
 			/* without this, you do not need to add PutLhsVar here */
-			PutLhsVar();
+			ReturnArguments(pvApiCtx);
 		}
 		else
 		{
@@ -648,11 +650,11 @@ int sci_train(char * fname)
 			}else{
 			    /* This function put on scilab stack, the lhs variable
 		    which are at the position lhs(i) on calling stack */
-		    /* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR 
+		    /* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR
 		    was defined and equal to %t */
 		    /* without this, you do not need to add PutLhsVar here */
-		    	LhsVar(1) = Rhs+1; 
-			PutLhsVar();
+		    	AssignOutputVariable(pvApiCtx,1) = nbInputArgument(pvApiCtx)+1;
+			ReturnArguments(pvApiCtx);
 			}
 			free_and_destroy_model(&model_);
 		}

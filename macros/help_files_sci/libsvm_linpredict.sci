@@ -29,7 +29,7 @@ function [predicted_label, accuracy, decision_values/prob_estimates] = libsvm_li
 // 
 // //---------------------
 // // heart scale demo
-// [heart_scale_label, heart_scale_inst] = libsvmread(libsvm_getpath()+"/demos/heart_scale");
+// [heart_scale_label, heart_scale_inst] = libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 // model = libsvm_lintrain(heart_scale_label, heart_scale_inst, '-c 1');
 // [predict_label, accuracy, dec_values] = libsvm_linpredict(heart_scale_label, heart_scale_inst, model); // test the training data
 // disp("accuracy: "+string(accuracy(1))+" %");

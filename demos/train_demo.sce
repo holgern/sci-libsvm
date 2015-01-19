@@ -17,8 +17,8 @@ halt('Press return'); clc;
 //  # of features: 10
 // We can load the data using readsparse
     
-[label_vector, instance_vector] = libsvmread(libsvm_getpath()+'demos/svmguide4');
-[label_vector_test, instance_vector_test] = libsvmread(libsvm_getpath()+'demos/svmguide4.t');
+[label_vector, instance_vector] = libsvmread(fullfile(libsvm_getpath(),"demos","svmguide4"));
+[label_vector_test, instance_vector_test] = libsvmread(fullfile(libsvm_getpath(),"demos","svmguide4.t"));
 
 // Press any key to continue...
 halt('Press return');

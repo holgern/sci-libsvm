@@ -14,7 +14,7 @@ function [scaled_instance,scaled_parameters,scaled_label,scaled_label_parameters
 //  
 //  It is important to scale the testing data with the same scale as the training data!
 //  Examples
-//  [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+//  [label,instance]=libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 //  [scaled_instance,scaled_parameters] = libsvm_scale(instance,[-1,1]);
 //  cc = libsvm_svmtrain(label,scaled_instance);
 //  [predicted_label,accuracy]=libsvm_svmpredict(label,svmnormalize(instance,scaled_parameters),cc);

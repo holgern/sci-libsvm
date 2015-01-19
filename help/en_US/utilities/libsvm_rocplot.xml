@@ -12,13 +12,13 @@
           xmlns:svg="http://www.w3.org/2000/svg"
           xmlns:ns3="http://www.w3.org/1999/xhtml"
           xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:scilab="http://www.scilab.org"
           xmlns:db="http://docbook.org/ns/docbook">
 
-
   <refnamediv>
-    <refname>libsvm_rocplot</refname><refpurpose>plotroc draws the recevier operating characteristic(ROC) curve for an svm-model</refpurpose>
+    <refname>libsvm_rocplot</refname>
+    <refpurpose>plotroc draws the recevier operating characteristic(ROC) curve for an svm-model</refpurpose>
   </refnamediv>
-
 
 
 <refsynopsisdiv>
@@ -45,7 +45,7 @@ Use the given model to predict testing data and obtain decision values  for ROC
    <title>Examples</title>
    <programlisting role="example"><![CDATA[
 
-[label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+[label,instance]=libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 // 5-fold cross-classiﬁcation, training of svm is done inside of libsvm_rocplot
 libsvm_rocplot(label, instance,'-v 5');
 
@@ -55,7 +55,7 @@ libsvm_rocplot(label,instance,model);
 
 //--------------------------
 //libsvm_rocplot for linear models
-[label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+[label,instance]=libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 // 5-fold cross-classiﬁcation, training of svm is done inside of libsvm_rocplot
 libsvm_rocplot(label, instance,'-v 5',%t);
 

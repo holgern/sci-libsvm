@@ -12,13 +12,13 @@
           xmlns:svg="http://www.w3.org/2000/svg"
           xmlns:ns3="http://www.w3.org/1999/xhtml"
           xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:scilab="http://www.scilab.org"
           xmlns:db="http://docbook.org/ns/docbook">
 
-
   <refnamediv>
-    <refname>libsvm_gridlinear</refname><refpurpose>parameter selection tool for linear classification</refpurpose>
+    <refname>libsvm_gridlinear</refname>
+    <refpurpose>parameter selection tool for linear classification</refpurpose>
   </refnamediv>
-
 
 
 <refsynopsisdiv>
@@ -65,7 +65,7 @@ your problem.
 <refsection>
    <title>Examples</title>
    <programlisting role="example"><![CDATA[
-[label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+[label,instance]=libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 [best_rate,best_c,best_s] = libsvm_gridlinear(label,instance)
    ]]></programlisting>
 </refsection>

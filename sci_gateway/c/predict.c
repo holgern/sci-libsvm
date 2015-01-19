@@ -38,8 +38,8 @@
 
 
 #include <api_scilab.h>
-#define __USE_DEPRECATED_STACK_FUNCTIONS__
-#include <stack-c.h>
+// #define __USE_DEPRECATED_STACK_FUNCTIONS__
+// #include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>
@@ -280,26 +280,26 @@ int do_predict(int *label_vec,  int *instance_mat, struct model *model_, const i
 	ptr[2] = ((total*sumpt-sump*sumt)*(total*sumpt-sump*sumt))/
 				((total*sumpp-sump*sump)*(total*sumtt-sumt*sumt));
 	
-	createMatrixOfDouble(pvApiCtx, Rhs + 1, testing_instance_number, 1, ptr_predict_label);
+	createMatrixOfDouble(pvApiCtx, nbInputArgument(pvApiCtx) + 1, testing_instance_number, 1, ptr_predict_label);
         free(ptr_predict_label);
-        LhsVar(1) = Rhs + 1; 
+        AssignOutputVariable(pvApiCtx,1) = nbInputArgument(pvApiCtx) + 1; 
 	
-	if (Lhs	> 1){
-	    createMatrixOfDouble(pvApiCtx, Rhs + 2, 3, 1, ptr);
+	if (nbOutputArgument(pvApiCtx)	> 1){
+	    createMatrixOfDouble(pvApiCtx, nbInputArgument(pvApiCtx) + 2, 3, 1, ptr);
 	    free(ptr);
-	    LhsVar(2) = Rhs + 2; 
+	    AssignOutputVariable(pvApiCtx,2) = nbInputArgument(pvApiCtx) + 2; 
         } else
            free(ptr);
 	
-	if (Lhs > 2) {
+	if (nbOutputArgument(pvApiCtx) > 2) {
 	    if(predict_probability_flag){
-	      createMatrixOfDouble(pvApiCtx, Rhs + 3, testing_instance_number, nr_class, ptr_prob_estimates);
+	      createMatrixOfDouble(pvApiCtx, nbInputArgument(pvApiCtx) + 3, testing_instance_number, nr_class, ptr_prob_estimates);
 	      free(ptr_prob_estimates);
 	    }else{
-	      createMatrixOfDouble(pvApiCtx, Rhs + 3, testing_instance_number, nr_w, ptr_dec_values);
+	      createMatrixOfDouble(pvApiCtx, nbInputArgument(pvApiCtx) + 3, testing_instance_number, nr_w, ptr_dec_values);
 	      free(ptr_dec_values);
 	    }
-	    LhsVar(3) = Rhs + 3; 
+	    AssignOutputVariable(pvApiCtx,3) = nbInputArgument(pvApiCtx) + 3; 
 	} else
 	  if(predict_probability_flag)
 	    free(ptr_prob_estimates);
@@ -312,7 +312,7 @@ int do_predict(int *label_vec,  int *instance_mat, struct model *model_, const i
 			/* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR 
 			was defined and equal to %t */
 			/* without this, you do not need to add PutLhsVar here */
-			PutLhsVar();
+			ReturnArguments(pvApiCtx);
 	free(x);
 	if(prob_estimates != NULL)
 		free(prob_estimates);
@@ -352,12 +352,12 @@ int  sci_predict(char * fname)
 	
         
 	col_format_flag = 0;
-	if(Rhs > 5 || Rhs < 3)
+	if(nbInputArgument(pvApiCtx) > 5 || nbInputArgument(pvApiCtx) < 3)
 	{
 		lin_exit_with_help();
 		return 0;
 	}
-	if(Rhs == 5)
+	if(nbInputArgument(pvApiCtx) == 5)
 	{
 		//mxGetString(prhs[4], cmd, mxGetN(prhs[4])+1);
 		_SciErr = getVarAddressFromPosition(pvApiCtx, 5, &p_col_string);
@@ -435,7 +435,7 @@ int  sci_predict(char * fname)
 		const char *error_msg;
 
 		// parse options
-		if(Rhs>=4)
+		if(nbInputArgument(pvApiCtx)>=4)
 		{
 			int i, argc = 1;
 			char *argv[CMD_LEN/2];

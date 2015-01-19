@@ -12,13 +12,13 @@
           xmlns:svg="http://www.w3.org/2000/svg"
           xmlns:ns3="http://www.w3.org/1999/xhtml"
           xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:scilab="http://www.scilab.org"
           xmlns:db="http://docbook.org/ns/docbook">
 
-
   <refnamediv>
-    <refname>libsvm_partest</refname><refpurpose>This function calculate the performance, based on Bayes theorem, of a clinical test.</refpurpose>
+    <refname>libsvm_partest</refname>
+    <refpurpose>This function calculate the performance, based on Bayes theorem, of a clinical test.</refpurpose>
   </refnamediv>
-
 
 
 <refsynopsisdiv>
@@ -74,28 +74,24 @@
    <title>Description</title>
    <para>
 X is the following 2x2 matrix.
-   </para>
-   <para>
-   </para>
-   <para>
-....................................Affected(D+)......Healthy(D-)
-   </para>
-   <para>
-...................................___________________________
-   </para>
-   <para>
-Positive Test(T+) ... |   True  positives  |  False positive   |
-   </para>
-   <para>
-..................................|_____________|_____________|
-   </para>
-   <para>
-Negative Test(T-)....|  False negative   |   True  negatives  |
-   </para>
-   <para>
-.................................. |_____________|_____________|
-   </para>
-   <para>
+<para>  <informaltable border="1">
+<tr>
+<td> </td>
+<td>Affected(D+)</td>
+<td>Healthy(D-)</td>
+</tr>
+<tr>
+<td>Positive Test(T+)</td>
+<td>True  positives</td>
+<td>False positive</td>
+</tr>
+<tr>
+<td>Negative Test(T-)</td>
+<td>False negative</td>
+<td>True  negatives</td>
+</tr>
+</informaltable>
+</para>
    </para>
    <para>
 Sensitivity and Specificity

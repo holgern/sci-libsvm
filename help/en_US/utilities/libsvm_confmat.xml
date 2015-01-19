@@ -12,13 +12,13 @@
           xmlns:svg="http://www.w3.org/2000/svg"
           xmlns:ns3="http://www.w3.org/1999/xhtml"
           xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:scilab="http://www.scilab.org"
           xmlns:db="http://docbook.org/ns/docbook">
 
-
   <refnamediv>
-    <refname>libsvm_confmat</refname><refpurpose>Confusion matrix for classification algorithms.</refpurpose>
+    <refname>libsvm_confmat</refname>
+    <refpurpose>Confusion matrix for classification algorithms.</refpurpose>
   </refnamediv>
-
 
 
 <refsynopsisdiv>
@@ -52,7 +52,7 @@ are group I.
 <refsection>
    <title>Examples</title>
    <programlisting role="example"><![CDATA[
-[label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+[label,instance]=libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 cc = libsvm_svmtrain(label,instance);
 [predicted_label]=libsvm_svmpredict(label,instance,cc);
 cm = libsvm_confmat(label,  predicted_label)

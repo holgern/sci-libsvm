@@ -12,13 +12,13 @@
           xmlns:svg="http://www.w3.org/2000/svg"
           xmlns:ns3="http://www.w3.org/1999/xhtml"
           xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:scilab="http://www.scilab.org"
           xmlns:db="http://docbook.org/ns/docbook">
 
-
   <refnamediv>
-    <refname>libsvmread</refname><refpurpose>reads files in LIBSVM format</refpurpose>
+    <refname>libsvmread</refname>
+    <refpurpose>reads files in LIBSVM format</refpurpose>
   </refnamediv>
-
 
 
 <refsynopsisdiv>
@@ -61,7 +61,7 @@ read using libsvmread
 <refsection>
    <title>Examples</title>
    <programlisting role="example"><![CDATA[
-[heart_scale_label, heart_scale_inst] = libsvmread(libsvm_getpath()+'/demos/heart_scale');
+[heart_scale_label, heart_scale_inst] = libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
    ]]></programlisting>
 </refsection>
 

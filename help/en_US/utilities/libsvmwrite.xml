@@ -12,13 +12,13 @@
           xmlns:svg="http://www.w3.org/2000/svg"
           xmlns:ns3="http://www.w3.org/1999/xhtml"
           xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:scilab="http://www.scilab.org"
           xmlns:db="http://docbook.org/ns/docbook">
 
-
   <refnamediv>
-    <refname>libsvmwrite</refname><refpurpose>writes sparse matrix to a file in LIBSVM format</refpurpose>
+    <refname>libsvmwrite</refname>
+    <refpurpose>writes sparse matrix to a file in LIBSVM format</refpurpose>
   </refnamediv>
-
 
 
 <refsynopsisdiv>

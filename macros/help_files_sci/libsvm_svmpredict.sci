@@ -39,7 +39,7 @@ function [predicted_label, accuracy, decision_values/prob_estimates] = libsvm_sv
 // 
 //  // -------------------------------------
 //  //heart_scale demo
-//   [heart_scale_label, heart_scale_inst] = libsvmread(libsvm_getpath()+"/demos/heart_scale");
+//   [heart_scale_label, heart_scale_inst] = libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 //   // Split Data
 //   train_data = heart_scale_inst(1:150,:);
 //   train_label = heart_scale_label(1:150,:);
@@ -60,7 +60,7 @@ function [predicted_label, accuracy, decision_values/prob_estimates] = libsvm_sv
 //   // -------------------------------------
 //   //probability estimatation demo (you need '-b 1' for training and testing)
 //   
-//   [heart_scale_label, heart_scale_inst] = libsvmread(libsvm_getpath()+"/demos/heart_scale");
+//   [heart_scale_label, heart_scale_inst] = libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 //   model = libsvm_svmtrain(heart_scale_label, heart_scale_inst, '-c 1 -g 0.07 -b 1');
 //   [predict_label, accuracy, prob_estimates] = libsvm_svmpredict(heart_scale_label, heart_scale_inst, model, '-b 1');
 //   prob_estimates

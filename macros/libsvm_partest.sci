@@ -23,21 +23,25 @@ function libsvm_partest(x)
 //           :- Test bias
 //           :- Number needed to Diagnose (NDD)
 // Description     
-//           X is the following 2x2 matrix.
-//           
-//
-//....................................Affected(D+)......Healthy(D-)
-//
-// ...................................___________________________
-//                    
-//Positive Test(T+) ... |   True  positives  |  False positive   |
-//              
-// ..................................|_____________|_____________|
-//                   
-// Negative Test(T-)....|  False negative   |   True  negatives  |
-//                   
-//.................................. |_____________|_____________|
-//
+//   X is the following 2x2 matrix.    
+//   <para>  <informaltable border="1">
+//       <tr>
+//         <td> </td>
+//         <td>Affected(D+)</td>
+//         <td>Healthy(D-)</td>
+//       </tr>
+//       <tr>
+//         <td>Positive Test(T+)</td>
+//         <td>True  positives</td>
+//         <td>False positive</td>
+//       </tr>
+//       <tr>
+//         <td>Negative Test(T-)</td>
+//         <td>False negative</td>
+//         <td>True  negatives</td>
+//       </tr>
+//     </informaltable>
+//   </para>
 // 
 //Sensitivity and Specificity
 //

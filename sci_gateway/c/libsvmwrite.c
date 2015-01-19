@@ -37,11 +37,12 @@
 
 
 #include <api_scilab.h>
-#define __USE_DEPRECATED_STACK_FUNCTIONS__
-#include <stack-c.h>
+// #define __USE_DEPRECATED_STACK_FUNCTIONS__
+// #include <stack-c.h>
 #include <sciprint.h>
-#include <Scierror.h>
 #include <MALLOC.h>
+#include <Scierror.h>
+
 
 
 // #define DEBUG
@@ -154,7 +155,7 @@ int sci_libsvmwrite(char * fname)
   SciErr _SciErr;
 
   // Transform the input Matrix to libsvm format
-  if (Rhs == 3)
+  if (nbInputArgument(pvApiCtx) == 3)
     {
       _SciErr = getVarAddressFromPosition(pvApiCtx, 2, &p_label_vector);
       _SciErr = getVarType(pvApiCtx, p_label_vector, &type);
@@ -196,7 +197,7 @@ int sci_libsvmwrite(char * fname)
   /* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR 
   was defined and equal to %t */
   /* without this, you do not need to add PutLhsVar here */
-  PutLhsVar();
+  ReturnArguments(pvApiCtx);
     
   return 0;
 }

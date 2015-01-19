@@ -11,7 +11,7 @@ function auc = libsvm_rocplot(y,x,params,uselinear)
 //  Use the given model to predict testing data and obtain decision values  for ROC
 // Examples
 //   
-//      [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+//      [label,instance]=libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 //      // 5-fold cross-classiﬁcation, training of svm is done inside of libsvm_rocplot
 // 	libsvm_rocplot(label, instance,'-v 5');
 //
@@ -21,7 +21,7 @@ function auc = libsvm_rocplot(y,x,params,uselinear)
 //      
 //      //--------------------------
 //      //libsvm_rocplot for linear models
-//      [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+//      [label,instance]=libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 //      // 5-fold cross-classiﬁcation, training of svm is done inside of libsvm_rocplot
 // 	libsvm_rocplot(label, instance,'-v 5',%t); 
 // 	

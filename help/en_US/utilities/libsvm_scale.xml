@@ -12,13 +12,13 @@
           xmlns:svg="http://www.w3.org/2000/svg"
           xmlns:ns3="http://www.w3.org/1999/xhtml"
           xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:scilab="http://www.scilab.org"
           xmlns:db="http://docbook.org/ns/docbook">
 
-
   <refnamediv>
-    <refname>libsvm_scale</refname><refpurpose>scale the input data for correct learning</refpurpose>
+    <refname>libsvm_scale</refname>
+    <refpurpose>scale the input data for correct learning</refpurpose>
   </refnamediv>
-
 
 
 <refsynopsisdiv>
@@ -49,7 +49,7 @@ It is important to scale the testing data with the same scale as the training da
 <refsection>
    <title>Examples</title>
    <programlisting role="example"><![CDATA[
-[label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+[label,instance]=libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 [scaled_instance,scaled_parameters] = libsvm_scale(instance,[-1,1]);
 cc = libsvm_svmtrain(label,scaled_instance);
 [predicted_label,accuracy]=libsvm_svmpredict(label,svmnormalize(instance,scaled_parameters),cc);

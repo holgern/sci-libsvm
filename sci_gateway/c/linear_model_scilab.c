@@ -36,8 +36,8 @@
 #include "linear.h"
 
 #include <api_scilab.h>
-#define __USE_DEPRECATED_STACK_FUNCTIONS__
-#include <stack-c.h>
+// #define __USE_DEPRECATED_STACK_FUNCTIONS__
+// #include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>
@@ -71,21 +71,21 @@ SciErr linear_model_to_scilab_structure( struct model *model_)
         rhs = (double **)MALLOC(sizeof(double *)*NUM_OF_RETURN_FIELD);
 
 	
-	_SciErr = createMList(pvApiCtx,Rhs + 1,NUM_OF_RETURN_FIELD+2, &piAddr);
+	_SciErr = createMList(pvApiCtx,nbInputArgument(pvApiCtx) + 1,NUM_OF_RETURN_FIELD+2, &piAddr);
       if(_SciErr.iErr)
 	      {
 		      //printError(&_SciErr, 0);
 		      return _SciErr;
 	      }
 	
-	_SciErr = createMatrixOfStringInList(pvApiCtx, Rhs + 1, piAddr, 1, NUM_OF_RETURN_FIELD+2, 1, field_names);
+	_SciErr = createMatrixOfStringInList(pvApiCtx, nbInputArgument(pvApiCtx) + 1, piAddr, 1, NUM_OF_RETURN_FIELD+2, 1, field_names);
            if(_SciErr.iErr)
 	      {
 		      //printError(&_SciErr, 0);
 		      return _SciErr;
 	      }
 	      
-	  _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 2, 1, 2 , &dims);
+	  _SciErr = allocMatrixOfDoubleInList(pvApiCtx, nbInputArgument(pvApiCtx) + 1, piAddr, 2, 1, 2 , &dims);
            if(_SciErr.iErr)
 	      {
 		      //printError(&_SciErr, 0);
@@ -98,7 +98,7 @@ SciErr linear_model_to_scilab_structure( struct model *model_)
 	// Parameters
 	// for now, only solver_type is needed
 	//rhs[out_id] = mxCreateDoubleMatrix(1, 1, mxREAL);
-        _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 3, 1, 1, &rhs[out_id]);
+        _SciErr = allocMatrixOfDoubleInList(pvApiCtx, nbInputArgument(pvApiCtx) + 1, piAddr, 3, 1, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
 		      //printError(&_SciErr, 0);
@@ -109,7 +109,7 @@ SciErr linear_model_to_scilab_structure( struct model *model_)
 	out_id++;
 
 	// nr_class
-	_SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 4, 1, 1, &rhs[out_id]);
+	_SciErr = allocMatrixOfDoubleInList(pvApiCtx, nbInputArgument(pvApiCtx) + 1, piAddr, 4, 1, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
 		      //printError(&_SciErr, 0);
@@ -126,7 +126,7 @@ SciErr linear_model_to_scilab_structure( struct model *model_)
 		nr_w=model_->nr_class;
 
 	// nr_feature
-		_SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 5, 1, 1, &rhs[out_id]);
+		_SciErr = allocMatrixOfDoubleInList(pvApiCtx, nbInputArgument(pvApiCtx) + 1, piAddr, 5, 1, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
 		      //printError(&_SciErr, 0);
@@ -138,7 +138,7 @@ SciErr linear_model_to_scilab_structure( struct model *model_)
 	out_id++;
 
 	// bias
-	_SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 6, 1, 1, &rhs[out_id]);
+	_SciErr = allocMatrixOfDoubleInList(pvApiCtx, nbInputArgument(pvApiCtx) + 1, piAddr, 6, 1, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
 		      //printError(&_SciErr, 0);
@@ -158,7 +158,7 @@ SciErr linear_model_to_scilab_structure( struct model *model_)
 	// Label
 	if(model_->label)
 	{
-	    _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 7, model_->nr_class, 1, &rhs[out_id]);
+	    _SciErr = allocMatrixOfDoubleInList(pvApiCtx, nbInputArgument(pvApiCtx) + 1, piAddr, 7, model_->nr_class, 1, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
 		      //printError(&_SciErr, 0);
@@ -171,11 +171,11 @@ SciErr linear_model_to_scilab_structure( struct model *model_)
 	}
 	else
 		//rhs[out_id] = mxCreateDoubleMatrix(0, 0, mxREAL);
-	      _SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr, 7, 0, 0, &rhs[out_id]);
+	      _SciErr = allocMatrixOfDoubleInList(pvApiCtx, nbInputArgument(pvApiCtx) + 1, piAddr, 7, 0, 0, &rhs[out_id]);
 	out_id++;
 
 	// w
-	_SciErr = allocMatrixOfDoubleInList(pvApiCtx, Rhs + 1, piAddr,8, nr_w, w_size, &rhs[out_id]);
+	_SciErr = allocMatrixOfDoubleInList(pvApiCtx, nbInputArgument(pvApiCtx) + 1, piAddr,8, nr_w, w_size, &rhs[out_id]);
            if(_SciErr.iErr)
 	      {
 		      //printError(&_SciErr, 0);

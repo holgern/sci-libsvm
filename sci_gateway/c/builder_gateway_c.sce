@@ -22,7 +22,7 @@ table = ["libsvmread", "sci_libsvmread"; ...
 files = [ "libsvmread.c","libsvmwrite.c","svm.cpp","svmtrain.c","svm_model_scilab.c","svmpredict.c",..
           "tron.cpp", "linear.cpp", "train.c", "predict.c","linear_model_scilab.c"];
 
-CFLAGS = '-I' + CURRENT_PATH;
+CFLAGS = '-I' + CURRENT_PATH+ " -D__USE_DEPRECATED_STACK_FUNCTIONS__";
 
 tbx_build_gateway(lib_name, table, files, CURRENT_PATH, "", "", CFLAGS);
 

@@ -37,8 +37,8 @@
 #include "svm.h"
 
 #include <api_scilab.h>
-#define __USE_DEPRECATED_STACK_FUNCTIONS__
-#include <stack-c.h>
+// #define __USE_DEPRECATED_STACK_FUNCTIONS__
+// #include <stack-c.h>
 #include <sciprint.h>
 #include <MALLOC.h>
 #include <Scierror.h>
@@ -330,26 +330,26 @@ void do_predict_svm(int *label_vec,  int *instance_mat, struct svm_model *model,
 	ptr[2] = ((total*sumpt-sump*sumt)*(total*sumpt-sump*sumt))/
 				((total*sumpp-sump*sump)*(total*sumtt-sumt*sumt));
 
-	createMatrixOfDouble(pvApiCtx, Rhs + 1, testing_instance_number, 1, ptr_predict_label);
+	createMatrixOfDouble(pvApiCtx, nbInputArgument(pvApiCtx) + 1, testing_instance_number, 1, ptr_predict_label);
         free(ptr_predict_label);
-        LhsVar(1) = Rhs + 1; 
+        AssignOutputVariable(pvApiCtx,1) = nbInputArgument(pvApiCtx) + 1; 
 	
-if (Lhs	> 1){
-	createMatrixOfDouble(pvApiCtx, Rhs + 2, 3, 1, ptr);
+if (nbOutputArgument(pvApiCtx)	> 1){
+	createMatrixOfDouble(pvApiCtx, nbInputArgument(pvApiCtx) + 2, 3, 1, ptr);
 	free(ptr);
-	LhsVar(2) = Rhs + 2; 
+	AssignOutputVariable(pvApiCtx,2) = nbInputArgument(pvApiCtx) + 2; 
 } else
   free(ptr);
 
-if (Lhs > 2) {
+if (nbOutputArgument(pvApiCtx) > 2) {
 	if(predict_probability){
-	  createMatrixOfDouble(pvApiCtx, Rhs + 3, m_out3, n_out3, ptr_prob_estimates);
+	  createMatrixOfDouble(pvApiCtx, nbInputArgument(pvApiCtx) + 3, m_out3, n_out3, ptr_prob_estimates);
 	   free(ptr_prob_estimates);
 	}else{
-	   createMatrixOfDouble(pvApiCtx, Rhs + 3, m_out3, n_out3, ptr_dec_values);
+	   createMatrixOfDouble(pvApiCtx, nbInputArgument(pvApiCtx) + 3, m_out3, n_out3, ptr_dec_values);
 	   free(ptr_dec_values);
 	}
-	LhsVar(3) = Rhs + 3; 
+	AssignOutputVariable(pvApiCtx,3) = nbInputArgument(pvApiCtx) + 3; 
 } else
   if(predict_probability)
      free(ptr_prob_estimates);
@@ -361,7 +361,7 @@ if (Lhs > 2) {
   /* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR 
   was defined and equal to %t */
   /* without this, you do not need to add PutLhsVar here */
-  PutLhsVar();
+  ReturnArguments(pvApiCtx);
   
 	free(x);
 	if(prob_estimates != NULL)
@@ -399,7 +399,7 @@ int sci_svmpredict(char * fname)
 	
         char *cmd  = NULL;
 
-        if(Rhs > 4 || Rhs < 3)
+        if(nbInputArgument(pvApiCtx) > 4 || nbInputArgument(pvApiCtx) < 3)
         {
                 exit_with_help_predict();
                 return 0;
@@ -454,7 +454,7 @@ int sci_svmpredict(char * fname)
 		const char *error_msg;
 
 		// parse options
-		if(Rhs==4)
+		if(nbInputArgument(pvApiCtx)==4)
 		{
 			int i, argc = 1;
 			//char cmd[CMD_LEN], *argv[CMD_LEN/2];

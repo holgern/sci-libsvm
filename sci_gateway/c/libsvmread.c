@@ -38,11 +38,12 @@
 #include <errno.h>
 
 #include <api_scilab.h>
-#define __USE_DEPRECATED_STACK_FUNCTIONS__
-#include <stack-c.h>
+// #define __USE_DEPRECATED_STACK_FUNCTIONS__
+// #include <stack-c.h>
 #include <sciprint.h>
-#include <Scierror.h>
 #include <MALLOC.h>
+#include <Scierror.h>
+
 
 
 #ifndef max
@@ -160,7 +161,7 @@ int read_problem(const char *filename)
 #endif
 
   // y
-  _SciErr = allocMatrixOfDouble(pvApiCtx, Rhs + 1, l, 1, &labels);
+  _SciErr = allocMatrixOfDouble(pvApiCtx, nbInputArgument(pvApiCtx) + 1, l, 1, &labels);
 
   // x^T
   if (min_index <= 0)
@@ -168,14 +169,14 @@ int read_problem(const char *filename)
 #ifdef DEBUG
       printf("case 1: col = %d, row = %d elements = %d\n", max_index-min_index+1, l, elements);
 #endif
-      _SciErr = allocSparseMatrix(pvApiCtx, Rhs + 2, l, max_index-min_index+1, elements, &samples_piNbItemRow, &samples_piColPos, &samples);
+      _SciErr = allocSparseMatrix(pvApiCtx, nbInputArgument(pvApiCtx) + 2, l, max_index-min_index+1, elements, &samples_piNbItemRow, &samples_piColPos, &samples);
     }
   else
     {
 #ifdef DEBUG
       printf("case 2: col = %d, row = %d elements = %d\n", max_index, l, elements);
 #endif
-      _SciErr = allocSparseMatrix(pvApiCtx, Rhs + 2, l, max_index, elements, &samples_piNbItemRow, &samples_piColPos, &samples);
+      _SciErr = allocSparseMatrix(pvApiCtx, nbInputArgument(pvApiCtx) + 2, l, max_index, elements, &samples_piNbItemRow, &samples_piColPos, &samples);
     }
   
   k=0;
@@ -225,14 +226,14 @@ int read_problem(const char *filename)
 #endif
     }
 
-  LhsVar(1) = Rhs + 1;
-  LhsVar(2) = Rhs + 2;
+  AssignOutputVariable(pvApiCtx,1) = nbInputArgument(pvApiCtx) + 1;
+  AssignOutputVariable(pvApiCtx,2) = nbInputArgument(pvApiCtx) + 2;
   /* This function put on scilab stack, the lhs variable
   which are at the position lhs(i) on calling stack */
   /* You need to add PutLhsVar here because WITHOUT_ADD_PUTLHSVAR 
   was defined and equal to %t */
   /* without this, you do not need to add PutLhsVar here */
-  PutLhsVar();
+  ReturnArguments(pvApiCtx);
   fclose(fp);
   free(line);
   return 0;
@@ -244,7 +245,7 @@ int sci_libsvmread(char * fname)
   char * filename = NULL;
   SciErr _SciErr;
 
-  if (Rhs==1)
+  if (nbInputArgument(pvApiCtx)==1)
     {
       _SciErr = getVarAddressFromPosition(pvApiCtx, 1, &p_address_filename);
       getAllocatedSingleString(pvApiCtx, p_address_filename, &filename);

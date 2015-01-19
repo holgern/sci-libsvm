@@ -20,7 +20,7 @@ function [best_rate,best_c,best_g,rate_matrix] = libsvm_grid(label,instance,log2
 //the specified range and helps you to decide the best parameters for
 //your problem.
 // Examples
-//    [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+//    [label,instance]=libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 //    [best_rate,best_c,best_g] = libsvm_grid(label,instance)
 //
 //See also

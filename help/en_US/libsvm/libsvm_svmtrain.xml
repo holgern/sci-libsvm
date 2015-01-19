@@ -12,13 +12,13 @@
           xmlns:svg="http://www.w3.org/2000/svg"
           xmlns:ns3="http://www.w3.org/1999/xhtml"
           xmlns:mml="http://www.w3.org/1998/Math/MathML"
+          xmlns:scilab="http://www.scilab.org"
           xmlns:db="http://docbook.org/ns/docbook">
 
-
   <refnamediv>
-    <refname>libsvm_svmtrain</refname><refpurpose>trains a svm model</refpurpose>
+    <refname>libsvm_svmtrain</refname>
+    <refpurpose>trains a svm model</refpurpose>
   </refnamediv>
-
 
 
 <refsynopsisdiv>
@@ -26,6 +26,7 @@
    <synopsis>
    model = libsvm_svmtrain(training_label_vector, training_instance_matrix);
    model = libsvm_svmtrain(training_label_vector, training_instance_matrix,libsvm_options);
+   crossvalidationResult = libsvm_svmtrain(training_label_vector, training_instance_matrix,".. -v n");
    </synopsis>
 </refsynopsisdiv>
 
@@ -79,7 +80,7 @@
    <varlistentry><term>-b probability_estimates :</term>
       <listitem><para> whether to train a SVC or SVR model for probability estimates, 0 or 1 (default 0)</para></listitem></varlistentry>
    <varlistentry><term>-wi weight :</term>
-      <listitem><para> set the parameter C of class i to weight*C, for C-SVC (default 1)</para></listitem></varlistentry>
+      <listitem><para> set the parameter C of class i to weight*C, for C-SVC and nu-SVC (default 1)</para></listitem></varlistentry>
    <varlistentry><term>-v n :</term>
       <listitem><para> n-fold cross validation mode</para></listitem></varlistentry>
    <varlistentry><term>-q :</term>
@@ -96,6 +97,8 @@
       <listitem><para> -b of the decision function(s) wx+b</para></listitem></varlistentry>
    <varlistentry><term>model.Label:</term>
       <listitem><para> label of each class; empty for regression/one-class SVM</para></listitem></varlistentry>
+   <varlistentry><term>model.sv_indices:</term>
+      <listitem><para> sv_indices[0,...,nSV-1] are values in [1,...,num_traning_data] to indicate SVs in the training set</para></listitem></varlistentry>
    <varlistentry><term>model.ProbA:</term>
       <listitem><para> pairwise probability information; empty if -b 0 or in one-class SVM</para></listitem></varlistentry>
    <varlistentry><term>model.ProbB:</term>
@@ -106,6 +109,10 @@
       <listitem><para> coefficients for SVs in decision functions</para></listitem></varlistentry>
    <varlistentry><term>model.SVs:</term>
       <listitem><para> support vectors</para></listitem></varlistentry>
+   <varlistentry><term>Cross validation results:</term>
+      <listitem><para> </para></listitem></varlistentry>
+   <varlistentry><term>crossvalidationResult:</term>
+      <listitem><para> [Cross Validation Accuracy, Positive Cross Validation Accuracy, Negative Cross Validation Accuracy]</para></listitem></varlistentry>
    </variablelist>
 </refsection>
 
@@ -138,7 +145,7 @@ Crossvalidation:
    <para>
 to assess the quality of the training result, a k-fold cross-classiﬁcation on the training data can be performed by setting the parameter
 (-v ) to n (default: 0). This option -v randomly splits the data into n parts and calculates crossvalidation accuracy/mean squared error on them.
-The returned model is just a scalar: cross-validation accuracy for classification and mean-squared error for regression.
+The returned model is just a vector: [Cross Validation Accuracy, Positive Cross Validation Accuracy, Negative Cross Validation Accuracy].
    </para>
    <para>
 Scaling:

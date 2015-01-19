@@ -1,4 +1,4 @@
-function [cm]= libsvm_confmat(g,ghat)
+function [cm]= libsvm_confmat(g,ghat,L)
 // Confusion matrix for classification algorithms.
 // Calling Sequence
 //   cm = libsvm_confmat(g, ghat)
@@ -11,7 +11,7 @@ function [cm]= libsvm_confmat(g,ghat)
 //    whose known group labels are group J and whose predicted group labels
 //    are group I.
 //   Examples
-//    [label,instance]=libsvmread(libsvm_getpath()+"/demos/heart_scale");
+//    [label,instance]=libsvmread(fullfile(libsvm_getpath(),"demos","heart_scale"));
 //    cc = libsvm_svmtrain(label,instance);
 //    [predicted_label]=libsvm_svmpredict(label,instance,cc);
 //    cm = libsvm_confmat(label,  predicted_label)
@@ -38,8 +38,15 @@ end
 
 iemod=ieee();
 ieee(2);
-
-L = length(c);
+if (nargin<3) then
+  L = length(c);
+  if (length(unique(ghat))>L) then
+    L=length(unique(ghat));
+    c=unique(ghat);
+  end;
+else
+  c = (1:L)-1;
+end;
 cm = zeros(L,L);
 for ii = 1:L
    Tii = ghat==c(ii);
