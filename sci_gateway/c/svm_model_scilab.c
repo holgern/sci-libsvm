@@ -39,7 +39,7 @@
 // #define __USE_DEPRECATED_STACK_FUNCTIONS__
 // #include <stack-c.h>
 #include <sciprint.h>
-#include <MALLOC.h>
+#include <malloc.h>
 #include <Scierror.h>
 
 #define NUM_OF_RETURN_FIELD 11
@@ -64,7 +64,7 @@ typedef struct scisparse {
 } SciSparse;
 #endif
 
-SciErr model_to_scilab_structure(int num_of_feature, struct svm_model *model) {
+SciErr model_to_scilab_structure(int num_of_feature, struct svm_model *model,void* pvApiCtx) {
   int i, j, n;
   double *ptr;
   double *return_model, **rhs;
@@ -524,7 +524,7 @@ if (dims!=NULL)
   return _SciErr;
 }
 
-struct svm_model *scilab_matrix_to_model(int *scilab_struct, const char **msg) {
+struct svm_model *scilab_matrix_to_model(int *scilab_struct, const char **msg,void* pvApiCtx) {
   int i, j, jj, n, num_of_fields;
   double *ptr;
   int id = 0;

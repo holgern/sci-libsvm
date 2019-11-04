@@ -40,14 +40,14 @@
 // #define __USE_DEPRECATED_STACK_FUNCTIONS__
 // #include <stack-c.h>
 #include <sciprint.h>
-#include <MALLOC.h>
+#include <malloc.h>
 #include <Scierror.h>
 
 
 
 // #define DEBUG
 
-int libsvmwrite(const char *filename, int * label_vec, int * instance_mat)
+int libsvmwrite(const char *filename, int * label_vec, int * instance_mat,void* pvApiCtx)
 {
   FILE *fp = fopen(filename,"w"); 
   int i, k, low, high, r_samples, c_samples, r_labels, c_labels, index;
@@ -145,7 +145,7 @@ int libsvmwrite(const char *filename, int * label_vec, int * instance_mat)
   return 0;
 }
 
-int sci_libsvmwrite(char * fname)
+int sci_libsvmwrite(char * fname,void* pvApiCtx)
 {
   int * p_address_filename = NULL;
   int * p_label_vector = NULL;
@@ -184,7 +184,7 @@ int sci_libsvmwrite(char * fname)
           return 0;
         }
 
-      libsvmwrite(filename, p_label_vector, p_instance_matrix);
+      libsvmwrite(filename, p_label_vector, p_instance_matrix,pvApiCtx);
       freeAllocatedSingleString(filename);
     }
   else

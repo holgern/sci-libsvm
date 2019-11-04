@@ -1,3 +1,7 @@
+1.5.0
+  - libsvmread fixed
+  - module fixed to work with Scilab 6
+  - some bugs fixed in the help file examples
 1.4.5
  - libsvm_loadmodel and libsvm_savemodel fixed
  - st_deviation renamed to stdev

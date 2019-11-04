@@ -41,7 +41,7 @@
 // #define __USE_DEPRECATED_STACK_FUNCTIONS__
 // #include <stack-c.h>
 #include <sciprint.h>
-#include <MALLOC.h>
+#include <malloc.h>
 #include <Scierror.h>
 
 #include "svm_model_scilab.h"
@@ -56,7 +56,7 @@ void exit_with_help_loadmodel() {
 }
 
 
-int sci_svmloadmodel(char *fname)
+int sci_svmloadmodel(char *fname,void* pvApiCtx)
 
 {
   SciErr _SciErr;
@@ -95,7 +95,7 @@ int sci_svmloadmodel(char *fname)
     model = svm_load_model(option_string);
     nr_feat = model->nr_class;
 
-    _SciErr = model_to_scilab_structure(nr_feat, model);
+    _SciErr = model_to_scilab_structure(nr_feat, model,pvApiCtx);
     if (_SciErr.iErr) {
       printError(&_SciErr, 0);
       exit_with_help_loadmodel();

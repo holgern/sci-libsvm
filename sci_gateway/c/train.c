@@ -41,7 +41,7 @@
 // #define __USE_DEPRECATED_STACK_FUNCTIONS__
 // #include <stack-c.h>
 #include <sciprint.h>
-#include <MALLOC.h>
+#include <malloc.h>
 #include <Scierror.h>
 
 #include "linear_model_scilab.h"
@@ -165,7 +165,7 @@ double do_cross_validation() {
 
 // nrhs should be 3 or 4
 int parse_command_line(int nrhs, const char *cmd, const char *cmd_col,
-                       char *model_file_name) {
+                       char *model_file_name,void* pvApiCtx) {
   int i, argc = 1;
   // char cmd[CMD_LEN];
   char *argv[CMD_LEN / 2];
@@ -281,7 +281,7 @@ int parse_command_line(int nrhs, const char *cmd, const char *cmd_col,
   return 0;
 }
 
-int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat) {
+int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat,void* pvApiCtx) {
   int i, j, jj, k, low, high, r_labels, c_labels, r_samples, c_samples,
       r_weights, c_weights;
   int *ir, *jc;
@@ -420,7 +420,7 @@ int read_problem_sparse(int *weight_vec, int *label_vec, int *instance_mat) {
 // now assume prhs[0]: label prhs[1]: features
 // void mexFunction( int nlhs, mxArray *plhs[],
 //		int nrhs, const mxArray *prhs[] )
-int sci_train(char *fname) {
+int sci_train(char *fname,void* pvApiCtx) {
   SciErr _SciErr;
   const char *error_msg;
   int *p_weight_vector = NULL;
@@ -550,7 +550,7 @@ int sci_train(char *fname) {
     }
 
     if (parse_command_line(nbInputArgument(pvApiCtx), option_string, col_string,
-                           NULL)) {
+                           NULL,pvApiCtx)) {
 
       destroy_param(&param_);
       exit_with_help();
@@ -563,7 +563,7 @@ int sci_train(char *fname) {
 
     if (type == sci_sparse)
       err = read_problem_sparse(p_weight_vector, p_label_vector,
-                                p_instance_matrix);
+                                p_instance_matrix,pvApiCtx);
     else {
       destroy_param(&param_);
       Scierror(999, "Training_instance_matrix must be sparse\n");
@@ -607,7 +607,7 @@ int sci_train(char *fname) {
       // const char *error_msg;
 
       model_ = train(&prob_, &param_);
-      _SciErr = linear_model_to_scilab_structure(model_);
+      _SciErr = linear_model_to_scilab_structure(model_,pvApiCtx);
       if (_SciErr.iErr) {
         // Scierror (999,"Error: can't convert libsvm model to matrix structure:
         // %s\n", error_msg);

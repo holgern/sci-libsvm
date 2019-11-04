@@ -1,4 +1,4 @@
-function [label_vector, instance_matrix] = libsvmread('data.txt'); 
+// function [label_vector, instance_matrix] = libsvmread('data.txt'); 
 //   reads files in LIBSVM format
 // Calling Sequence
 //	[label_vector, instance_matrix] = libsvmread(filename); 
@@ -23,3 +23,4 @@ function [label_vector, instance_matrix] = libsvmread('data.txt');
 // Chih-Chung Chang
 // Chih-Jen Lin
 // Holger Nahrstaedt
+// Tan Chin Luh

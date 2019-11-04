@@ -39,7 +39,7 @@
 // #define __USE_DEPRECATED_STACK_FUNCTIONS__
 // #include <stack-c.h>
 #include <sciprint.h>
-#include <MALLOC.h>
+#include <malloc.h>
 #include <Scierror.h>
 
 #define Malloc(type, n) (type *) malloc((n) * sizeof(type))
@@ -49,7 +49,7 @@
 static const char *field_names[] = {
     "st", "dims", "Parameters", "nr_class", "nr_feature", "bias", "Label", "w"};
 
-SciErr linear_model_to_scilab_structure(struct model *model_) {
+SciErr linear_model_to_scilab_structure(struct model *model_,void* pvApiCtx) {
   int i;
   int nr_w;
   double *ptr, *dims;
@@ -191,7 +191,7 @@ SciErr linear_model_to_scilab_structure(struct model *model_) {
   return _SciErr;
 }
 
-SciErr scilab_matrix_to_linear_model(int *scilab_struct, struct model *model_) {
+SciErr scilab_matrix_to_linear_model(int *scilab_struct, struct model *model_,void* pvApiCtx) {
   int i, num_of_fields;
   int nr_w;
   double *ptr;

@@ -32,5 +32,5 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-SciErr model_to_scilab_structure( int num_of_feature, struct svm_model *model);
-struct svm_model *scilab_matrix_to_model(int *scilab_struct, const char **error_message);
+SciErr model_to_scilab_structure( int num_of_feature, struct svm_model *model,void* pvApiCtx);
+struct svm_model *scilab_matrix_to_model(int *scilab_struct, const char **error_message,void* pvApiCtx);

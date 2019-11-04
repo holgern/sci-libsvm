@@ -79,9 +79,10 @@ function [best_rate,best_c,best_g,rate_matrix] = libsvm_grid(label,instance,log2
 
          for c=c_seq(c_seqind)
            for g=g_seq(g_seqind)
-            
-               rate = libsvm_svmtrain(label,instance,"-c "+string(2^c)+" -g "+string(2^g)+" -v "+string(fold)+" -q "+option_string);
-
+               //rate = libsvm_lintrain(label,instance,"-s "+string(s)+" -c "+string(2^c)+" -v "+string(fold)+" -q "+option_string);
+               //rate = libsvm_svmtrain(label,instance,"-c "+string(2^c)+" -g "+string(2^g)+" -v "+string(fold)+" -q "+option_string);
+              rate = libsvm_svmtrain(label,instance,"-c "+string(2^c)+" -g "+string(2^g)+" -v "+string(fold)+" -q "+option_string);
+              rate = rate($);
               if sum(rate_matrix)==0 then
                   rate_matrix=ones(length(c_seq),length(g_seq))*rate;
               end;

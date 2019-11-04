@@ -16,18 +16,18 @@ function builder_main()
   try
 	  v = getversion("scilab");
   catch
-	  error(gettext("Scilab 5.3 or more is required."));
+	  error(gettext("Scilab 6.0 or more is required."));
   end
 
-  if v(2) < 3 then
+  if v(1) < 6 then
     // new API in scilab 5.3
-    error(gettext('Scilab 5.3 or more is required.'));
+    error(gettext('Scilab 6.0 or more is required.'));
   end
   // Check development_tools module avaibility
   // =============================================================================
 
 if ~isdef('tbx_build_loader') then
-  error(msprintf(gettext('%s module not installed."), 'modules_manager'));
+  error(msprintf(gettext('%s module not installed.'), 'modules_manager'));
 end
 
   // Action
@@ -37,8 +37,8 @@ end
   //tbx_builder_src(toolbox_dir);
   tbx_builder_gateway(toolbox_dir);
   tbx_builder_help(toolbox_dir);
-  tbx_build_loader(TOOLBOX_NAME, toolbox_dir);
-  tbx_build_cleaner(TOOLBOX_NAME, toolbox_dir);
+  tbx_build_loader(toolbox_dir);
+  tbx_build_cleaner(toolbox_dir);
 
 endfunction 
 // =============================================================================

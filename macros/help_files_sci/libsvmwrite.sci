@@ -1,7 +1,9 @@
-function libsvmwrite('filename', label_vector, instance_matrix);
+// function libsvmwrite('filename', label_vector, instance_matrix);
 //   writes sparse matrix to a file in LIBSVM format
-// Calling Sequence
+//
+// Syntax
 //	libsvmwrite(filename, label_vector, instance_matrix)
+//
 // Parameters
 // filename : string containing the file name with or without path in which the data will be saved
 // label_vector: a vector containing the group information. For a two class problem each element is either -1 or 1.  for multi class the entries are positive numbers.
@@ -9,6 +11,7 @@ function libsvmwrite('filename', label_vector, instance_matrix);
 //
 // Description
 // The instance_matrix must be a sparse matrix. (type must be double)
+//
 // Examples
 // N=1000;
 //  label_vector = [ones(N/2,1); -ones(N/2,1)]; 
@@ -17,7 +20,8 @@ function libsvmwrite('filename', label_vector, instance_matrix);
 // libsvmwrite('test_data', label_vector, instance_matrix);
 // 
 // model = svmtrain(label_vector,d,'-t 0 -q');
-//  [predicted_label, accuracy, decision_values] = svmpredict(label_vector, instance_matrix, model);
+//  [predicted_label, accuracy, decision_values] = libsvm_svmpredict(label_vector, instance_matrix, model);
+//
 // See also
 // libsvmread
 // 
@@ -25,3 +29,4 @@ function libsvmwrite('filename', label_vector, instance_matrix);
 // Chih-Chung Chang
 // Chih-Jen Lin
 // Holger Nahrstaedt
+// Tan Chin Luh

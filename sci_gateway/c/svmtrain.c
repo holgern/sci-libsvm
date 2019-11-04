@@ -41,7 +41,7 @@
 // #define __USE_DEPRECATED_STACK_FUNCTIONS__
 // #include <stack-c.h>
 #include <sciprint.h>
-#include <MALLOC.h>
+#include <malloc.h>
 #include <Scierror.h>
 
 #include "svm_model_scilab.h"
@@ -308,7 +308,7 @@ int svm_parse_command_line(int nrhs, char *cmd, char *model_file_name) {
 }
 
 // read in a problem (in svmlight format)
-int svm_read_problem_dense(int *label_vec, int *instance_mat) {
+int svm_read_problem_dense(int *label_vec, int *instance_mat,void* pvApiCtx) {
   int i, j, k, l, r_samples, c_samples, r_labels, c_labels, index;
   int elements, sc, label_vector_row_num;
   double *samples = NULL, *labels = NULL;
@@ -412,7 +412,7 @@ int svm_read_problem_dense(int *label_vec, int *instance_mat) {
   return 0;
 }
 
-int svm_read_problem_sparse(int *label_vec, int *instance_mat) {
+int svm_read_problem_sparse(int *label_vec, int *instance_mat,void* pvApiCtx) {
   int i, j, jj, k, l, low, high, r_labels, c_labels, r_samples, c_samples;
   int *ir, *jc;
   int elements, num_samples, label_vector_row_num;
@@ -525,7 +525,7 @@ int svm_read_problem_sparse(int *label_vec, int *instance_mat) {
 // Interface function of scilab
 // now assume prhs[0]: label prhs[1]: features
 
-int sci_svmtrain(char *fname)
+int sci_svmtrain(char *fname,void* pvApiCtx)
 
 {
   SciErr _SciErr;
@@ -621,10 +621,10 @@ int sci_svmtrain(char *fname)
               mxDestroyArray(lhs[0]);
               mxDestroyArray(rhs[0]);*/
       } else
-        err = svm_read_problem_sparse(p_label_vector, p_instance_matrix);
+        err = svm_read_problem_sparse(p_label_vector, p_instance_matrix,pvApiCtx);
 
     } else
-      err = svm_read_problem_dense(p_label_vector, p_instance_matrix);
+      err = svm_read_problem_dense(p_label_vector, p_instance_matrix,pvApiCtx);
 #ifdef DEBUG
     printf("DEBUG: read problem done\n");
 #endif
@@ -683,7 +683,7 @@ int sci_svmtrain(char *fname)
 #ifdef DEBUG
       printf("DEBUG: svm train done\n");
 #endif
-      _SciErr = model_to_scilab_structure(nr_feat, model);
+      _SciErr = model_to_scilab_structure(nr_feat, model,pvApiCtx);
       if (_SciErr.iErr) {
         printError(&_SciErr, 0);
         exit_with_help_train();

@@ -40,7 +40,7 @@
 // #define __USE_DEPRECATED_STACK_FUNCTIONS__
 // #include <stack-c.h>
 #include <sciprint.h>
-#include <MALLOC.h>
+#include <malloc.h>
 #include <Scierror.h>
 
 #include "linear_model_scilab.h"
@@ -83,7 +83,7 @@ int col_format_flag;
 // }
 
 int do_predict(int *label_vec, int *instance_mat, struct model *model_,
-               const int predict_probability_flag) {
+               const int predict_probability_flag,void* pvApiCtx) {
   int label_vector_row_num, label_vector_col_num;
   int feature_number, testing_instance_number;
   int instance_index;
@@ -334,7 +334,7 @@ void lin_exit_with_help() {
            "  prob_estimates: If selected, probability estimate vector.\n");
 }
 
-int sci_predict(char *fname) {
+int sci_predict(char *fname,void* pvApiCtx) {
   int prob_estimate_flag = 0;
   struct model *model_;
   char *cmd;
@@ -465,7 +465,7 @@ int sci_predict(char *fname) {
     }
 
     model_ = Malloc(struct model, 1);
-    _SciErr = scilab_matrix_to_linear_model(p_model, model_);
+    _SciErr = scilab_matrix_to_linear_model(p_model, model_,pvApiCtx);
     if (_SciErr.iErr) {
       // sciprint("Error: can't read model: %s\n", error_msg);
       printError(&_SciErr, 0);
@@ -483,7 +483,7 @@ int sci_predict(char *fname) {
     }
 
     // 		if(mxIsSparse(prhs[1]))
-    do_predict(p_label_vector, p_instance_matrix, model_, prob_estimate_flag);
+    do_predict(p_label_vector, p_instance_matrix, model_, prob_estimate_flag,pvApiCtx);
     // 		else
     // 		{
     // 			sciprint("Testing_instance_matrix must be sparse\n");

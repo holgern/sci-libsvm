@@ -40,7 +40,7 @@
 // #define __USE_DEPRECATED_STACK_FUNCTIONS__
 // #include <stack-c.h>
 #include <sciprint.h>
-#include <MALLOC.h>
+#include <malloc.h>
 #include <Scierror.h>
 
 #include "svm_model_scilab.h"
@@ -75,7 +75,7 @@
 // }
 
 void do_predict_svm(int *label_vec, int *instance_mat, struct svm_model *model,
-                    const int predict_probability) {
+                    const int predict_probability,void* pvApiCtx) {
   int label_vector_row_num, label_vector_col_num;
   int feature_number, testing_instance_number;
   int instance_index;
@@ -378,7 +378,7 @@ void exit_with_help_predict() {
            "  prob_estimates: If selected, probability estimate vector.\n");
 }
 
-int sci_svmpredict(char *fname)
+int sci_svmpredict(char *fname,void* pvApiCtx)
 
 {
   SciErr _SciErr;
@@ -488,7 +488,7 @@ int sci_svmpredict(char *fname)
     printf("DEBUG: start\n");
 #endif
 
-    model = scilab_matrix_to_model(p_model, &error_msg);
+    model = scilab_matrix_to_model(p_model, &error_msg,pvApiCtx);
     if (model == NULL) {
       Scierror(999, "Error: can't read model: %s\n", error_msg);
       return 0;
@@ -514,7 +514,7 @@ int sci_svmpredict(char *fname)
 #endif
 
     do_predict_svm(p_label_vector, p_instance_matrix, model,
-                   prob_estimate_flag);
+                   prob_estimate_flag,pvApiCtx);
 #ifdef DEBUG
     printf("DEBUG: predict done\n");
 #endif

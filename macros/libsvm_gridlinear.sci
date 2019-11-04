@@ -70,8 +70,8 @@ function [best_rate,best_c,best_s] = libsvm_gridlinear(label,instance,log2c,s_se
          for c=c_seq(c_seqind)
            for s=s_seq(s_seqind)
             
-              rate = libsvm_lintrain(label,instance,"-s "+string(s)+" -c "+string(2^c)+" -v "+string(fold)+" -q "+option_string);
-            
+             rate = libsvm_lintrain(label,instance,"-s "+string(s)+" -c "+string(2^c)+" -v "+string(fold)+" -q "+option_string);
+            //pause
               if sum(rate_matrix)==0 then
                   rate_matrix=ones(length(c_seq),length(s_seq))*rate;
               end;

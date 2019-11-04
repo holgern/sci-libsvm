@@ -54,7 +54,7 @@ void exit_with_help_savemodel() {
                 "   text file output\n");
 }
 
-int sci_svmsavemodel(char *fname) {
+int sci_svmsavemodel(char *fname,void* pvApiCtx) {
   SciErr _SciErr;
   struct svm_model *model;
   int *p_model = NULL;
@@ -101,7 +101,7 @@ int sci_svmsavemodel(char *fname) {
     printf("DEBUG: start\n");
 #endif
 
-    model = scilab_matrix_to_model(p_model, &error_msg);
+    model = scilab_matrix_to_model(p_model, &error_msg,pvApiCtx);
     if (model == NULL) {
       Scierror(999, "Error: can't read model: %s\n", error_msg);
       return 0;

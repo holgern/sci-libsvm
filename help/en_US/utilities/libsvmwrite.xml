@@ -56,8 +56,8 @@ d = [label_vector/2 + rand(N,1,'norm')/1  label_vector-rand(N,1,'norm')/1 rand(N
 instance_matrix=sparse(d);
 libsvmwrite('test_data', label_vector, instance_matrix);
 
-model = svmtrain(label_vector,d,'-t 0 -q');
-[predicted_label, accuracy, decision_values] = svmpredict(label_vector, instance_matrix, model);
+model = libsvm_svmtrain(label_vector,d,'-t 0 -q');
+[predicted_label, accuracy, decision_values] = libsvm_svmpredict(label_vector, instance_matrix, model);
    ]]></programlisting>
 </refsection>
 
@@ -74,6 +74,7 @@ model = svmtrain(label_vector,d,'-t 0 -q');
    <member>Chih-Chung Chang</member>
    <member>Chih-Jen Lin</member>
    <member>Holger Nahrstaedt</member>
+   <member>Tan Chin Luh</member>
    </simplelist>
 </refsection>
 </refentry>
