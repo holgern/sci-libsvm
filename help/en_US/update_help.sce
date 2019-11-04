@@ -56,6 +56,8 @@ mprintf("Updating utilities\n");
 funarray = [
   "libsvmwrite"
   "libsvmread"
+  "libsvm_loadmodel"
+  "libsvm_savemodel"
   ];
 helpdir = fullfile(cwd,"utilities");
 macrosdir = fullfile(cwd ,"..","..","macros/help_files_sci");
@@ -80,8 +82,6 @@ funarray = [
 "libsvm_partest"
 "libsvm_toy"
 "libsvm_getpath"
-"libsvm_loadmodel"
-"libsvm_savemodel"
   ];
 helpdir = fullfile(cwd,"utilities");
 macrosdir = fullfile(cwd ,"..","..","macros");

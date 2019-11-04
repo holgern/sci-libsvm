@@ -5,7 +5,7 @@
 
 function root_tlbx = svmlib_load()
 
-mprintf("libsvm  Toolbox - (1.4.4)\n");
+mprintf("libsvm  Toolbox - (1.4.5)\n");
 
 if isdef("libsvmlib") then
 	warning("libsvm Toolbox library is already loaded");

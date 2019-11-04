@@ -91,7 +91,7 @@ index=size(instance,2);
 
 	  for i=1:index
 	    feature_mean(i)=mean(full(instance(:,i)));
-	    feature_std(i)=st_deviation(full(instance(:,i)));
+	    feature_std(i)=stdev(full(instance(:,i)));
 
 	  end
 
@@ -103,7 +103,7 @@ index=size(instance,2);
                 y_meanV=y(1);
                 y_stdV=y(2);
                 y_mean = mean(label);
-                y_std = st_deviation(label);
+                y_std = stdev(label);
           end;
     end
 

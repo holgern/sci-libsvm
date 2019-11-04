@@ -1,3 +1,6 @@
+1.4.5
+ - libsvm_loadmodel and libsvm_savemodel fixed
+ - st_deviation renamed to stdev
 1.4.4
  - 2nu-SVM added http://www.ece.rice.edu/~md/np_svm.php
  - LIBLINEAR is updated to 1.94
