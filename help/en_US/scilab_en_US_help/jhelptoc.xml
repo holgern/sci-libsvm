@@ -2,15 +2,17 @@
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN" "http://java.sun.com/products/javahelp/toc_1_0.dtd">
 <toc version="1.0">
 <tocitem target="index" text="libsvm">
-<tocitem target="section_734eb98749fee3f2c6cfeb87bb842b9e" text="liblinear">
+<tocitem target="section_e671eab0432c349efe4355fcf3644bee" text="liblinear">
+<tocitem target="predict" text="predict"/>
+<tocitem target="train" text="train"/>
 <tocitem target="libsvm_linpredict" text="libsvm_linpredict"/>
 <tocitem target="libsvm_lintrain" text="libsvm_lintrain"/>
 </tocitem>
-<tocitem target="section_55ddec68de65093495d0be4c9ff008b4" text="libsvm">
+<tocitem target="section_6c8b6d0d1c40e9986dc6e583ea928a63" text="libsvm">
 <tocitem target="libsvm_svmpredict" text="libsvm_svmpredict"/>
 <tocitem target="libsvm_svmtrain" text="libsvm_svmtrain"/>
 </tocitem>
-<tocitem target="section_1010ae11fc7218968624430e76845204" text="utilities">
+<tocitem target="section_1b3c663f457a089c139a7fbaa95c1e71" text="utilities">
 <tocitem target="libsvm_confmat" text="libsvm_confmat"/>
 <tocitem target="libsvm_getpath" text="libsvm_getpath"/>
 <tocitem target="libsvm_grid" text="libsvm_grid"/>

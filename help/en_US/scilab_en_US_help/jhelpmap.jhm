@@ -2,13 +2,15 @@
 <!DOCTYPE map PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN" "http://java.sun.com/products/javahelp/map_1_0.dtd">
 <map version="1.0">
 <mapID target="index" url="index.html"/>
-<mapID target="section_734eb98749fee3f2c6cfeb87bb842b9e" url="section_734eb98749fee3f2c6cfeb87bb842b9e.html"/>
+<mapID target="section_e671eab0432c349efe4355fcf3644bee" url="section_e671eab0432c349efe4355fcf3644bee.html"/>
+<mapID target="predict" url="predict.html"/>
+<mapID target="train" url="train.html"/>
 <mapID target="libsvm_linpredict" url="libsvm_linpredict.html"/>
 <mapID target="libsvm_lintrain" url="libsvm_lintrain.html"/>
-<mapID target="section_55ddec68de65093495d0be4c9ff008b4" url="section_55ddec68de65093495d0be4c9ff008b4.html"/>
+<mapID target="section_6c8b6d0d1c40e9986dc6e583ea928a63" url="section_6c8b6d0d1c40e9986dc6e583ea928a63.html"/>
 <mapID target="libsvm_svmpredict" url="libsvm_svmpredict.html"/>
 <mapID target="libsvm_svmtrain" url="libsvm_svmtrain.html"/>
-<mapID target="section_1010ae11fc7218968624430e76845204" url="section_1010ae11fc7218968624430e76845204.html"/>
+<mapID target="section_1b3c663f457a089c139a7fbaa95c1e71" url="section_1b3c663f457a089c139a7fbaa95c1e71.html"/>
 <mapID target="libsvm_confmat" url="libsvm_confmat.html"/>
 <mapID target="libsvm_getpath" url="libsvm_getpath.html"/>
 <mapID target="libsvm_grid" url="libsvm_grid.html"/>

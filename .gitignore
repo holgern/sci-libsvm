@@ -37,3 +37,12 @@
 
 # Auto generated html
 *.html
+
+# Auto generated files
+Makelib*
+loader*
+cleaner*
+lib
+
+# Module Specified files
+svmlib*
